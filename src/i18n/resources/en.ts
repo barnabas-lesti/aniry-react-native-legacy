@@ -1,3 +1,4 @@
 export default {
-  'home.title': 'Home',
+  'screens.home.title': 'Home',
+  'screens.ingredients.title': 'Ingredients',
 };
