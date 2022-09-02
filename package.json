@@ -1,7 +1,7 @@
 {
   "name": "daisy-mobile-app",
   "version": "1.0.0",
-  "main": "./src/App.tsx",
+  "main": "./src/main.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -10,13 +10,15 @@
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@expo/webpack-config": "^0.17.0",
     "expo": "~46.0.9",
     "expo-status-bar": "~1.4.0",
+    "i18next": "^21.9.1",
     "react": "18.0.0",
     "react-dom": "18.0.0",
+    "react-i18next": "^11.18.5",
     "react-native": "0.69.5",
-    "react-native-web": "~0.18.7",
-    "@expo/webpack-config": "^0.17.0"
+    "react-native-web": "~0.18.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
