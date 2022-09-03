@@ -1,7 +1,7 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useAppTranslation } from '../i18n';
 import type { RootStackParamList } from './types';
 import screens from './screens';
 
@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
  * @returns Screen rendering setup.
  */
 export default function NavigationContent() {
-  const { t } = useTranslation();
+  const { t } = useAppTranslation();
 
   return (
     <NavigationContainer>

@@ -16,6 +16,16 @@ npm run lint
 
 ## Features
 
+### Localization
+- All localization related code can be found in the `./src/i18n` folder.
+- To add new translation strings, update the translation objects found in the `resources` folder.
+- Use the app level translation hook `useAppTranslation` to access the translator instance.
+```js
+import { useAppTranslation } from '../../i18n';
+
+const { t } = useAppTranslation();
+```
+
 ### Navigation
 - All navigation related code is in the `./src/navigation` folder.
 - Add the new screen name to the `RootStackParamList` type.
