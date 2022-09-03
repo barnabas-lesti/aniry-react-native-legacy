@@ -1,7 +1,6 @@
-import type { ScreenConfig } from './types';
-
 import HomeScreen from '../components/home/HomeScreen';
 import IngredientsScreen from '../components/ingredients/IngredientsScreen';
+import type { ScreenConfig } from './types';
 
 /**
  * Application screen configuration.

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useAppTranslation } from '../i18n';
+import { useAppTranslation } from '../i18n/hooks';
 import type { RootStackParamList } from './types';
 import screens from './screens';
 
