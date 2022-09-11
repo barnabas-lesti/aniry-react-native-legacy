@@ -4,12 +4,12 @@ export interface Ingredient {
   nutrients: Nutrients;
 }
 
+export type ServingUnit = 'g' | 'ml';
+
 interface Serving {
   value: number;
   unit: ServingUnit;
 }
-
-type ServingUnit = 'g' | 'ml';
 
 interface Nutrients {
   calories: number;

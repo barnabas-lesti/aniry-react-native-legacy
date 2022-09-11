@@ -1,14 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { CommonInput } from '../common';
-import { Ingredient } from '../../store/states/ingredients';
+
+import { useAppTranslation } from '../../i18n/hooks';
+import { Ingredient, servingUnits } from '../../store/states/ingredients';
+import { FormTextInput, FormServingInput } from '../common/form';
+
+interface IngredientEditorProps {
+  ingredient: Ingredient;
+}
 
 export default function IngredientEditor(props: IngredientEditorProps) {
   const { ingredient } = props;
   const { serving } = ingredient;
-  const [name, onChangeName] = useState(ingredient.name);
-  const [servingValue, onChangeServingValue] = useState(serving.value);
-  const [servingUnit, onChangeServingUnit] = useState(serving.unit);
+
+  const { t } = useAppTranslation();
+  const [name, setName] = useState(ingredient.name);
+  const [servingValue, setServingValue] = useState(serving.value);
+  const [servingUnit, setServingUnit] = useState(serving.unit);
+
+  const servingUnitOptions = Object.keys(servingUnits).map((unit) => ({
+    value: unit,
+    label: t(servingUnits[unit as keyof typeof servingUnits]),
+  }));
 
   useEffect(() => {
     // console.log(servingValue);
@@ -16,22 +29,27 @@ export default function IngredientEditor(props: IngredientEditorProps) {
 
   return (
     <View style={styles.container}>
-      <CommonInput
+      <FormTextInput
         label="Name"
         placeholder="Eg.: Onions"
         style={styles.inputs}
-        text={name}
-        onChangeText={onChangeName}
+        value={name}
+        onChangeValue={setName}
       />
-      <CommonInput
-        label="Serving value"
-        placeholder="Eg.: 100"
-        number={servingValue}
-        onChangeNumber={onChangeServingValue}
+
+      <FormServingInput
+        style={styles.inputs}
+        label="Serving"
+        servingValue={servingValue}
+        unitValue={servingUnit}
+        options={servingUnitOptions}
+        onChangeServingValue={setServingValue}
+        onChangeUnitValue={setServingUnit}
       />
 
       <Text>{name}</Text>
       <Text>{servingValue}</Text>
+      <Text>{servingUnit}</Text>
     </View>
   );
 }
@@ -44,7 +62,3 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
 });
-
-interface IngredientEditorProps {
-  ingredient: Ingredient;
-}
