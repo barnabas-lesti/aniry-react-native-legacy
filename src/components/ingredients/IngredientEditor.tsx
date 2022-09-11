@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { useAppTranslation } from '../../i18n/hooks';
-import { Ingredient, servingUnits } from '../../store/states/ingredients';
+import { useAppTranslation } from 'src/i18n/hooks';
+import { Ingredient, servingUnits } from 'src/store/states/ingredients';
 import { FormTextInput, FormServingInput } from '../common/form';
 
 interface IngredientEditorProps {
   ingredient: Ingredient;
 }
 
-export default function IngredientEditor(props: IngredientEditorProps) {
+export function IngredientEditor(props: IngredientEditorProps) {
   const { ingredient } = props;
   const { serving } = ingredient;
 

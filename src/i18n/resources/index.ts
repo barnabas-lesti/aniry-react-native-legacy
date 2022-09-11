@@ -1,10 +1,10 @@
-import en from './en';
-import hu from './hu';
+import { en } from './en';
+import { hu } from './hu';
 
 /**
  * Application translations.
  */
-export default {
+export const resources = {
   en: {
     translation: en,
   },

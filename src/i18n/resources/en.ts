@@ -1,7 +1,7 @@
 /**
  * English translation object.
  */
-export default {
+export const en = {
   'common.units.g': 'g',
   'common.units.ml': 'ml',
 

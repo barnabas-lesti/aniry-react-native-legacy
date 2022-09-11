@@ -1,9 +1,10 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import { useAppTranslation } from '../i18n/hooks';
 import type { RootStackParamList } from './types';
-import screens from './screens';
+import { screens } from './screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -11,7 +12,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
  * Configures and renders the application screens.
  * @returns Screen rendering setup.
  */
-export default function NavigationContent() {
+export function NavigationContent() {
   const { t } = useAppTranslation();
 
   return (

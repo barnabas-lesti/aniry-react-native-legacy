@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { Button, Text, TextInput, View } from 'react-native';
-import { useAppNavigation } from '../../navigation/hooks';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { commonActions } from '../../store/states';
 
-export default function HomeScreen() {
+import { useAppNavigation } from '@/navigation/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { commonActions } from '@/store/states';
+
+export function HomeScreen() {
   const navigation = useAppNavigation<'Home'>();
   const dispatch = useAppDispatch();
 

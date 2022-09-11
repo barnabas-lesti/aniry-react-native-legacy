@@ -1,8 +1,9 @@
 import React from 'react';
 import { Button, Text, View } from 'react-native';
-import { useAppNavigation } from '../../navigation/hooks';
 
-export default function IngredientsScreen() {
+import { useAppNavigation } from '@/navigation/hooks';
+
+export function IngredientsScreen() {
   const navigation = useAppNavigation<'Ingredients'>();
 
   return (

@@ -1,9 +1,10 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import IngredientEditor from './IngredientEditor';
-import { Ingredient } from '../../store/states/ingredients';
 
-export default function EditIngredientScreen() {
+import { Ingredient } from 'src/store/states/ingredients';
+import { IngredientEditor } from './IngredientEditor';
+
+export function EditIngredientScreen() {
   const ingredient: Ingredient = {
     name: 'Onions',
     serving: {

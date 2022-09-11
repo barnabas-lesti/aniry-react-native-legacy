@@ -1,6 +1,6 @@
 /**
  * Hungarian translation object.
  */
-export default {
+export const hu = {
   'home.title': 'Kezdolap',
 };

@@ -1,1 +1,1 @@
-export { default as NavigationContent } from './NavigationContent';
+export * from './NavigationContent';
