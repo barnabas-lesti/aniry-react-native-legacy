@@ -1,7 +1,27 @@
-export interface Ingredient {
-  name: string;
-  serving: Serving;
-  nutrients: Nutrients;
+import { uuid } from 'src/utils';
+
+export class Ingredient {
+  public id: string;
+  public name: string;
+  public serving: Serving;
+  public nutrients: Nutrients;
+
+  constructor(props?: IngredientProps) {
+    const { serving, nutrients } = props || {};
+
+    this.id = props?.id || uuid();
+    this.name = props?.name || '';
+    this.serving = {
+      unit: serving?.unit || 'g',
+      value: serving?.value || 0,
+    };
+    this.nutrients = {
+      calories: nutrients?.calories || 0,
+      carbs: nutrients?.carbs || 0,
+      protein: nutrients?.protein || 0,
+      fat: nutrients?.fat || 0,
+    };
+  }
 }
 
 export type ServingUnit = 'g' | 'ml';
@@ -16,4 +36,11 @@ interface Nutrients {
   carbs: number;
   protein: number;
   fat: number;
+}
+
+interface IngredientProps {
+  id: string;
+  name: string;
+  serving: Serving;
+  nutrients: Nutrients;
 }

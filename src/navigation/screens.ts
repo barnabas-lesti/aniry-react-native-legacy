@@ -1,6 +1,6 @@
 // import HomeScreen from '../components/home/HomeScreen';
-// import IngredientsScreen from '../components/ingredients/IngredientsScreen';
-import { EditIngredientScreen } from '@/components/ingredients/EditIngredientScreen';
+import { IngredientsScreen } from 'src/components/ingredients/IngredientsScreen';
+import { EditIngredientScreen } from 'src/components/ingredients/EditIngredientScreen';
 import type { ScreenConfig } from './types';
 
 /**
@@ -12,11 +12,11 @@ export const screens = [
   //   Component: HomeScreen,
   //   titleKey: 'screens.home.title',
   // },
-  // {
-  //   name: 'Ingredients',
-  //   Component: IngredientsScreen,
-  //   titleKey: 'screens.ingredients.title',
-  // },
+  {
+    name: 'Ingredients',
+    Component: IngredientsScreen,
+    titleKey: 'screens.ingredients.title',
+  },
   {
     name: 'EditIngredient',
     Component: EditIngredientScreen,

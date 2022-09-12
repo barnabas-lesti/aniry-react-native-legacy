@@ -20,6 +20,11 @@ interface FormTextInputProps {
   label?: string;
 
   /**
+   * Postfix to add to the end of the input.
+   */
+  postfix?: string;
+
+  /**
    * Placeholder to display.
    */
   placeholder?: string;
@@ -54,6 +59,7 @@ export function FormTextInput(props: FormTextInputProps) {
   const {
     value,
     label,
+    postfix,
     placeholder,
     keyboardType = 'default',
     isValid = true,
@@ -77,15 +83,22 @@ export function FormTextInput(props: FormTextInputProps) {
   return (
     <View style={[styles.container, style]}>
       {label && <Text style={styles.label}>{label}</Text>}
-      <TextInput
-        style={[styles.input, { borderColor }]}
-        value={value}
-        placeholder={placeholder}
-        keyboardType={keyboardType}
-        onChangeText={onChangeValue}
-        onFocus={() => setIsFocused(true)}
-        onBlur={() => setIsFocused(false)}
-      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={[
+            styles.input,
+            { borderColor },
+            postfix !== undefined && styles.inputWithPostfix,
+          ]}
+          value={value}
+          placeholder={placeholder}
+          keyboardType={keyboardType}
+          onChangeText={onChangeValue}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+        {postfix && <Text style={styles.postfix}>{postfix}</Text>}
+      </View>
     </View>
   );
 }
@@ -96,6 +109,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
     color: '#777',
     fontSize: 14,
+  },
+  postfix: {
+    position: 'absolute',
+    right: 8,
+    top: 8,
+  },
+  inputContainer: {
+    position: 'relative',
   },
   input: {
     borderWidth: 1,
@@ -114,5 +135,8 @@ const styles = StyleSheet.create({
   },
   inputInvalid: {
     borderColor: '#d2322d',
+  },
+  inputWithPostfix: {
+    paddingEnd: 50,
   },
 });

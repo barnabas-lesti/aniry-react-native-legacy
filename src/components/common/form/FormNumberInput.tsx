@@ -15,6 +15,11 @@ interface FormNumberInputProps {
   label?: string;
 
   /**
+   * Postfix to add to the end of the input.
+   */
+  postfix?: string;
+
+  /**
    * Placeholder to display.
    */
   placeholder?: string;
@@ -36,7 +41,7 @@ interface FormNumberInputProps {
  * <FormInput label="Count" value={count} onChangeValue={onChangeCount} />
  */
 export function FormNumberInput(props: FormNumberInputProps) {
-  const { value, label, placeholder, style, onChangeValue } = props;
+  const { value, label, postfix, placeholder, style, onChangeValue } = props;
 
   const [inputValue, setInputValue] = useState(value.toString());
   const [isValid, setIsValid] = useState(isNumberValid(inputValue));
@@ -65,6 +70,7 @@ export function FormNumberInput(props: FormNumberInputProps) {
     <FormTextInput
       style={style}
       label={label}
+      postfix={postfix}
       placeholder={placeholder}
       isValid={isValid}
       keyboardType="numeric"
