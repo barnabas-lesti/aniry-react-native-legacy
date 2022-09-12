@@ -28,7 +28,7 @@ const { t } = useAppTranslation();
 ### Navigation
 - All navigation related code is in the `src/app/navigation` folder.
 - To add new screens to the application:
-  - Add the new screen name to the `AppStackParamList` type.
+  - Add the new screen name to the `AppScreenList` type in `navigation/models`.
   - Create new a feature level `screens.ts` file, then import it in the `navigation/screens` module.
 - To access the app level navigator, use the `useAppNavigation` hook:
 ```js

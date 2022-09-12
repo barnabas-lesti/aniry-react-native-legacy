@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import type { AppStackParamList } from './models';
+import type { AppScreenList } from './models';
 
 /**
  * App level navigation prop factory function.
@@ -10,6 +10,6 @@ import type { AppStackParamList } from './models';
  * import { useAppNavigation } from 'app/hooks';
  * const navigation = useAppNavigation<'Home'>();
  */
-export function useAppNavigation<T extends keyof AppStackParamList>() {
-  return useNavigation<NativeStackNavigationProp<AppStackParamList, T>>();
+export function useAppNavigation<T extends keyof AppScreenList>() {
+  return useNavigation<NativeStackNavigationProp<AppScreenList, T>>();
 }

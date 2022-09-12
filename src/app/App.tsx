@@ -3,11 +3,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { screens, AppStackParamList } from './navigation';
+import { screens, AppScreenList } from './navigation';
 import { useAppTranslation } from './hooks';
 import './i18n';
 
-const Stack = createNativeStackNavigator<AppStackParamList>();
+const Stack = createNativeStackNavigator<AppScreenList>();
 
 /**
  * Main entrypoint of the application.
