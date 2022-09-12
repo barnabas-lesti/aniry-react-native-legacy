@@ -1,7 +1,7 @@
 {
   "name": "daisy-mobile-app",
   "version": "1.0.0",
-  "main": "./src/main.ts",
+  "main": "./src/app/main.ts",
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -13,7 +13,6 @@
     "@expo/webpack-config": "^0.17.0",
     "@react-navigation/native": "^6.0.12",
     "@react-navigation/native-stack": "^6.8.0",
-    "@reduxjs/toolkit": "^1.8.5",
     "@rneui/base": "^4.0.0-rc.6",
     "@rneui/themed": "^4.0.0-rc.6",
     "expo": "~46.0.9",
@@ -25,11 +24,10 @@
     "react-native": "0.69.5",
     "react-native-get-random-values": "^1.8.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
-    "react-native-safe-area-context": "^4.3.1",
+    "react-native-safe-area-context": "4.3.1",
     "react-native-screens": "~3.15.0",
     "react-native-select-dropdown": "^2.0.4",
     "react-native-web": "~0.18.7",
-    "react-redux": "^8.0.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

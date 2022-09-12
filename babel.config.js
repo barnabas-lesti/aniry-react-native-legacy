@@ -9,7 +9,8 @@ module.exports = function (api) {
           root: ['./src/'],
           alias: {
             // This needs to be mirrored in tsconfig.json
-            src: './src',
+            app: './src/app',
+            features: './src/features',
           },
         },
       ],
