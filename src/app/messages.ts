@@ -7,6 +7,7 @@ export const messages = {
     'app.units.kcal': 'kcal',
 
     'app.labels.save': 'Save',
+    'app.labels.delete': 'Delete',
     'app.labels.discard': 'Discard',
     'app.labels.name': 'Name',
     'app.labels.serving': 'Serving',

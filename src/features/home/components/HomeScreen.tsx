@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Button, Text, TextInput, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { useAppNavigation } from 'app/hooks';
+import { AppStackParamList } from 'app/models';
 
-export function HomeScreen() {
-  const navigation = useAppNavigation<'Home'>();
+type HomeScreenProps = NativeStackScreenProps<AppStackParamList, 'Home'>;
+
+export function HomeScreen(props: HomeScreenProps) {
+  const { navigation } = props;
 
   const [inputValue, onChangeInputValue] = useState('');
 

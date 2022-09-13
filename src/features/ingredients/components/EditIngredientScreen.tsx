@@ -1,31 +1,48 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
-import { useAppNavigation } from 'app/hooks';
 import { Ingredient } from '../models';
+import { ingredientsService } from '../services';
 import { IngredientEditor } from './IngredientEditor';
+import { AppStackParamList } from 'app/models';
 
-export function EditIngredientScreen() {
-  const navigation = useAppNavigation<'EditIngredient'>();
+type EditIngredientScreenProps = NativeStackScreenProps<
+  AppStackParamList,
+  'EditIngredient'
+>;
 
-  const ingredient = new Ingredient();
+/**
+ * Ingredient editing screen.
+ */
+export function EditIngredientScreen(props: EditIngredientScreenProps) {
+  const { navigation, route } = props;
 
-  function onSave(newIngredient: Ingredient) {
-    console.log(newIngredient);
+  const canDelete = !!route.params?.ingredient;
+  const ingredient = route.params?.ingredient || new Ingredient();
+
+  async function saveChanges(newIngredient: Ingredient) {
+    await ingredientsService.saveIngredient(newIngredient);
+    navigation.push('Ingredients');
+  }
+
+  function discardChanges() {
     navigation.goBack();
   }
 
-  function onDiscard() {
-    navigation.goBack();
+  async function deleteIngredient({ id }: Ingredient) {
+    await ingredientsService.deleteIngredientById(id);
+    navigation.push('Ingredients');
   }
 
   return (
     <KeyboardAwareScrollView style={styles.container}>
       <IngredientEditor
         ingredient={ingredient}
-        onSave={onSave}
-        onDiscard={onDiscard}
+        onSaveIngredient={saveChanges}
+        onDiscardIngredient={discardChanges}
+        onDeleteIngredient={canDelete ? deleteIngredient : undefined}
       />
     </KeyboardAwareScrollView>
   );

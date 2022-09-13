@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
-import { useAppTranslation } from 'app/hooks';
 import {
   AppTextInput,
   AppNumberInput,
@@ -19,12 +19,17 @@ interface IngredientEditorProps {
   /**
    * On save event handler.
    */
-  onSave: (ingredient: Ingredient) => void;
+  onSaveIngredient: (ingredient: Ingredient) => void;
 
   /**
    * On discard event handler.
    */
-  onDiscard: () => void;
+  onDiscardIngredient: () => void;
+
+  /**
+   * On delete event handler.
+   */
+  onDeleteIngredient?: (ingredient: Ingredient) => void;
 }
 
 /**
@@ -33,10 +38,15 @@ interface IngredientEditorProps {
  * <IngredientEditor ingredient={ingredient} onSaveIngredient={onSaveIngredient} />
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient, onSave, onDiscard } = props;
+  const {
+    ingredient,
+    onSaveIngredient,
+    onDiscardIngredient,
+    onDeleteIngredient,
+  } = props;
   const { serving, nutrients } = ingredient;
 
-  const { t } = useAppTranslation();
+  const { t } = useTranslation();
   const [name, setName] = useState(ingredient.name);
   const [servingValue, setServingValue] = useState(serving.value);
   const [servingUnit, setServingUnit] = useState(serving.unit);
@@ -50,8 +60,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
     label: t(servingUnits[unit as keyof typeof servingUnits]),
   }));
 
-  function onSaveButtonClick() {
-    onSave(
+  function onSaveButtonPress() {
+    onSaveIngredient(
       new Ingredient({
         id: ingredient.id,
         name,
@@ -67,6 +77,10 @@ export function IngredientEditor(props: IngredientEditorProps) {
         },
       })
     );
+  }
+
+  function onDeleteButtonPress() {
+    onDeleteIngredient && onDeleteIngredient(ingredient);
   }
 
   return (
@@ -123,14 +137,22 @@ export function IngredientEditor(props: IngredientEditorProps) {
       <AppButton
         style={styles.buttons}
         label={t('app.labels.save')}
-        onPress={onSaveButtonClick}
+        onPress={onSaveButtonPress}
       />
 
       <AppButton
         style={styles.buttons}
         label={t('app.labels.discard')}
-        onPress={onDiscard}
+        onPress={onDiscardIngredient}
       />
+
+      {onDeleteIngredient && (
+        <AppButton
+          style={styles.buttons}
+          label={t('app.labels.delete')}
+          onPress={onDeleteButtonPress}
+        />
+      )}
     </View>
   );
 }
@@ -141,6 +163,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   buttons: {
-    marginTop: 8,
+    marginTop: 16,
   },
 });
