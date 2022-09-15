@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { StyleProp, StyleSheet, Text, TextStyle, View } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
 
-import type { AppSelectOption } from './models';
+import type { SelectOption } from './models';
 
 interface AppSelectInputProps {
   /**
@@ -13,7 +13,7 @@ interface AppSelectInputProps {
   /**
    * Dropdown options.
    */
-  options: Array<AppSelectOption>;
+  options: Array<SelectOption>;
 
   /**
    * Label to display.
@@ -52,21 +52,12 @@ export function AppSelectInput(props: AppSelectInputProps) {
         selectedRowStyle={styles.selectedRow}
         selectedRowTextStyle={styles.selectedRowText}
         data={options}
-        onSelect={(option: AppSelectOption) => onChangeValue(option.value)}
-        defaultValueByIndex={options.findIndex(
-          (option) => option.value === value
-        )}
-        buttonTextAfterSelection={(option: AppSelectOption) => option.label}
-        rowTextForSelection={(option: AppSelectOption) => option.label}
-        renderCustomizedRowChild={(option: AppSelectOption) => (
-          <Text
-            style={[
-              styles.rowText,
-              value === option.value && styles.selectedRowText,
-            ]}
-          >
-            {option.label}
-          </Text>
+        onSelect={(option: SelectOption) => onChangeValue(option.value)}
+        defaultValueByIndex={options.findIndex((option) => option.value === value)}
+        buttonTextAfterSelection={(option: SelectOption) => option.label}
+        rowTextForSelection={(option: SelectOption) => option.label}
+        renderCustomizedRowChild={(option: SelectOption) => (
+          <Text style={[styles.rowText, value === option.value && styles.selectedRowText]}>{option.label}</Text>
         )}
       />
     </View>

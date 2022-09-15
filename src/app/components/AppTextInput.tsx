@@ -1,12 +1,5 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import {
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextInput,
-  TextStyle,
-  View,
-} from 'react-native';
+import { StyleProp, StyleSheet, Text, TextInput, TextStyle, View } from 'react-native';
 
 interface AppTextInputProps {
   /**
@@ -56,16 +49,7 @@ interface AppTextInputProps {
  * <AppInput label="Name" value={name} onChangeValue={onChangeName} />
  */
 export function AppTextInput(props: AppTextInputProps) {
-  const {
-    value,
-    label,
-    postfix,
-    placeholder,
-    keyboardType = 'default',
-    isValid = true,
-    style,
-    onChangeValue,
-  } = props;
+  const { value, label, postfix, placeholder, keyboardType = 'default', isValid = true, style, onChangeValue } = props;
 
   const [borderColor, setBorderColor] = useState(styles.input.borderColor);
   const [isFocused, setIsFocused] = useState(false);
@@ -85,11 +69,7 @@ export function AppTextInput(props: AppTextInputProps) {
       {label && <Text style={styles.label}>{label}</Text>}
       <View style={styles.inputContainer}>
         <TextInput
-          style={[
-            styles.input,
-            { borderColor },
-            postfix !== undefined && styles.inputWithPostfix,
-          ]}
+          style={[styles.input, { borderColor }, postfix !== undefined && styles.inputWithPostfix]}
           value={value}
           placeholder={placeholder}
           keyboardType={keyboardType}

@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 
@@ -14,10 +8,7 @@ import { AppStackParamList } from 'app/models';
 import { ingredientsService } from '../services';
 import { Ingredient } from '../models';
 
-type IngredientsScreenProps = NativeStackScreenProps<
-  AppStackParamList,
-  'Ingredients'
->;
+type IngredientsScreenProps = NativeStackScreenProps<AppStackParamList, 'Ingredients'>;
 
 /**
  * Ingredients screen component.
@@ -45,6 +36,7 @@ export function IngredientsScreen(props: IngredientsScreenProps) {
     <View style={styles.container}>
       <AppButton
         style={styles.newIngredientButton}
+        type="primary"
         label={t('ingredients.ingredientsScreen.newIngredient')}
         onPress={() => navigation.push('EditIngredient')}
       />

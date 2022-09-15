@@ -14,9 +14,7 @@ class StorageService {
   async saveOne<T extends AppStorableItem>(collection: string, item: T) {
     const storedItems = await this.fetchMany<T>(collection);
 
-    const indexOfItem = storedItems.findIndex(
-      (storedItem) => storedItem.id === item.id
-    );
+    const indexOfItem = storedItems.findIndex((storedItem) => storedItem.id === item.id);
     if (indexOfItem !== -1) {
       storedItems[indexOfItem] = item;
     } else {
@@ -44,14 +42,9 @@ class StorageService {
    * @param collection Name of the collection.
    * @param id Id of the item to remove.
    */
-  async deleteOneById<T extends AppStorableItem>(
-    collection: string,
-    id: string
-  ) {
+  async deleteOneById<T extends AppStorableItem>(collection: string, id: string) {
     const storedItems = await this.fetchMany<T>(collection);
-    const filteredItems = storedItems.filter(
-      (ingredient) => ingredient.id !== id
-    );
+    const filteredItems = storedItems.filter((ingredient) => ingredient.id !== id);
 
     await AsyncStorage.setItem(collection, JSON.stringify(filteredItems));
   }

@@ -8,10 +8,7 @@ import { ingredientsService } from '../services';
 import { IngredientEditor } from './IngredientEditor';
 import { AppStackParamList } from 'app/models';
 
-type EditIngredientScreenProps = NativeStackScreenProps<
-  AppStackParamList,
-  'EditIngredient'
->;
+type EditIngredientScreenProps = NativeStackScreenProps<AppStackParamList, 'EditIngredient'>;
 
 /**
  * Ingredient editing screen.

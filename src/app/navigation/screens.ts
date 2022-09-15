@@ -1,12 +1,25 @@
-// import { screens as homeScreens } from 'features/home/screens';
-import { screens as ingredientsScreens } from 'features/ingredients/screens';
+// import { HomeScreen } from 'features/home';
+import { EditIngredientScreen, IngredientsScreen } from 'features/ingredients';
 import type { AppScreen } from './models';
 
 /**
  * Application screen configuration.
- * TODO: Add feature level screens to this object.
  */
 export const screens = [
-  // ...homeScreens,
-  ...ingredientsScreens,
+  // {
+  //   name: 'Home',
+  //   Component: HomeScreen,
+  //   titleKey: 'home.homeScreen.title',
+  // },
+
+  {
+    name: 'Ingredients',
+    Component: IngredientsScreen,
+    titleKey: 'ingredients.ingredientsScreen.title',
+  },
+  {
+    name: 'EditIngredient',
+    Component: EditIngredientScreen,
+    titleKey: 'ingredients.editIngredient.title',
+  },
 ] as AppScreen[];

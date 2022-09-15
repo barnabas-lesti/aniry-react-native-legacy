@@ -2,12 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import {
-  AppTextInput,
-  AppNumberInput,
-  AppServingInput,
-  AppButton,
-} from 'app/components';
+import { AppTextInput, AppNumberInput, AppServingInput, AppButton, AppConfirmationModal } from 'app/components';
 import { Ingredient, servingUnits } from '../models';
 
 interface IngredientEditorProps {
@@ -38,12 +33,7 @@ interface IngredientEditorProps {
  * <IngredientEditor ingredient={ingredient} onSaveIngredient={onSaveIngredient} />
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const {
-    ingredient,
-    onSaveIngredient,
-    onDiscardIngredient,
-    onDeleteIngredient,
-  } = props;
+  const { ingredient, onSaveIngredient, onDiscardIngredient, onDeleteIngredient } = props;
   const { serving, nutrients } = ingredient;
 
   const { t } = useTranslation();
@@ -54,6 +44,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [carbs, setCarbs] = useState(nutrients.carbs);
   const [protein, setProtein] = useState(nutrients.protein);
   const [fat, setFat] = useState(nutrients.fat);
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
 
   const servingUnitOptions = Object.keys(servingUnits).map((unit) => ({
     value: unit,
@@ -80,6 +71,11 @@ export function IngredientEditor(props: IngredientEditorProps) {
   }
 
   function onDeleteButtonPress() {
+    setIsDeleteConfirmationVisible(true);
+  }
+
+  function onDeleteConfirmation() {
+    setIsDeleteConfirmationVisible(false);
     onDeleteIngredient && onDeleteIngredient(ingredient);
   }
 
@@ -136,6 +132,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
       <AppButton
         style={styles.buttons}
+        type="primary"
         label={t('app.labels.save')}
         onPress={onSaveButtonPress}
       />
@@ -149,8 +146,18 @@ export function IngredientEditor(props: IngredientEditorProps) {
       {onDeleteIngredient && (
         <AppButton
           style={styles.buttons}
+          type="danger"
           label={t('app.labels.delete')}
           onPress={onDeleteButtonPress}
+        />
+      )}
+
+      {onDeleteIngredient && (
+        <AppConfirmationModal
+          isVisible={isDeleteConfirmationVisible}
+          text={t('ingredients.ingredientEditor.deleteConfirmation')}
+          onConfirmation={onDeleteConfirmation}
+          onDiscard={() => setIsDeleteConfirmationVisible(false)}
         />
       )}
     </View>

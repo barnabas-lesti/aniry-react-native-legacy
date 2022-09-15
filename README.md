@@ -21,3 +21,4 @@ npm run lint
 - https://reactnavigation.org/docs/typescript
 - https://www.okler.net/previews/porto-admin/4.0.0/forms-basic.html
 - https://github.com/react-native-async-storage/async-storage
+- https://callstack.github.io/react-native-paper/index.html

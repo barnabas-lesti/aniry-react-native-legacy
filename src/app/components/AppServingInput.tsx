@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { StyleProp, StyleSheet, TextStyle, View } from 'react-native';
 
-import type { AppSelectOption } from './models';
+import type { SelectOption } from './models';
 import { AppNumberInput } from './AppNumberInput';
 import { AppSelectInput } from './AppSelectInput';
 
@@ -19,7 +19,7 @@ interface AppServingInputProps {
   /**
    * Unit options.
    */
-  options: Array<AppSelectOption>;
+  options: Array<SelectOption>;
 
   /**
    * Custom styles.
@@ -60,16 +60,8 @@ interface AppServingInputProps {
  * />
  */
 export function AppServingInput(props: AppServingInputProps) {
-  const {
-    servingValue,
-    unitValue,
-    options,
-    placeholder,
-    label,
-    style,
-    onChangeServingValue,
-    onChangeUnitValue,
-  } = props;
+  const { servingValue, unitValue, options, placeholder, label, style, onChangeServingValue, onChangeUnitValue } =
+    props;
 
   return (
     <View style={[styles.container, style]}>

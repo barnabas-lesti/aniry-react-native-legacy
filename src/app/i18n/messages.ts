@@ -1,24 +1,35 @@
-import { messages as homeMessages } from 'features/home/messages';
-import { messages as ingredientsMessages } from 'features/ingredients/messages';
-import { messages as appMessages } from '../messages';
-
 /**
  * Application localized messages.
- * TODO: Add feature level messages to this object.
  */
 export const messages = {
   en: {
     translation: {
-      ...appMessages.en,
-      ...homeMessages.en,
-      ...ingredientsMessages.en,
+      'app.units.g': 'g',
+      'app.units.ml': 'ml',
+      'app.units.kcal': 'kcal',
+
+      'app.labels.save': 'Save',
+      'app.labels.delete': 'Delete',
+      'app.labels.discard': 'Discard',
+      'app.labels.confirm': 'Confirm',
+      'app.labels.name': 'Name',
+      'app.labels.serving': 'Serving',
+      'app.labels.calories': 'Calories',
+      'app.labels.carbs': 'Carbs',
+      'app.labels.protein': 'Protein',
+      'app.labels.fat': 'Fat',
+
+      'home.homeScreen.title': 'Home',
+
+      'ingredients.ingredientsScreen.title': 'Ingredients',
+      'ingredients.ingredientsScreen.newIngredient': 'New ingredient',
+
+      'ingredients.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
+
+      'ingredients.editIngredient.title': 'Edit ingredient',
     },
   },
   hu: {
-    translation: {
-      ...appMessages.hu,
-      ...homeMessages.hu,
-      ...ingredientsMessages.hu,
-    },
+    translation: {},
   },
 };

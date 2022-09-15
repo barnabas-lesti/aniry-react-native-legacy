@@ -25,10 +25,7 @@ class IngredientsService {
    * @param ingredientId Ingredient to remove.
    */
   async deleteIngredientById(ingredientId: string) {
-    await storageService.deleteOneById<Ingredient>(
-      this.COLLECTION_NAME,
-      ingredientId
-    );
+    await storageService.deleteOneById<Ingredient>(this.COLLECTION_NAME, ingredientId);
   }
 
   /**

@@ -14,7 +14,10 @@ export function HomeScreen(props: HomeScreenProps) {
   return (
     <View>
       <Text>HomeScreen</Text>
-      <TextInput value={inputValue} onChangeText={onChangeInputValue} />
+      <TextInput
+        value={inputValue}
+        onChangeText={onChangeInputValue}
+      />
       <Button
         title="Ingredients"
         onPress={() => navigation.navigate('Ingredients')}

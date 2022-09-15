@@ -2,7 +2,6 @@ import { Ingredient } from 'features/ingredients/models';
 
 /**
  * App screen list type.
- * TODO: Add feature level screens to this type.
  */
 export type AppStackParamList = {
   Home: undefined;
