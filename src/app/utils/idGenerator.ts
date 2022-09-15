@@ -1,7 +1,7 @@
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
-class UUIDService {
+class AppIdGenerator {
   /**
    * Generates a unique ID.
    * @returns UUID string.
@@ -14,4 +14,4 @@ class UUIDService {
 /**
  * Application UUID generator service.
  */
-export const uuidService = new UUIDService();
+export const appIdGenerator = new AppIdGenerator();

@@ -1,4 +1,4 @@
-import { uuidService } from 'app/services';
+import { appIdGenerator } from 'app/utils';
 
 export const servingUnits: { [key in ServingUnit]: string } = {
   g: 'app.units.g',
@@ -14,7 +14,7 @@ export class Ingredient {
   constructor(props?: IngredientProps) {
     const { serving, nutrients } = props || {};
 
-    this.id = props?.id || uuidService.generateID();
+    this.id = props?.id || appIdGenerator.generateID();
     this.name = props?.name || '';
     this.serving = {
       unit: serving?.unit || 'g',
