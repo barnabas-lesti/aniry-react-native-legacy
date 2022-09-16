@@ -1,7 +1,7 @@
 /**
  * Application localized messages.
  */
-export const messages = {
+export const appMessages = {
   en: {
     translation: {
       'app.units.g': 'g',

@@ -5,7 +5,7 @@ import type { AppScreen } from './models';
 /**
  * Application screen configuration.
  */
-export const screens = [
+export const appScreens = [
   // {
   //   name: 'Home',
   //   Component: HomeScreen,
