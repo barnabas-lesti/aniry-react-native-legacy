@@ -11,6 +11,7 @@ export const messages = {
       'app.labels.save': 'Save',
       'app.labels.delete': 'Delete',
       'app.labels.discard': 'Discard',
+      'app.labels.cancel': 'Cancel',
       'app.labels.confirm': 'Confirm',
       'app.labels.name': 'Name',
       'app.labels.serving': 'Serving',

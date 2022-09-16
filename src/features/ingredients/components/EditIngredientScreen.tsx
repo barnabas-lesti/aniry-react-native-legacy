@@ -1,14 +1,12 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { StyleSheet, ScrollView } from 'react-native';
 
+import { AppStackParamList, AppStackScreenProps } from 'app/navigation';
 import { Ingredient } from '../models';
 import { ingredientsService } from '../services';
 import { IngredientEditor } from './IngredientEditor';
-import { AppStackParamList } from 'app/models';
 
-type EditIngredientScreenProps = NativeStackScreenProps<AppStackParamList, 'EditIngredient'>;
+type EditIngredientScreenProps = AppStackScreenProps<AppStackParamList, 'EditIngredient'>;
 
 /**
  * Ingredient editing screen.
@@ -34,14 +32,14 @@ export function EditIngredientScreen(props: EditIngredientScreenProps) {
   }
 
   return (
-    <KeyboardAwareScrollView style={styles.container}>
+    <ScrollView style={styles.container}>
       <IngredientEditor
         ingredient={ingredient}
         onSaveIngredient={saveChanges}
         onDiscardIngredient={discardChanges}
         onDeleteIngredient={canDelete ? deleteIngredient : undefined}
       />
-    </KeyboardAwareScrollView>
+    </ScrollView>
   );
 }
 

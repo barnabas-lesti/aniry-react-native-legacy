@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { AppStorableItem } from '../models';
+import { AppStorableItem } from './models';
 
-class StorageService {
+class AppStorage {
   /**
    * Saves the given item in the given collection.
    * Creates a new item in the list if item id is not found.
@@ -53,4 +53,4 @@ class StorageService {
 /**
  * Application storage service.
  */
-export const storageService = new StorageService();
+export const appStorage = new AppStorage();

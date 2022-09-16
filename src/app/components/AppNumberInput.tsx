@@ -25,6 +25,11 @@ interface AppNumberInputProps {
   placeholder?: string;
 
   /**
+   * Validity flag.
+   */
+  isValid?: boolean;
+
+  /**
    * Custom styles.
    */
   style?: StyleProp<TextStyle>;
@@ -41,41 +46,36 @@ interface AppNumberInputProps {
  * <AppInput label="Count" value={count} onChangeValue={onChangeCount} />
  */
 export function AppNumberInput(props: AppNumberInputProps) {
-  const { value, label, postfix, placeholder, style, onChangeValue } = props;
+  const { value, label, postfix, placeholder, isValid, style, onChangeValue } = props;
 
-  const [inputValue, setInputValue] = useState(value.toString());
-  const [isValid, setIsValid] = useState(isNumberValid(inputValue));
+  const [stringValue, setStringValue] = useState(value.toString());
 
   /**
-   * Input change event handler.
-   * @param newValue New value of the input.
+   * Before value change event handler.
+   * Strips non numeric characters and surprise dots.
+   * @param newValueCandidate New value of the input.
    */
-  function onInputChange(newValue: string) {
-    setInputValue(newValue);
+  function onBeforeChangeValue(newValueCandidate: string) {
+    let newValue = newValueCandidate.replace(',', '.').replace(/[^\d.]/g, '');
+    const lastCharacter = newValue.replace(stringValue, '');
+    if (lastCharacter === '.' && stringValue.indexOf('.') !== -1) {
+      newValue = newValue.slice(0, -1);
+    }
 
-    setIsValid(isNumberValid(newValue));
+    setStringValue(newValue);
     onChangeValue(parseFloat(newValue) || 0);
-  }
-
-  /**
-   * Validates if the provided string is a number.
-   * @param numberString Number in string format.
-   * @returns Boolean depending on the validation.
-   */
-  function isNumberValid(numberString: string) {
-    return !isNaN(parseFloat(numberString));
   }
 
   return (
     <AppTextInput
+      keyboardType="numeric"
       style={style}
       label={label}
       postfix={postfix}
       placeholder={placeholder}
       isValid={isValid}
-      keyboardType="numeric"
-      value={inputValue}
-      onChangeValue={(v) => onInputChange(v.toString())}
+      value={stringValue}
+      onChangeValue={(v) => onBeforeChangeValue(v.toString())}
     />
   );
 }

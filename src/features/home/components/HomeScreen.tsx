@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Text, TextInput, View } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { AppStackParamList } from 'app/models';
+import { AppStackParamList, AppStackScreenProps } from 'app/navigation';
 
-type HomeScreenProps = NativeStackScreenProps<AppStackParamList, 'Home'>;
+type HomeScreenProps = AppStackScreenProps<AppStackParamList, 'Home'>;
 
 export function HomeScreen(props: HomeScreenProps) {
   const { navigation } = props;

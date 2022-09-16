@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Modal from 'react-native-modal';
+import { Dialog, Portal } from 'react-native-paper';
 
 interface AppModalProps {
   /**
@@ -19,23 +19,26 @@ interface AppModalProps {
   onDismiss: () => void;
 }
 
+/**
+ * Application modal component.
+ */
 export function AppModal(props: AppModalProps) {
   const { isVisible, onDismiss } = props;
 
   return (
-    <Modal
-      isVisible={isVisible}
-      onBackdropPress={onDismiss}
-    >
-      <View style={styles.content}>{props.children}</View>
-    </Modal>
+    <Portal>
+      <Dialog
+        visible={isVisible}
+        onDismiss={onDismiss}
+      >
+        <View style={styles.content}>{props.children}</View>
+      </Dialog>
+    </Portal>
   );
 }
 
 const styles = StyleSheet.create({
   content: {
-    borderRadius: 4,
-    backgroundColor: '#fff',
     padding: 14,
   },
 });
