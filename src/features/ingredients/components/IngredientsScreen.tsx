@@ -6,7 +6,7 @@ import { AppStackParamList, AppStackScreenProps } from 'app/navigation';
 import { AppButton } from 'app/components';
 import { ingredientsService } from '../services';
 import { Ingredient } from '../models';
-import { IngredientList } from './IngredientList';
+import { IngredientsTable } from './IngredientsTable';
 
 type IngredientsScreenProps = AppStackScreenProps<AppStackParamList, 'Ingredients'>;
 
@@ -24,12 +24,15 @@ export function IngredientsScreen(props: IngredientsScreenProps) {
   }, []);
 
   async function fetchIngredients() {
-    const loadedIngredients = await ingredientsService.fetchIngredients();
-    setIngredients(ingredientsService.sortIngredientsByName(loadedIngredients));
+    setIngredients(await ingredientsService.fetchIngredients());
   }
 
   function selectIngredient(ingredient: Ingredient) {
     navigation.push('EditIngredient', { ingredient });
+  }
+
+  async function onSearchHandler(searchString: string) {
+    setIngredients(await ingredientsService.fetchIngredients(searchString));
   }
 
   return (
@@ -41,9 +44,10 @@ export function IngredientsScreen(props: IngredientsScreenProps) {
         onPress={() => navigation.push('EditIngredient')}
       />
 
-      <IngredientList
+      <IngredientsTable
         ingredients={ingredients}
         onSelectIngredient={selectIngredient}
+        onSearch={onSearchHandler}
       />
     </View>
   );

@@ -16,8 +16,16 @@ class IngredientsService {
    * Loads ingredients from the storage.
    * @returns Array of ingredients.
    */
-  async fetchIngredients() {
-    return await appStorageService.fetchMany<Ingredient>(this.COLLECTION_NAME);
+  async fetchIngredients(searchString?: string) {
+    const ingredients = await appStorageService.fetchMany<Ingredient>(this.COLLECTION_NAME);
+
+    if (searchString) {
+      return ingredients.filter(
+        (ingredient) => ingredient.name.toLowerCase().search(searchString.toLowerCase()) !== -1
+      );
+    }
+
+    return ingredients;
   }
 
   /**
