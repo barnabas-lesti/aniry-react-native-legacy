@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppStackParamList, AppStackScreenProps } from 'app/navigation';
 import { AppButton } from 'app/components';
 import { ingredientsService } from '../services';
 import { Ingredient } from '../models';
+import { IngredientList } from './IngredientList';
 
 type IngredientsScreenProps = AppStackScreenProps<AppStackParamList, 'Ingredients'>;
 
@@ -27,7 +28,7 @@ export function IngredientsScreen(props: IngredientsScreenProps) {
     setIngredients(ingredientsService.sortIngredientsByName(loadedIngredients));
   }
 
-  function onIngredientSelect(ingredient: Ingredient) {
+  function selectIngredient(ingredient: Ingredient) {
     navigation.push('EditIngredient', { ingredient });
   }
 
@@ -40,21 +41,9 @@ export function IngredientsScreen(props: IngredientsScreenProps) {
         onPress={() => navigation.push('EditIngredient')}
       />
 
-      <FlatList
-        style={styles.list}
-        data={ingredients}
-        renderItem={({ item: ingredient }) => (
-          <TouchableOpacity
-            style={styles.listItem}
-            key={ingredient.id}
-            onPress={() => onIngredientSelect(ingredient)}
-          >
-            <Text>{ingredient.name}</Text>
-            <Text>
-              {ingredient.serving.value} {ingredient.serving.unit}
-            </Text>
-          </TouchableOpacity>
-        )}
+      <IngredientList
+        ingredients={ingredients}
+        onSelectIngredient={selectIngredient}
       />
     </View>
   );
@@ -65,18 +54,6 @@ const styles = StyleSheet.create({
     margin: 14,
   },
   newIngredientButton: {
-    marginBottom: 28,
-  },
-  list: {},
-  listItem: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderWidth: 1,
-    borderColor: '#ced4da',
-    borderRadius: 4,
-    backgroundColor: '#fff',
-    marginBottom: 8,
-    padding: 8,
+    marginBottom: 20,
   },
 });

@@ -1,3 +1,5 @@
+import { ingredientsMessages } from 'features/ingredients';
+
 /**
  * Application localized messages.
  */
@@ -20,17 +22,12 @@ export const appMessages = {
       'app.labels.protein': 'Protein',
       'app.labels.fat': 'Fat',
 
-      'home.homeScreen.title': 'Home',
-
-      'ingredients.ingredientsScreen.title': 'Ingredients',
-      'ingredients.ingredientsScreen.newIngredient': 'New ingredient',
-
-      'ingredients.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
-
-      'ingredients.editIngredient.title': 'Edit ingredient',
+      ...ingredientsMessages.en,
     },
   },
   hu: {
-    translation: {},
+    translation: {
+      ...ingredientsMessages.hu,
+    },
   },
 };
