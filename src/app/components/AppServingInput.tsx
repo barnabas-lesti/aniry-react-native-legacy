@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   value: {
-    marginRight: 6,
+    marginRight: 10,
     flexGrow: 1,
   },
   unit: {
