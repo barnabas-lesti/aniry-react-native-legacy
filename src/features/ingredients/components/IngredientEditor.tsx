@@ -157,7 +157,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           isVisible={isDeleteConfirmationVisible}
           text={t('ingredients.ingredientEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
-          onDiscard={() => setIsDeleteConfirmationVisible(false)}
+          onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
       )}
     </View>

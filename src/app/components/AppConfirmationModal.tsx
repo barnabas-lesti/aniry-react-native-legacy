@@ -22,20 +22,23 @@ interface AppConfirmationModalProps {
   onConfirmation: () => void;
 
   /**
-   * Discard event handler.
+   * Cancellation event handler.
    */
-  onDiscard: () => void;
+  onCancel: () => void;
 }
 
+/**
+ * Application confirmation modal component.
+ */
 export function AppConfirmationModal(props: AppConfirmationModalProps) {
-  const { isVisible, text, onConfirmation, onDiscard } = props;
+  const { isVisible, text, onConfirmation, onCancel } = props;
 
   const { t } = useTranslation();
 
   return (
     <AppModal
       isVisible={isVisible}
-      onDismiss={onDiscard}
+      onDismiss={onCancel}
     >
       <Text style={styles.text}>{text}</Text>
       <AppButton
@@ -45,8 +48,8 @@ export function AppConfirmationModal(props: AppConfirmationModalProps) {
       />
       <AppButton
         type="secondary"
-        label={t('app.labels.discard')}
-        onPress={onDiscard}
+        label={t('app.labels.cancel')}
+        onPress={onCancel}
       />
     </AppModal>
   );
@@ -55,6 +58,7 @@ export function AppConfirmationModal(props: AppConfirmationModalProps) {
 const styles = StyleSheet.create({
   text: {
     marginBottom: 14,
+    textAlign: 'center',
   },
   button: {
     marginBottom: 14,
