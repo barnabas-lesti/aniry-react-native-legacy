@@ -43,13 +43,21 @@ interface AppTextInputProps {
   /**
    * Validity flag.
    */
-  isValid?: boolean;
+  isInvalid?: boolean;
 
   /**
    * Text change handler.
    */
   onChangeValue: Dispatch<SetStateAction<string>>;
+
+  /**
+   * Delayed text change handler.
+   */
+  onThrottledChangeValue?: (value: string) => void;
 }
+
+const THROTTLE_DELAY = 300;
+let throttleTimeout: NodeJS.Timeout | null;
 
 /**
  * App text input component.
@@ -63,11 +71,24 @@ export function AppTextInput(props: AppTextInputProps) {
     postfix,
     placeholder,
     keyboardType = 'default',
-    isValid = true,
+    isInvalid,
     readonly,
     style,
     onChangeValue,
+    onThrottledChangeValue,
   } = props;
+
+  function onBeforeChangeValue(newValue: string) {
+    onChangeValue(newValue);
+
+    if (onThrottledChangeValue) {
+      throttleTimeout && clearTimeout(throttleTimeout);
+
+      throttleTimeout = setTimeout(() => {
+        onThrottledChangeValue(newValue);
+      }, THROTTLE_DELAY);
+    }
+  }
 
   return (
     <TextInput
@@ -76,12 +97,12 @@ export function AppTextInput(props: AppTextInputProps) {
       style={style}
       label={label}
       value={value}
-      error={!isValid}
+      error={isInvalid}
       placeholder={placeholder}
       keyboardType={keyboardType}
       editable={!readonly}
       activeOutlineColor={appTheme.colors.primary}
-      onChangeText={onChangeValue}
+      onChangeText={onBeforeChangeValue}
       right={postfix && <TextInput.Affix text={postfix} />}
     />
   );
