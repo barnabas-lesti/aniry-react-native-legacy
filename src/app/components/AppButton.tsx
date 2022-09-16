@@ -1,5 +1,8 @@
 import React from 'react';
-import { StyleSheet, Button, View, StyleProp, TextStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
+import { Button } from 'react-native-paper';
+
+import { appTheme } from '../theme';
 
 interface AppButtonProps {
   /**
@@ -10,12 +13,12 @@ interface AppButtonProps {
   /**
    * Custom styles.
    */
-  style?: StyleProp<TextStyle>;
+  style?: StyleProp<ViewStyle>;
 
   /**
    * Type of the button.
    */
-  type?: 'default' | 'primary' | 'danger';
+  type?: 'primary' | 'secondary' | 'danger';
 
   /**
    * On button press event handler.
@@ -27,39 +30,27 @@ interface AppButtonProps {
  * App button component.
  */
 export function AppButton(props: AppButtonProps) {
-  const { label, style, type, onPress } = props;
+  const { label, type = 'primary', style, onPress } = props;
 
-  function getColor() {
-    switch (type) {
-      case 'primary':
-        return styles.buttonPrimary.color;
-      case 'danger':
-        return styles.buttonDanger.color;
-      default:
-        return styles.buttonDefault.color;
-    }
+  function getButtonColor() {
+    if (type === 'secondary') return '';
+    if (type === 'danger') return appTheme.colors.error;
+    return appTheme.colors.primary;
+  }
+
+  function getMode() {
+    if (type === 'secondary') return 'outlined';
+    return 'contained';
   }
 
   return (
-    <View style={[styles.container, style]}>
-      <Button
-        title={label}
-        onPress={onPress}
-        color={getColor()}
-      />
-    </View>
+    <Button
+      onPress={onPress}
+      mode={getMode()}
+      style={style}
+      buttonColor={getButtonColor()}
+    >
+      {label}
+    </Button>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {},
-  buttonDefault: {
-    color: '#75797d',
-  },
-  buttonPrimary: {
-    color: '#33bbff',
-  },
-  buttonDanger: {
-    color: '#d2322d',
-  },
-});

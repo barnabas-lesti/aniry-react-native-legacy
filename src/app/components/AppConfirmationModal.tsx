@@ -40,11 +40,11 @@ export function AppConfirmationModal(props: AppConfirmationModalProps) {
       <Text style={styles.text}>{text}</Text>
       <AppButton
         style={styles.button}
-        type="primary"
         label={t('app.labels.confirm')}
         onPress={onConfirmation}
       />
       <AppButton
+        type="secondary"
         label={t('app.labels.discard')}
         onPress={onDiscard}
       />

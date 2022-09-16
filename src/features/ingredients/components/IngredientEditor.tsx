@@ -132,12 +132,12 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
       <AppButton
         style={styles.buttons}
-        type="primary"
         label={t('app.labels.save')}
         onPress={onSaveButtonPress}
       />
 
       <AppButton
+        type="secondary"
         style={styles.buttons}
         label={t('app.labels.discard')}
         onPress={onDiscardIngredient}
