@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 
-import { screens } from '../screens';
+import { appScreens } from '../appScreens';
 import { AppStackParamList } from '../models';
 
 /**
@@ -17,7 +17,7 @@ export function AppNavigationContent() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {screens.map((screen) => (
+        {appScreens.map((screen) => (
           <Stack.Screen
             key={screen.name}
             name={screen.name}

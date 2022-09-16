@@ -1,5 +1,5 @@
-import { appStorage } from 'app/utils';
-import { Ingredient } from '../models';
+import { appStorageService } from 'app/services';
+import { Ingredient } from '../models/Ingredient';
 
 class IngredientsService {
   private readonly COLLECTION_NAME = 'ingredients';
@@ -9,7 +9,7 @@ class IngredientsService {
    * @param ingredient Ingredient to save.
    */
   async saveIngredient(ingredient: Ingredient) {
-    await appStorage.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
+    await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
   }
 
   /**
@@ -17,7 +17,7 @@ class IngredientsService {
    * @returns Array of ingredients.
    */
   async fetchIngredients() {
-    return await appStorage.fetchMany<Ingredient>(this.COLLECTION_NAME);
+    return await appStorageService.fetchMany<Ingredient>(this.COLLECTION_NAME);
   }
 
   /**
@@ -25,7 +25,7 @@ class IngredientsService {
    * @param ingredientId Ingredient to remove.
    */
   async deleteIngredientById(ingredientId: string) {
-    await appStorage.deleteOneById<Ingredient>(this.COLLECTION_NAME, ingredientId);
+    await appStorageService.deleteOneById<Ingredient>(this.COLLECTION_NAME, ingredientId);
   }
 
   /**
