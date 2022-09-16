@@ -27,7 +27,7 @@ interface AppNumberInputProps {
   /**
    * Validity flag.
    */
-  isValid?: boolean;
+  isInvalid?: boolean;
 
   /**
    * Custom styles.
@@ -46,7 +46,7 @@ interface AppNumberInputProps {
  * <AppInput label="Count" value={count} onChangeValue={onChangeCount} />
  */
 export function AppNumberInput(props: AppNumberInputProps) {
-  const { value, label, postfix, placeholder, isValid, style, onChangeValue } = props;
+  const { value, label, postfix, placeholder, isInvalid, style, onChangeValue } = props;
 
   const [stringValue, setStringValue] = useState(value.toString());
 
@@ -73,7 +73,7 @@ export function AppNumberInput(props: AppNumberInputProps) {
       label={label}
       postfix={postfix}
       placeholder={placeholder}
-      isValid={isValid}
+      isInvalid={isInvalid}
       value={stringValue}
       onChangeValue={(v) => onBeforeChangeValue(v.toString())}
     />

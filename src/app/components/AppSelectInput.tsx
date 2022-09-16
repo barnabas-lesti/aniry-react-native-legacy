@@ -22,6 +22,11 @@ interface AppSelectInputProps {
   label?: string;
 
   /**
+   * Validity flag.
+   */
+  isInvalid?: boolean;
+
+  /**
    * Custom styles.
    */
   style?: StyleProp<ViewStyle>;
@@ -38,7 +43,7 @@ interface AppSelectInputProps {
  * <AppSelectInput label="Unit" options={options} value={unit} onChangeValue={onChangeUnit} />
  */
 export function AppSelectInput(props: AppSelectInputProps) {
-  const { value, label, options, style, onChangeValue } = props;
+  const { value, label, options, isInvalid, style, onChangeValue } = props;
 
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
@@ -62,6 +67,7 @@ export function AppSelectInput(props: AppSelectInputProps) {
                 readonly
                 label={label}
                 value={value}
+                isInvalid={isInvalid}
                 onChangeValue={onChangeValue}
               />
             </View>

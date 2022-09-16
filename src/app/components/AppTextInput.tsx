@@ -43,7 +43,7 @@ interface AppTextInputProps {
   /**
    * Validity flag.
    */
-  isValid?: boolean;
+  isInvalid?: boolean;
 
   /**
    * Text change handler.
@@ -71,7 +71,7 @@ export function AppTextInput(props: AppTextInputProps) {
     postfix,
     placeholder,
     keyboardType = 'default',
-    isValid = true,
+    isInvalid,
     readonly,
     style,
     onChangeValue,
@@ -97,7 +97,7 @@ export function AppTextInput(props: AppTextInputProps) {
       style={style}
       label={label}
       value={value}
-      error={!isValid}
+      error={isInvalid}
       placeholder={placeholder}
       keyboardType={keyboardType}
       editable={!readonly}
