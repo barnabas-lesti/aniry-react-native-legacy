@@ -1,8 +1,10 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 
-import { AppNavigationContent } from './navigation';
-import './i18n';
+import { AppStackScreen } from './screens';
+import { appLocalizationService } from './services';
+
+appLocalizationService.createInstance();
 
 /**
  * Main entrypoint of the application.
@@ -10,7 +12,7 @@ import './i18n';
 export function App() {
   return (
     <PaperProvider>
-      <AppNavigationContent />
+      <AppStackScreen />
     </PaperProvider>
   );
 }

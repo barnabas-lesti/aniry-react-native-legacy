@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useState } from 'react';
 import { StyleProp, StyleSheet, ViewStyle, View, TouchableOpacity } from 'react-native';
 import { Menu } from 'react-native-paper';
 
-import type { AppSelectOption } from './models';
+import type { AppSelectOption } from '../models';
 import { AppTextInput } from './AppTextInput';
 
 interface AppSelectInputProps {
