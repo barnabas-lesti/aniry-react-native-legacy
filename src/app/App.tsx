@@ -2,7 +2,9 @@ import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 
 import { AppStackScreen } from './screens';
-import './i18n';
+import { appLocalizationService } from './services';
+
+appLocalizationService.createInstance();
 
 /**
  * Main entrypoint of the application.
