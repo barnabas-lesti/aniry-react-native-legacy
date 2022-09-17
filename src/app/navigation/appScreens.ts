@@ -1,25 +1,19 @@
-// import { HomeScreen } from 'features/home';
-import { EditIngredientScreen, IngredientsScreen } from 'features/ingredients';
-import type { AppScreen } from './models';
+import { HomeScreen } from 'features/home';
+import { IngredientsScreen } from 'features/ingredients';
+import { appTabBarIconFactory } from './factories';
+import { AppScreen } from './models';
 
-/**
- * Application screen configuration.
- */
 export const appScreens = [
-  // {
-  //   name: 'Home',
-  //   Component: HomeScreen,
-  //   titleKey: 'home.homeScreen.title',
-  // },
-
+  {
+    name: 'Home',
+    Component: HomeScreen,
+    titleKey: 'home.homeScreen.title',
+    tabBarIcon: appTabBarIconFactory('home'),
+  },
   {
     name: 'Ingredients',
     Component: IngredientsScreen,
     titleKey: 'ingredients.ingredientsScreen.title',
-  },
-  {
-    name: 'EditIngredient',
-    Component: EditIngredientScreen,
-    titleKey: 'ingredients.editIngredient.title',
+    tabBarIcon: appTabBarIconFactory('food-apple'),
   },
 ] as AppScreen[];

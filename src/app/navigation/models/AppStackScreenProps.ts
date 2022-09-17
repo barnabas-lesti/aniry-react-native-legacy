@@ -1,7 +1,7 @@
 import { ParamListBase } from '@react-navigation/native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
 /**
  * App stack screen props type.
  */
-export type AppStackScreenProps<A extends ParamListBase, B extends keyof A> = NativeStackScreenProps<A, B>;
+export type AppStackScreenProps<A extends ParamListBase, B extends keyof A> = BottomTabScreenProps<A, B>;

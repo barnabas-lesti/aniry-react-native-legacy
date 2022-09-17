@@ -41,7 +41,7 @@ export function IngredientsScreen(props: IngredientsScreenProps) {
         style={styles.newIngredientButton}
         type="primary"
         label={t('ingredients.ingredientsScreen.newIngredient')}
-        onPress={() => navigation.push('EditIngredient')}
+        onPress={() => navigation.navigate('EditIngredient')}
       />
 
       <IngredientsTable

@@ -1,31 +1,34 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 
-import { appScreens } from '../appScreens';
+import { appTheme } from '../../theme';
 import { AppStackParamList } from '../models';
+import { appScreens } from '../appScreens';
 
-/**
- * App navigation content.
- */
+const Tab = createBottomTabNavigator<AppStackParamList>();
+
 export function AppNavigationContent() {
   const { t } = useTranslation();
 
-  const Stack = createNativeStackNavigator<AppStackParamList>();
-
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {appScreens.map((screen) => (
-          <Stack.Screen
-            key={screen.name}
-            name={screen.name}
-            component={screen.Component}
-            options={{ title: t(screen.titleKey) }}
+      <Tab.Navigator>
+        {appScreens.map(({ name, Component, titleKey, tabBarIcon }) => (
+          <Tab.Screen
+            key={name}
+            name={name}
+            component={Component}
+            options={{
+              title: t(titleKey),
+              tabBarIcon,
+              tabBarLabel: '',
+              tabBarActiveTintColor: appTheme.colors.primary,
+            }}
           />
         ))}
-      </Stack.Navigator>
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }

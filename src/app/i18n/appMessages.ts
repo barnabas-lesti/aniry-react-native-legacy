@@ -1,11 +1,10 @@
-import { ingredientsMessages } from 'features/ingredients';
-
 /**
  * Application localized messages.
  */
 export const appMessages = {
   en: {
     translation: {
+      // App
       'app.units.g': 'g',
       'app.units.ml': 'ml',
       'app.units.kcal': 'kcal',
@@ -22,12 +21,25 @@ export const appMessages = {
       'app.labels.protein': 'Protein',
       'app.labels.fat': 'Fat',
 
-      ...ingredientsMessages.en,
+      // Home
+      'home.homeScreen.title': 'Home',
+
+      // Ingredients
+      'ingredients.ingredientsScreen.title': 'Ingredients',
+      'ingredients.ingredientsScreen.newIngredient': 'New ingredient',
+
+      'ingredients.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
+
+      'ingredients.ingredientsTable.name': 'Name',
+      'ingredients.ingredientsTable.calories': 'Calories',
+      'ingredients.ingredientsTable.serving': 'Serving',
+      'ingredients.ingredientsTable.searchPlaceholder': 'Search for ingredients',
+      'ingredients.ingredientsTable.noItems': 'No ingredients to display',
+
+      'ingredients.editIngredient.title': 'Edit ingredient',
     },
   },
   hu: {
-    translation: {
-      ...ingredientsMessages.hu,
-    },
+    translation: {},
   },
 };
