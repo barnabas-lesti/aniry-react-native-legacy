@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 
-import { AppStackScreen } from './navigation';
+import { AppStackScreen } from './screens';
 import './i18n';
 
 /**

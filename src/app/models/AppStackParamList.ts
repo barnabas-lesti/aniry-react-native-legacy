@@ -3,5 +3,5 @@
  */
 export type AppStackParamList = {
   Home: undefined;
-  Ingredients: undefined;
+  Ingredient: undefined;
 };

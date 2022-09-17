@@ -6,7 +6,7 @@ import { DataTable } from 'react-native-paper';
 import { AppTextInput } from 'app/components';
 import { Ingredient } from '../models';
 
-interface IngredientsTableProps {
+interface IngredientTableProps {
   /**
    * Ingredients to display.
    */
@@ -36,7 +36,7 @@ interface IngredientsTableProps {
 /**
  * Ingredient list component.
  */
-export function IngredientsTable(props: IngredientsTableProps) {
+export function IngredientTable(props: IngredientTableProps) {
   const { ingredients, searchString, style, onSearch, onSelectIngredient } = props;
 
   const { t } = useTranslation();
@@ -47,7 +47,7 @@ export function IngredientsTable(props: IngredientsTableProps) {
       {onSearch && (
         <AppTextInput
           style={styles.searchInput}
-          placeholder={t('ingredients.ingredientsTable.searchPlaceholder')}
+          placeholder={t('ingredient.ingredientTable.searchPlaceholder')}
           value={localSearchString}
           onChangeValue={setLocalSearchString}
           onThrottledChangeValue={onSearch}
@@ -57,9 +57,9 @@ export function IngredientsTable(props: IngredientsTableProps) {
       {ingredients.length > 0 ? (
         <DataTable>
           <DataTable.Header>
-            <DataTable.Title>{t('ingredients.ingredientsTable.name')}</DataTable.Title>
-            <DataTable.Title numeric>{t('ingredients.ingredientsTable.calories')}</DataTable.Title>
-            <DataTable.Title numeric>{t('ingredients.ingredientsTable.serving')}</DataTable.Title>
+            <DataTable.Title>{t('ingredient.ingredientTable.name')}</DataTable.Title>
+            <DataTable.Title numeric>{t('ingredient.ingredientTable.calories')}</DataTable.Title>
+            <DataTable.Title numeric>{t('ingredient.ingredientTable.serving')}</DataTable.Title>
           </DataTable.Header>
 
           {ingredients.map((ingredient) => {
@@ -77,7 +77,7 @@ export function IngredientsTable(props: IngredientsTableProps) {
           })}
         </DataTable>
       ) : (
-        <Text style={styles.noItemsText}>{t('ingredients.ingredientsTable.noItems')}</Text>
+        <Text style={styles.noItemsText}>{t('ingredient.ingredientTable.noItems')}</Text>
       )}
     </View>
   );

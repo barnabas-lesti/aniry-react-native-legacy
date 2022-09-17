@@ -1,7 +1,7 @@
 import { appStorageService } from 'app/services';
-import { Ingredient } from '../models/Ingredient';
+import { Ingredient } from '../models';
 
-class IngredientsService {
+class IngredientService {
   private readonly COLLECTION_NAME = 'ingredients';
 
   /**
@@ -50,4 +50,4 @@ class IngredientsService {
   }
 }
 
-export const ingredientsService = new IngredientsService();
+export const ingredientService = new IngredientService();

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppStackScreenProps } from 'app/navigation';
+import { AppStackScreenProps } from 'app/models';
 import { AppButton } from 'app/components';
-import { ingredientsService } from '../services';
-import { IngredientsStackParamList, Ingredient } from '../models';
-import { IngredientsTable } from './IngredientsTable';
+import { ingredientService } from '../services';
+import { IngredientStackParamList, Ingredient } from '../models';
+import { IngredientTable } from '../components';
 
-type IngredientsHomeScreenProps = AppStackScreenProps<IngredientsStackParamList, 'IngredientsHome'>;
+type IngredientHomeScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientHome'>;
 
-export function IngredientsHomeScreen(props: IngredientsHomeScreenProps) {
+export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   const { navigation } = props;
   const { t } = useTranslation();
 
@@ -21,15 +21,15 @@ export function IngredientsHomeScreen(props: IngredientsHomeScreenProps) {
   }, []);
 
   async function fetchIngredients() {
-    setIngredients(await ingredientsService.fetchIngredients());
+    setIngredients(await ingredientService.fetchIngredients());
   }
 
   function selectIngredient(ingredient: Ingredient) {
-    navigation.push('EditIngredient', { ingredient });
+    navigation.push('IngredientEdit', { ingredient });
   }
 
   async function onSearchHandler(searchString: string) {
-    setIngredients(await ingredientsService.fetchIngredients(searchString));
+    setIngredients(await ingredientService.fetchIngredients(searchString));
   }
 
   return (
@@ -37,11 +37,11 @@ export function IngredientsHomeScreen(props: IngredientsHomeScreenProps) {
       <AppButton
         style={styles.newIngredientButton}
         type="primary"
-        label={t('ingredients.ingredientsHomeScreen.createIngredient')}
-        onPress={() => navigation.navigate('CreateIngredient')}
+        label={t('ingredient.ingredientHomeScreen.createIngredient')}
+        onPress={() => navigation.navigate('IngredientCreate')}
       />
 
-      <IngredientsTable
+      <IngredientTable
         ingredients={ingredients}
         onSelectIngredient={selectIngredient}
         onSearch={onSearchHandler}

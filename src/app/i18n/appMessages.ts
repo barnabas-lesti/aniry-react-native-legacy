@@ -24,21 +24,21 @@ export const appMessages = {
       // Home
       'home.homeScreen.title': 'Home',
 
-      // Ingredients
-      'ingredients.ingredientsHomeScreen.title': 'Ingredients',
-      'ingredients.ingredientsHomeScreen.createIngredient': 'Create ingredient',
+      // Ingredient
+      'ingredient.ingredientHomeScreen.title': 'Ingredients',
+      'ingredient.ingredientHomeScreen.createIngredient': 'Create ingredient',
 
-      'ingredients.createIngredientScreen.title': 'Create ingredient',
+      'ingredient.ingredientCreateScreen.title': 'Create ingredient',
 
-      'ingredients.editIngredientScreen.title': 'Edit ingredient',
+      'ingredient.ingredientEditScreen.title': 'Edit ingredient',
 
-      'ingredients.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
+      'ingredient.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
 
-      'ingredients.ingredientsTable.name': 'Name',
-      'ingredients.ingredientsTable.calories': 'Calories',
-      'ingredients.ingredientsTable.serving': 'Serving',
-      'ingredients.ingredientsTable.searchPlaceholder': 'Search for ingredients',
-      'ingredients.ingredientsTable.noItems': 'No ingredients to display',
+      'ingredient.ingredientTable.name': 'Name',
+      'ingredient.ingredientTable.calories': 'Calories',
+      'ingredient.ingredientTable.serving': 'Serving',
+      'ingredient.ingredientTable.searchPlaceholder': 'Search for ingredients',
+      'ingredient.ingredientTable.noItems': 'No ingredients to display',
     },
   },
   hu: {

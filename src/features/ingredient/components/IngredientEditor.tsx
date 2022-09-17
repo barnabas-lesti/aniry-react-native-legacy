@@ -203,7 +203,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
       {onDeleteIngredient && (
         <AppConfirmationModal
           isVisible={isDeleteConfirmationVisible}
-          text={t('ingredients.ingredientEditor.deleteConfirmation')}
+          text={t('ingredient.ingredientEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
           onCancel={() => setIsDeleteConfirmationVisible(false)}
         />

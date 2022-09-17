@@ -1,25 +1,25 @@
 import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 
-import { AppStackParamList, AppStackScreenProps } from 'app/navigation';
-import { Ingredient } from '../models';
-import { ingredientsService } from '../services';
-import { IngredientEditor } from './IngredientEditor';
+import { AppStackScreenProps } from 'app/models';
+import { Ingredient, IngredientStackParamList } from '../models';
+import { ingredientService } from '../services';
+import { IngredientEditor } from '../components';
 
-type EditIngredientScreenProps = AppStackScreenProps<AppStackParamList, 'EditIngredient'>;
+type IngredientEditScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientEdit'>;
 
 /**
  * Ingredient editing screen.
  */
-export function EditIngredientScreen(props: EditIngredientScreenProps) {
+export function IngredientEditScreen(props: IngredientEditScreenProps) {
   const { navigation, route } = props;
 
   const canDelete = !!route.params?.ingredient;
   const ingredient = route.params?.ingredient || new Ingredient();
 
   async function saveChanges(newIngredient: Ingredient) {
-    await ingredientsService.saveIngredient(newIngredient);
-    navigation.push('Ingredients');
+    await ingredientService.saveIngredient(newIngredient);
+    navigation.push('IngredientHome');
   }
 
   function discardChanges() {
@@ -27,8 +27,8 @@ export function EditIngredientScreen(props: EditIngredientScreenProps) {
   }
 
   async function deleteIngredient({ id }: Ingredient) {
-    await ingredientsService.deleteIngredientById(id);
-    navigation.push('Ingredients');
+    await ingredientService.deleteIngredientById(id);
+    navigation.push('IngredientHome');
   }
 
   return (
