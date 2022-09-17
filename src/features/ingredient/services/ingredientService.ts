@@ -9,7 +9,7 @@ class IngredientService {
    * @param ingredient Ingredient to save.
    */
   async saveIngredient(ingredient: Ingredient) {
-    await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
+    return await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
   }
 
   /**

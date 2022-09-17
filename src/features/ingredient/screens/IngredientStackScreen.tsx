@@ -3,9 +3,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 
 import { IngredientStackParamList, IngredientScreen } from '../models';
-
 import { IngredientHomeScreen } from './IngredientHomeScreen';
 import { IngredientEditScreen } from './IngredientEditScreen';
+import { IngredientCreateScreen } from './IngredientCreateScreen';
 
 export const screens = [
   {
@@ -16,7 +16,7 @@ export const screens = [
   {
     name: 'IngredientCreate',
     titleKey: 'ingredient.ingredientCreateScreen.title',
-    Component: IngredientEditScreen,
+    Component: IngredientCreateScreen,
   },
   {
     name: 'IngredientEdit',

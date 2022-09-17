@@ -2,8 +2,7 @@ import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
-import { Ingredient, IngredientStackParamList } from '../models';
-import { ingredientService } from '../services';
+import { IngredientStackParamList } from '../models';
 import { IngredientEditor } from '../components';
 
 type IngredientEditScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientEdit'>;
@@ -12,32 +11,28 @@ type IngredientEditScreenProps = AppStackScreenProps<IngredientStackParamList, '
  * Ingredient editing screen.
  */
 export function IngredientEditScreen(props: IngredientEditScreenProps) {
-  const { navigation, route } = props;
+  const {
+    navigation,
+    route: {
+      params: { ingredient },
+    },
+  } = props;
 
-  const canDelete = !!route.params?.ingredient;
-  const ingredient = route.params?.ingredient || new Ingredient();
-
-  async function saveChanges(newIngredient: Ingredient) {
-    await ingredientService.saveIngredient(newIngredient);
+  async function onAfterSaveAndDelete() {
     navigation.push('IngredientHome');
   }
 
-  function discardChanges() {
+  function onDiscard() {
     navigation.goBack();
-  }
-
-  async function deleteIngredient({ id }: Ingredient) {
-    await ingredientService.deleteIngredientById(id);
-    navigation.push('IngredientHome');
   }
 
   return (
     <ScrollView style={styles.container}>
       <IngredientEditor
         ingredient={ingredient}
-        onSaveIngredient={saveChanges}
-        onDiscardIngredient={discardChanges}
-        onDeleteIngredient={canDelete ? deleteIngredient : undefined}
+        onDiscard={onDiscard}
+        onAfterSave={onAfterSaveAndDelete}
+        onAfterDelete={onAfterSaveAndDelete}
       />
     </ScrollView>
   );

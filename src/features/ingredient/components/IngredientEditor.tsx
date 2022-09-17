@@ -4,12 +4,13 @@ import { useTranslation } from 'react-i18next';
 
 import { AppTextInput, AppNumberInput, AppSelectInput, AppButton, AppConfirmationModal } from 'app/components';
 import { Ingredient, servingUnits } from '../models';
+import { ingredientService } from '../services';
 
 interface IngredientEditorProps {
   /**
    * The ingredient object.
    */
-  ingredient: Ingredient;
+  ingredient?: Ingredient;
 
   /**
    * Custom styles.
@@ -17,19 +18,19 @@ interface IngredientEditorProps {
   style?: StyleProp<ViewStyle>;
 
   /**
-   * On save event handler.
-   */
-  onSaveIngredient: (ingredient: Ingredient) => void;
-
-  /**
    * On discard event handler.
    */
-  onDiscardIngredient: () => void;
+  onDiscard: () => void;
+
+  /**
+   * On save event handler.
+   */
+  onAfterSave: (ingredient: Ingredient) => void;
 
   /**
    * On delete event handler.
    */
-  onDeleteIngredient?: (ingredient: Ingredient) => void;
+  onAfterDelete?: (ingredient: Ingredient) => void;
 }
 
 /**
@@ -38,8 +39,10 @@ interface IngredientEditorProps {
  * <IngredientEditor ingredient={ingredient} onSaveIngredient={onSaveIngredient} />
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient, style, onSaveIngredient, onDiscardIngredient, onDeleteIngredient } = props;
+  const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
   const { serving, nutrients } = ingredient;
+
+  const canDelete = !!ingredient.id;
 
   const { t } = useTranslation();
   const [canValidate, setCanValidate] = useState(false);
@@ -72,9 +75,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
     setServingUnitIsValid(validateServingUnit(servingUnit));
   }, [servingUnit]);
 
-  function onSaveButtonPress() {
+  async function onSaveButtonPress() {
     if (validateForm()) {
-      onSaveIngredient(
+      const savedIngredient = await ingredientService.saveIngredient(
         new Ingredient({
           id: ingredient.id,
           name,
@@ -90,6 +93,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
         })
       );
+      onAfterSave(savedIngredient);
     }
   }
 
@@ -97,9 +101,12 @@ export function IngredientEditor(props: IngredientEditorProps) {
     setIsDeleteConfirmationVisible(true);
   }
 
-  function onDeleteConfirmation() {
+  async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    onDeleteIngredient && onDeleteIngredient(ingredient);
+
+    await ingredientService.deleteIngredientById(ingredient.id);
+
+    onAfterDelete && onAfterDelete(ingredient);
   }
 
   function validateForm() {
@@ -188,10 +195,10 @@ export function IngredientEditor(props: IngredientEditorProps) {
         type="secondary"
         style={styles.button}
         label={t('app.labels.discard')}
-        onPress={onDiscardIngredient}
+        onPress={onDiscard}
       />
 
-      {onDeleteIngredient && (
+      {canDelete && (
         <AppButton
           style={styles.button}
           type="danger"
@@ -200,7 +207,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
         />
       )}
 
-      {onDeleteIngredient && (
+      {canDelete && (
         <AppConfirmationModal
           isVisible={isDeleteConfirmationVisible}
           text={t('ingredient.ingredientEditor.deleteConfirmation')}
