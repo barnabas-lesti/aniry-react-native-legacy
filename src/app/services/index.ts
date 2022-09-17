@@ -1,2 +1,1 @@
-export * from './storage';
-export * from './uid';
+export * from './appStorageService';

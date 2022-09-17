@@ -1,6 +1,10 @@
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { AppStorableItem } from './models';
+interface AppStorableItem {
+  id: string;
+}
 
 class AppStorageService {
   /**
@@ -14,10 +18,15 @@ class AppStorageService {
   async saveOne<T extends AppStorableItem>(collection: string, item: T) {
     const storedItems = await this.fetchMany<T>(collection);
 
-    const indexOfItem = storedItems.findIndex((storedItem) => storedItem.id === item.id);
-    if (indexOfItem !== -1) {
-      storedItems[indexOfItem] = item;
+    if (item.id) {
+      const indexOfItem = storedItems.findIndex((storedItem) => storedItem.id === item.id);
+      if (indexOfItem !== -1) {
+        storedItems[indexOfItem] = item;
+      } else {
+        storedItems.push(item);
+      }
     } else {
+      item.id = uuid();
       storedItems.push(item);
     }
 
