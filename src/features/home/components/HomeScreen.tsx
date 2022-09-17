@@ -1,26 +1,16 @@
-import React, { useState } from 'react';
-import { Button, Text, TextInput, View } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-import { AppStackParamList, AppStackScreenProps } from 'app/navigation';
-
-type HomeScreenProps = AppStackScreenProps<AppStackParamList, 'Home'>;
-
-export function HomeScreen(props: HomeScreenProps) {
-  const { navigation } = props;
-
-  const [inputValue, onChangeInputValue] = useState('');
-
+export function HomeScreen() {
   return (
-    <View>
+    <View style={styles.container}>
       <Text>HomeScreen</Text>
-      <TextInput
-        value={inputValue}
-        onChangeText={onChangeInputValue}
-      />
-      <Button
-        title="Ingredients"
-        onPress={() => navigation.navigate('Ingredients')}
-      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
+});
