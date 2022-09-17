@@ -1,4 +1,4 @@
-export * from './AppScreen';
+export * from './AppScreenOptions';
 export * from './AppStackParamList';
 export * from './AppStackScreenProps';
 export * from './AppStackTabScreenProps';

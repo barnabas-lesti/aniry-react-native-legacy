@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { HomeScreen } from 'features/home';
 import { IngredientStackScreen } from 'features/ingredient';
 import { appTheme } from '../theme';
-import { AppStackParamList, AppTabBarIconProps, AppScreen } from '../models';
+import { AppStackParamList, AppTabBarIconProps, AppScreenOptions } from '../models';
 import { AppIcon } from '../components';
 
 const tabBarIconFactory =
@@ -33,7 +33,7 @@ const screens = [
     Component: IngredientStackScreen,
     tabBarIcon: tabBarIconFactory('food-apple'),
   },
-] as AppScreen[];
+] as AppScreenOptions[];
 
 const Tab = createBottomTabNavigator<AppStackParamList>();
 

@@ -1,4 +1,4 @@
-import { ServingUnit } from './ServingUnit';
+import { IngredientServingUnit } from './IngredientServingUnit';
 
 export class Ingredient {
   public id: string;
@@ -26,7 +26,7 @@ export class Ingredient {
 
 interface Serving {
   value: number;
-  unit: ServingUnit;
+  unit: IngredientServingUnit;
 }
 
 interface Nutrients {

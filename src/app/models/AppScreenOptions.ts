@@ -1,7 +1,7 @@
 import { AppStackParamList } from './AppStackParamList';
 import { AppTabBarIconProps } from './AppTabBarIconProps';
 
-export interface AppScreen {
+export interface AppScreenOptions {
   name: keyof AppStackParamList;
   headerShown?: boolean;
   titleKey?: string;

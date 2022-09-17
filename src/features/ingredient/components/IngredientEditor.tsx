@@ -3,7 +3,7 @@ import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppTextInput, AppNumberInput, AppSelectInput, AppButton, AppConfirmationModal } from 'app/components';
-import { Ingredient, servingUnits } from '../models';
+import { Ingredient, ingredientServingUnits } from '../models';
 import { ingredientService } from '../services';
 
 interface IngredientEditorProps {
@@ -58,9 +58,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [fat, setFat] = useState(nutrients.fat);
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
 
-  const servingUnitOptions = Object.keys(servingUnits).map((unit) => ({
+  const servingUnitOptions = Object.keys(ingredientServingUnits).map((unit) => ({
     value: unit,
-    label: t(servingUnits[unit as keyof typeof servingUnits]),
+    label: t(ingredientServingUnits[unit as keyof typeof ingredientServingUnits]),
   }));
 
   useEffect(() => {
@@ -122,8 +122,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
     return value > 0;
   }
 
-  function validateServingUnit(value: keyof typeof servingUnits) {
-    return !!servingUnits[value];
+  function validateServingUnit(value: keyof typeof ingredientServingUnits) {
+    return !!ingredientServingUnits[value];
   }
 
   return (

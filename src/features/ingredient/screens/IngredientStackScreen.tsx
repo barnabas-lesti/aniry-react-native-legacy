@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 
-import { IngredientStackParamList, IngredientScreen } from '../models';
+import { IngredientStackParamList, IngredientScreenOptions } from '../models';
 import { IngredientHomeScreen } from './IngredientHomeScreen';
 import { IngredientEditScreen } from './IngredientEditScreen';
 import { IngredientCreateScreen } from './IngredientCreateScreen';
@@ -23,7 +23,7 @@ export const screens = [
     titleKey: 'ingredient.ingredientEditScreen.title',
     Component: IngredientEditScreen,
   },
-] as IngredientScreen[];
+] as IngredientScreenOptions[];
 
 const Stack = createStackNavigator<IngredientStackParamList>();
 
