@@ -1,2 +1,3 @@
+export * from './IngredientsStackScreen';
+export * from './IngredientsHomeScreen';
 export * from './EditIngredientScreen';
-export * from './IngredientsScreen';

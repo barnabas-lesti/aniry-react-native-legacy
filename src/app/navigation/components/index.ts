@@ -1,1 +1,1 @@
-export * from './AppNavigationContent';
+export * from './AppStackScreen';

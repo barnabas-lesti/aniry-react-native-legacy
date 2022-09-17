@@ -2,18 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppStackParamList, AppStackScreenProps } from 'app/navigation';
+import { AppStackScreenProps } from 'app/navigation';
 import { AppButton } from 'app/components';
 import { ingredientsService } from '../services';
-import { Ingredient } from '../models';
+import { IngredientsStackParamList, Ingredient } from '../models';
 import { IngredientsTable } from './IngredientsTable';
 
-type IngredientsScreenProps = AppStackScreenProps<AppStackParamList, 'Ingredients'>;
+type IngredientsHomeScreenProps = AppStackScreenProps<IngredientsStackParamList, 'IngredientsHome'>;
 
-/**
- * Ingredients screen component.
- */
-export function IngredientsScreen(props: IngredientsScreenProps) {
+export function IngredientsHomeScreen(props: IngredientsHomeScreenProps) {
   const { navigation } = props;
   const { t } = useTranslation();
 
@@ -40,8 +37,8 @@ export function IngredientsScreen(props: IngredientsScreenProps) {
       <AppButton
         style={styles.newIngredientButton}
         type="primary"
-        label={t('ingredients.ingredientsScreen.newIngredient')}
-        onPress={() => navigation.navigate('EditIngredient')}
+        label={t('ingredients.ingredientsHomeScreen.createIngredient')}
+        onPress={() => navigation.navigate('CreateIngredient')}
       />
 
       <IngredientsTable

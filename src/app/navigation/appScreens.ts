@@ -1,19 +1,19 @@
 import { HomeScreen } from 'features/home';
-import { IngredientsScreen } from 'features/ingredients';
+import { IngredientsStackScreen } from 'features/ingredients';
 import { appTabBarIconFactory } from './factories';
 import { AppScreen } from './models';
 
 export const appScreens = [
   {
     name: 'Home',
-    Component: HomeScreen,
     titleKey: 'home.homeScreen.title',
+    Component: HomeScreen,
     tabBarIcon: appTabBarIconFactory('home'),
   },
   {
     name: 'Ingredients',
-    Component: IngredientsScreen,
-    titleKey: 'ingredients.ingredientsScreen.title',
+    headerShown: false,
+    Component: IngredientsStackScreen,
     tabBarIcon: appTabBarIconFactory('food-apple'),
   },
 ] as AppScreen[];

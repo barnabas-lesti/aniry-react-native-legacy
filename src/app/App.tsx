@@ -1,7 +1,7 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 
-import { AppNavigationContent } from './navigation';
+import { AppStackScreen } from './navigation';
 import './i18n';
 
 /**
@@ -10,7 +10,7 @@ import './i18n';
 export function App() {
   return (
     <PaperProvider>
-      <AppNavigationContent />
+      <AppStackScreen />
     </PaperProvider>
   );
 }

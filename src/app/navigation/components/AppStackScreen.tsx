@@ -9,22 +9,23 @@ import { appScreens } from '../appScreens';
 
 const Tab = createBottomTabNavigator<AppStackParamList>();
 
-export function AppNavigationContent() {
+export function AppStackScreen() {
   const { t } = useTranslation();
 
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        {appScreens.map(({ name, Component, titleKey, tabBarIcon }) => (
+        {appScreens.map(({ name, titleKey, headerShown, Component, tabBarIcon }) => (
           <Tab.Screen
             key={name}
             name={name}
             component={Component}
             options={{
-              title: t(titleKey),
+              title: titleKey && t(titleKey),
               tabBarIcon,
               tabBarLabel: '',
               tabBarActiveTintColor: appTheme.colors.primary,
+              headerShown,
             }}
           />
         ))}

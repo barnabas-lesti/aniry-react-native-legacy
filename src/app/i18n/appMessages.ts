@@ -25,8 +25,12 @@ export const appMessages = {
       'home.homeScreen.title': 'Home',
 
       // Ingredients
-      'ingredients.ingredientsScreen.title': 'Ingredients',
-      'ingredients.ingredientsScreen.newIngredient': 'New ingredient',
+      'ingredients.ingredientsHomeScreen.title': 'Ingredients',
+      'ingredients.ingredientsHomeScreen.createIngredient': 'Create ingredient',
+
+      'ingredients.createIngredientScreen.title': 'Create ingredient',
+
+      'ingredients.editIngredientScreen.title': 'Edit ingredient',
 
       'ingredients.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
 
@@ -35,8 +39,6 @@ export const appMessages = {
       'ingredients.ingredientsTable.serving': 'Serving',
       'ingredients.ingredientsTable.searchPlaceholder': 'Search for ingredients',
       'ingredients.ingredientsTable.noItems': 'No ingredients to display',
-
-      'ingredients.editIngredient.title': 'Edit ingredient',
     },
   },
   hu: {
