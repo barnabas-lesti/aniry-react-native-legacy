@@ -17,7 +17,7 @@ class IngredientService {
    * @returns Array of ingredients.
    */
   async fetchIngredients(searchString?: string) {
-    const ingredients = await appStorageService.fetchMany<Ingredient>(this.COLLECTION_NAME);
+    const ingredients = await appStorageService.getAll<Ingredient>(this.COLLECTION_NAME);
 
     if (searchString) {
       return ingredients.filter(
@@ -32,8 +32,8 @@ class IngredientService {
    * Removes the provided ingredient from storage.
    * @param ingredientId Ingredient to remove.
    */
-  async deleteIngredientById(ingredientId: string) {
-    await appStorageService.deleteOneById<Ingredient>(this.COLLECTION_NAME, ingredientId);
+  async deleteIngredient(ingredient: Ingredient) {
+    await appStorageService.deleteOne<Ingredient>(this.COLLECTION_NAME, ingredient);
   }
 
   /**

@@ -104,7 +104,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
 
-    await ingredientService.deleteIngredientById(ingredient.id);
+    await ingredientService.deleteIngredient(ingredient);
 
     onAfterDelete && onAfterDelete(ingredient);
   }
