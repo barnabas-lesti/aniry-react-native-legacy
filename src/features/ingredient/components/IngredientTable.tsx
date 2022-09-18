@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
-import { AppSearchBar } from 'app/components';
+import { AppSearchBar, AppLoader } from 'app/components';
 import { Ingredient } from '../models';
 
 interface IngredientTableProps {
@@ -16,6 +16,11 @@ interface IngredientTableProps {
    * Initial search string.
    */
   searchString?: string;
+
+  /**
+   * Loading state indicator.
+   */
+  isLoading?: boolean;
 
   /**
    * Custom styles.
@@ -37,7 +42,7 @@ interface IngredientTableProps {
  * Ingredient list component.
  */
 export function IngredientTable(props: IngredientTableProps) {
-  const { ingredients, searchString, style, onSearch, onSelectIngredient } = props;
+  const { ingredients, searchString, style, isLoading, onSearch, onSelectIngredient } = props;
 
   const { t } = useTranslation();
   const [localSearchString, setLocalSearchString] = useState(searchString || '');
@@ -54,7 +59,11 @@ export function IngredientTable(props: IngredientTableProps) {
         />
       )}
 
-      {ingredients.length > 0 ? (
+      {isLoading ? (
+        <AppLoader style={styles.loader} />
+      ) : ingredients.length < 1 ? (
+        <Text style={styles.noItemsText}>{t('ingredient.ingredientTable.noItems')}</Text>
+      ) : (
         <DataTable>
           <DataTable.Header>
             <DataTable.Title>{t('ingredient.ingredientTable.name')}</DataTable.Title>
@@ -76,8 +85,6 @@ export function IngredientTable(props: IngredientTableProps) {
             );
           })}
         </DataTable>
-      ) : (
-        <Text style={styles.noItemsText}>{t('ingredient.ingredientTable.noItems')}</Text>
       )}
     </View>
   );
@@ -87,7 +94,11 @@ const styles = StyleSheet.create({
   searchInput: {
     marginBottom: 10,
   },
+  loader: {
+    marginTop: 20,
+  },
   noItemsText: {
+    marginTop: 20,
     textAlign: 'center',
   },
 });

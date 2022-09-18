@@ -14,6 +14,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   const { navigation } = props;
   const { t } = useTranslation();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
 
   useEffect(() => {
@@ -21,7 +22,9 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   }, []);
 
   async function fetchIngredients() {
+    setIsLoading(true);
     setIngredients(await ingredientService.fetchIngredients());
+    setIsLoading(false);
   }
 
   function selectIngredient(ingredient: Ingredient) {
@@ -43,6 +46,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
 
       <IngredientTable
         ingredients={ingredients}
+        isLoading={isLoading}
         onSelectIngredient={selectIngredient}
         onSearch={onSearchHandler}
       />
