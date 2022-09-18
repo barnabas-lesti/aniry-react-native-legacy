@@ -16,6 +16,11 @@ interface AppButtonProps {
   style?: StyleProp<ViewStyle>;
 
   /**
+   * Loading state indicator.
+   */
+  isLoading?: boolean;
+
+  /**
    * Type of the button.
    */
   type?: 'primary' | 'secondary' | 'danger';
@@ -30,7 +35,7 @@ interface AppButtonProps {
  * App button component.
  */
 export function AppButton(props: AppButtonProps) {
-  const { label, type = 'primary', style, onPress } = props;
+  const { label, type = 'primary', style, isLoading, onPress } = props;
 
   function getButtonColor() {
     if (type === 'secondary') return '';
@@ -48,6 +53,7 @@ export function AppButton(props: AppButtonProps) {
       onPress={onPress}
       mode={getMode()}
       style={style}
+      loading={isLoading}
       buttonColor={getButtonColor()}
     >
       {label}

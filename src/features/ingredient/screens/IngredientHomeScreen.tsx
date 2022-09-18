@@ -41,7 +41,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
         style={styles.newIngredientButton}
         type="primary"
         label={t('ingredient.ingredientHomeScreen.createIngredient')}
-        onPress={() => navigation.navigate('IngredientCreate')}
+        onPress={() => navigation.push('IngredientCreate')}
       />
 
       <IngredientTable
