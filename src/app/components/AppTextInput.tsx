@@ -49,20 +49,10 @@ interface AppTextInputProps {
    * Text change handler.
    */
   onChangeValue: Dispatch<SetStateAction<string>>;
-
-  /**
-   * Delayed text change handler.
-   */
-  onThrottledChangeValue?: (value: string) => void;
 }
-
-const THROTTLE_DELAY = 300;
-let throttleTimeout: NodeJS.Timeout | null;
 
 /**
  * App text input component.
- * @example
- * <AppInput label="Name" value={name} onChangeValue={onChangeName} />
  */
 export function AppTextInput(props: AppTextInputProps) {
   const {
@@ -75,20 +65,7 @@ export function AppTextInput(props: AppTextInputProps) {
     readonly,
     style,
     onChangeValue,
-    onThrottledChangeValue,
   } = props;
-
-  function onBeforeChangeValue(newValue: string) {
-    onChangeValue(newValue);
-
-    if (onThrottledChangeValue) {
-      throttleTimeout && clearTimeout(throttleTimeout);
-
-      throttleTimeout = setTimeout(() => {
-        onThrottledChangeValue(newValue);
-      }, THROTTLE_DELAY);
-    }
-  }
 
   return (
     <TextInput
@@ -102,7 +79,7 @@ export function AppTextInput(props: AppTextInputProps) {
       keyboardType={keyboardType}
       editable={!readonly}
       activeOutlineColor={appTheme.colors.primary}
-      onChangeText={onBeforeChangeValue}
+      onChangeText={onChangeValue}
       right={postfix && <TextInput.Affix text={postfix} />}
     />
   );

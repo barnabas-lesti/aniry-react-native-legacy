@@ -2,8 +2,10 @@ import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
-import { IngredientStackParamList } from '../models';
+import { appTheme } from 'app/theme';
+import { Ingredient, IngredientStackParamList } from '../models';
 import { IngredientEditor } from '../components';
+import { ingredientService } from '../services';
 
 type IngredientEditScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientEdit'>;
 
@@ -18,21 +20,23 @@ export function IngredientEditScreen(props: IngredientEditScreenProps) {
     },
   } = props;
 
-  async function onAfterSaveAndDelete() {
+  async function onSave(ingredientToSave: Ingredient) {
+    await ingredientService.saveIngredient(ingredientToSave);
     navigation.push('IngredientHome');
   }
 
-  function onDiscard() {
-    navigation.goBack();
+  async function onDelete(ingredientToDelete: Ingredient) {
+    await ingredientService.deleteIngredient(ingredientToDelete);
+    navigation.push('IngredientHome');
   }
 
   return (
     <ScrollView style={styles.container}>
       <IngredientEditor
         ingredient={ingredient}
-        onDiscard={onDiscard}
-        onAfterSave={onAfterSaveAndDelete}
-        onAfterDelete={onAfterSaveAndDelete}
+        onDiscard={() => navigation.goBack()}
+        onSave={onSave}
+        onDelete={onDelete}
       />
     </ScrollView>
   );
@@ -40,6 +44,7 @@ export function IngredientEditScreen(props: IngredientEditScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 14,
+    padding: appTheme.gaps.medium,
+    flex: 1,
   },
 });

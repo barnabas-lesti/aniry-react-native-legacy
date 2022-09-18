@@ -6,7 +6,29 @@ interface AppStorableItem {
   id: string;
 }
 
+interface AppCache {
+  [key: string]: any;
+}
+
 class AppStorageService {
+  private cache: AppCache = {};
+
+  async getAll<T extends AppStorableItem>(collection: string) {
+    const cachedCollection: Array<T> = this.cache[collection];
+
+    if (cachedCollection) {
+      return cachedCollection;
+    }
+
+    await this._debugDelayRequest();
+
+    const jsonString = await AsyncStorage.getItem(collection);
+    const items: Array<T> = jsonString != null ? JSON.parse(jsonString) : [];
+    this.cache[collection] = items;
+
+    return items;
+  }
+
   /**
    * Saves the given item in the given collection.
    * Creates a new item in the list if item id is not found.
@@ -16,34 +38,27 @@ class AppStorageService {
    * @returns The stored item.
    */
   async saveOne<T extends AppStorableItem>(collection: string, item: T) {
-    const storedItems = await this.fetchMany<T>(collection);
+    const items = await this.getAll<T>(collection);
 
     if (item.id) {
-      const indexOfItem = storedItems.findIndex((storedItem) => storedItem.id === item.id);
+      const indexOfItem = items.findIndex(({ id }) => id === item.id);
       if (indexOfItem !== -1) {
-        storedItems[indexOfItem] = item;
+        items[indexOfItem] = item;
       } else {
-        storedItems.push(item);
+        items.push(item);
       }
     } else {
       item.id = uuid();
-      storedItems.push(item);
+      items.push(item);
     }
 
-    await AsyncStorage.setItem(collection, JSON.stringify(storedItems));
+    await this._storeCollection<T>(collection, items);
 
     return item;
   }
 
-  /**
-   * Fetches items from the storage based on the provided collection.
-   * @param collection Name of the collection.
-   * @returns Array of items.
-   */
-  async fetchMany<T extends AppStorableItem>(collection: string) {
-    const jsonString = await AsyncStorage.getItem(collection);
-    const items: Array<T> = jsonString != null ? JSON.parse(jsonString) : [];
-    return items;
+  async deleteOne<T extends AppStorableItem>(collection: string, item: T) {
+    return this.deleteOneById<T>(collection, item.id);
   }
 
   /**
@@ -51,11 +66,23 @@ class AppStorageService {
    * @param collection Name of the collection.
    * @param id Id of the item to remove.
    */
-  async deleteOneById<T extends AppStorableItem>(collection: string, id: string) {
-    const storedItems = await this.fetchMany<T>(collection);
-    const filteredItems = storedItems.filter((ingredient) => ingredient.id !== id);
+  async deleteOneById<T extends AppStorableItem>(collection: string, itemId: string) {
+    const items = await this.getAll<T>(collection);
+    const filteredItems = items.filter(({ id }) => id !== itemId);
 
-    await AsyncStorage.setItem(collection, JSON.stringify(filteredItems));
+    await this._storeCollection<T>(collection, filteredItems);
+  }
+
+  private async _storeCollection<T extends AppStorableItem>(collection: string, items: Array<T>) {
+    await this._debugDelayRequest();
+
+    this.cache[collection] = items;
+    await AsyncStorage.setItem(collection, JSON.stringify(items));
+    return items;
+  }
+
+  private async _debugDelayRequest() {
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   }
 }
 

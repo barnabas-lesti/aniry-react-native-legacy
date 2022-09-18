@@ -3,6 +3,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 
 import { AppStackScreen } from './screens';
 import { appLocalizationService } from './services';
+import { appTheme } from './theme';
 
 appLocalizationService.createInstance();
 
@@ -11,7 +12,7 @@ appLocalizationService.createInstance();
  */
 export function App() {
   return (
-    <PaperProvider>
+    <PaperProvider theme={appTheme}>
       <AppStackScreen />
     </PaperProvider>
   );

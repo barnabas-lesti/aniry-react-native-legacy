@@ -3,8 +3,8 @@ import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppTextInput, AppNumberInput, AppSelectInput, AppButton, AppConfirmationModal } from 'app/components';
+import { appTheme } from 'app/theme';
 import { Ingredient, ingredientServingUnits } from '../models';
-import { ingredientService } from '../services';
 
 interface IngredientEditorProps {
   /**
@@ -25,38 +25,40 @@ interface IngredientEditorProps {
   /**
    * On save event handler.
    */
-  onAfterSave: (ingredient: Ingredient) => void;
+  onSave: (ingredient: Ingredient) => Promise<void>;
 
   /**
    * On delete event handler.
    */
-  onAfterDelete?: (ingredient: Ingredient) => void;
+  onDelete?: (ingredient: Ingredient) => Promise<void>;
 }
 
 /**
  * Ingredient editor component.
- * @example
- * <IngredientEditor ingredient={ingredient} onSaveIngredient={onSaveIngredient} />
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
+  const { ingredient = new Ingredient(), style, onDiscard, onSave, onDelete } = props;
   const { serving, nutrients } = ingredient;
-
-  const canDelete = !!ingredient.id;
+  const canDelete = ingredient.id && onDelete;
 
   const { t } = useTranslation();
-  const [canValidate, setCanValidate] = useState(false);
+
   const [name, setName] = useState(ingredient.name);
-  const [nameIsValid, setNameIsValid] = useState(validateName(name));
   const [servingValue, setServingValue] = useState(serving.value);
-  const [servingValueIsValid, setServingValueIsValid] = useState(validateServingValue(serving.value));
   const [servingUnit, setServingUnit] = useState(serving.unit);
-  const [servingUnitIsValid, setServingUnitIsValid] = useState(validateServingUnit(serving.unit));
   const [calories, setCalories] = useState(nutrients.calories);
   const [carbs, setCarbs] = useState(nutrients.carbs);
   const [protein, setProtein] = useState(nutrients.protein);
   const [fat, setFat] = useState(nutrients.fat);
+
+  const [canValidate, setCanValidate] = useState(false);
+  const [nameIsValid, setNameIsValid] = useState(validateName(name));
+  const [servingValueIsValid, setServingValueIsValid] = useState(validateServingValue(serving.value));
+  const [servingUnitIsValid, setServingUnitIsValid] = useState(validateServingUnit(serving.unit));
+
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
+  const [isSaveInProgress, setIsSaveInProgress] = useState(false);
+  const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
 
   const servingUnitOptions = Object.keys(ingredientServingUnits).map((unit) => ({
     value: unit,
@@ -76,8 +78,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
   }, [servingUnit]);
 
   async function onSaveButtonPress() {
-    if (validateForm()) {
-      const savedIngredient = await ingredientService.saveIngredient(
+    if (validateForm() && !isSaveInProgress && !isDeleteInProgress) {
+      setIsSaveInProgress(true);
+      await onSave(
         new Ingredient({
           id: ingredient.id,
           name,
@@ -93,20 +96,21 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
         })
       );
-      onAfterSave(savedIngredient);
+      setIsSaveInProgress(false);
     }
   }
 
   function onDeleteButtonPress() {
-    setIsDeleteConfirmationVisible(true);
+    if (!isSaveInProgress && !isDeleteInProgress) {
+      setIsDeleteConfirmationVisible(true);
+    }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-
-    await ingredientService.deleteIngredientById(ingredient.id);
-
-    onAfterDelete && onAfterDelete(ingredient);
+    setIsDeleteInProgress(true);
+    onDelete && (await onDelete(ingredient));
+    setIsDeleteInProgress(false);
   }
 
   function validateForm() {
@@ -128,80 +132,82 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   return (
     <View style={style}>
-      <AppTextInput
-        label={t('app.labels.name')}
-        style={styles.row}
-        value={name}
-        isInvalid={canValidate && !nameIsValid}
-        onChangeValue={setName}
-      />
-
-      <View style={[styles.row, styles.servingContainer]}>
-        <AppNumberInput
-          style={styles.servingValue}
-          label={t('app.labels.serving')}
-          value={servingValue}
-          isInvalid={canValidate && !servingValueIsValid}
-          onChangeValue={setServingValue}
+      <View style={styles.inputs}>
+        <AppTextInput
+          label={t('app.labels.name')}
+          style={styles.row}
+          value={name}
+          isInvalid={canValidate && !nameIsValid}
+          onChangeValue={setName}
         />
-        <AppSelectInput
-          style={styles.servingUnit}
-          options={servingUnitOptions}
-          value={servingUnit}
-          isInvalid={canValidate && !servingUnitIsValid}
-          onChangeValue={setServingUnit}
+
+        <View style={[styles.row, styles.servingContainer]}>
+          <AppNumberInput
+            style={styles.servingValue}
+            label={t('app.labels.serving')}
+            value={servingValue}
+            isInvalid={canValidate && !servingValueIsValid}
+            onChangeValue={setServingValue}
+          />
+          <AppSelectInput
+            style={styles.servingUnit}
+            options={servingUnitOptions}
+            value={servingUnit}
+            isInvalid={canValidate && !servingUnitIsValid}
+            onChangeValue={setServingUnit}
+          />
+        </View>
+
+        <AppNumberInput
+          label={t('app.labels.calories')}
+          postfix={t('app.units.kcal')}
+          style={styles.row}
+          value={calories}
+          onChangeValue={setCalories}
+        />
+
+        <AppNumberInput
+          label={t('app.labels.carbs')}
+          postfix={t('app.units.g')}
+          style={styles.row}
+          value={carbs}
+          onChangeValue={setCarbs}
+        />
+
+        <AppNumberInput
+          label={t('app.labels.protein')}
+          postfix={t('app.units.g')}
+          style={styles.row}
+          value={protein}
+          onChangeValue={setProtein}
+        />
+
+        <AppNumberInput
+          label={t('app.labels.fat')}
+          postfix={t('app.units.g')}
+          value={fat}
+          onChangeValue={setFat}
         />
       </View>
 
-      <AppNumberInput
-        label={t('app.labels.calories')}
-        postfix={t('app.units.kcal')}
-        style={styles.row}
-        value={calories}
-        onChangeValue={setCalories}
-      />
-
-      <AppNumberInput
-        label={t('app.labels.carbs')}
-        postfix={t('app.units.g')}
-        style={styles.row}
-        value={carbs}
-        onChangeValue={setCarbs}
-      />
-
-      <AppNumberInput
-        label={t('app.labels.protein')}
-        postfix={t('app.units.g')}
-        style={styles.row}
-        value={protein}
-        onChangeValue={setProtein}
-      />
-
-      <AppNumberInput
-        label={t('app.labels.fat')}
-        postfix={t('app.units.g')}
-        style={styles.row}
-        value={fat}
-        onChangeValue={setFat}
-      />
-
       <AppButton
-        style={styles.button}
+        style={styles.row}
+        isLoading={isSaveInProgress}
         label={t('app.labels.save')}
         onPress={onSaveButtonPress}
       />
 
       <AppButton
         type="secondary"
-        style={styles.button}
+        style={styles.row}
         label={t('app.labels.discard')}
         onPress={onDiscard}
       />
 
       {canDelete && (
         <AppButton
-          style={styles.button}
           type="danger"
+          isLoading={isDeleteInProgress}
           label={t('app.labels.delete')}
           onPress={onDeleteButtonPress}
         />
@@ -221,17 +227,17 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
 const styles = StyleSheet.create({
   row: {
-    marginBottom: 10,
+    marginBottom: appTheme.gaps.small,
   },
-  button: {
-    marginTop: 15,
+  inputs: {
+    marginBottom: appTheme.gaps.medium,
   },
   servingContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
   },
   servingValue: {
-    marginRight: 10,
+    marginRight: appTheme.gaps.small,
     flexGrow: 1,
   },
   servingUnit: {

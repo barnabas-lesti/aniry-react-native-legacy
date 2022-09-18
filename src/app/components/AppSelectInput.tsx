@@ -39,8 +39,6 @@ interface AppSelectInputProps {
 
 /**
  * App select input component.
- * @example
- * <AppSelectInput label="Unit" options={options} value={unit} onChangeValue={onChangeUnit} />
  */
 export function AppSelectInput(props: AppSelectInputProps) {
   const { value, label, options, isInvalid, style, onChangeValue } = props;

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AppStackScreenProps } from 'app/models';
 import { AppButton } from 'app/components';
+import { appTheme } from 'app/theme';
 import { ingredientService } from '../services';
 import { IngredientStackParamList, Ingredient } from '../models';
 import { IngredientTable } from '../components';
@@ -14,6 +15,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   const { navigation } = props;
   const { t } = useTranslation();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
 
   useEffect(() => {
@@ -21,7 +23,9 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   }, []);
 
   async function fetchIngredients() {
+    setIsLoading(true);
     setIngredients(await ingredientService.fetchIngredients());
+    setIsLoading(false);
   }
 
   function selectIngredient(ingredient: Ingredient) {
@@ -38,11 +42,13 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
         style={styles.newIngredientButton}
         type="primary"
         label={t('ingredient.ingredientHomeScreen.createIngredient')}
-        onPress={() => navigation.navigate('IngredientCreate')}
+        onPress={() => navigation.push('IngredientCreate')}
       />
 
       <IngredientTable
+        style={styles.table}
         ingredients={ingredients}
+        isLoading={isLoading}
         onSelectIngredient={selectIngredient}
         onSearch={onSearchHandler}
       />
@@ -52,9 +58,14 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 14,
+    padding: appTheme.gaps.medium,
+    paddingBottom: 0,
+    flex: 1,
+  },
+  table: {
+    marginBottom: appTheme.gaps.medium,
   },
   newIngredientButton: {
-    marginBottom: 20,
+    marginBottom: appTheme.gaps.medium,
   },
 });

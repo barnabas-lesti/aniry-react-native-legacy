@@ -5,6 +5,22 @@ class IngredientService {
   private readonly COLLECTION_NAME = 'ingredients';
 
   /**
+   * Loads ingredients from the storage.
+   * @returns Array of ingredients.
+   */
+  async fetchIngredients(searchString?: string) {
+    const ingredients = await appStorageService.getAll<Ingredient>(this.COLLECTION_NAME);
+
+    if (searchString) {
+      return ingredients.filter(
+        (ingredient) => ingredient.name.toLowerCase().search(searchString.toLowerCase()) !== -1
+      );
+    }
+
+    return this.sortIngredientsByName(ingredients);
+  }
+
+  /**
    * Saves the provided ingredient in storage.
    * @param ingredient Ingredient to save.
    */
@@ -13,27 +29,11 @@ class IngredientService {
   }
 
   /**
-   * Loads ingredients from the storage.
-   * @returns Array of ingredients.
-   */
-  async fetchIngredients(searchString?: string) {
-    const ingredients = await appStorageService.fetchMany<Ingredient>(this.COLLECTION_NAME);
-
-    if (searchString) {
-      return ingredients.filter(
-        (ingredient) => ingredient.name.toLowerCase().search(searchString.toLowerCase()) !== -1
-      );
-    }
-
-    return ingredients;
-  }
-
-  /**
    * Removes the provided ingredient from storage.
    * @param ingredientId Ingredient to remove.
    */
-  async deleteIngredientById(ingredientId: string) {
-    await appStorageService.deleteOneById<Ingredient>(this.COLLECTION_NAME, ingredientId);
+  async deleteIngredient(ingredient: Ingredient) {
+    await appStorageService.deleteOne<Ingredient>(this.COLLECTION_NAME, ingredient);
   }
 
   /**
@@ -42,11 +42,13 @@ class IngredientService {
    * @returns Sorted ingredients array.
    */
   sortIngredientsByName(ingredients: Array<Ingredient>) {
-    return ingredients.sort((a, b) => {
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
-      return 0;
-    });
+    return [
+      ...ingredients.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }),
+    ];
   }
 }
 
