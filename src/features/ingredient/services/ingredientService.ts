@@ -5,14 +5,6 @@ class IngredientService {
   private readonly COLLECTION_NAME = 'ingredients';
 
   /**
-   * Saves the provided ingredient in storage.
-   * @param ingredient Ingredient to save.
-   */
-  async saveIngredient(ingredient: Ingredient) {
-    return await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
-  }
-
-  /**
    * Loads ingredients from the storage.
    * @returns Array of ingredients.
    */
@@ -25,7 +17,15 @@ class IngredientService {
       );
     }
 
-    return ingredients;
+    return this.sortIngredientsByName(ingredients);
+  }
+
+  /**
+   * Saves the provided ingredient in storage.
+   * @param ingredient Ingredient to save.
+   */
+  async saveIngredient(ingredient: Ingredient) {
+    return await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
   }
 
   /**
@@ -42,11 +42,13 @@ class IngredientService {
    * @returns Sorted ingredients array.
    */
   sortIngredientsByName(ingredients: Array<Ingredient>) {
-    return ingredients.sort((a, b) => {
-      if (a.name < b.name) return -1;
-      if (a.name > b.name) return 1;
-      return 0;
-    });
+    return [
+      ...ingredients.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }),
+    ];
   }
 }
 
