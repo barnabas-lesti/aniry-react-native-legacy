@@ -8,7 +8,7 @@ class IngredientService {
    * Loads ingredients from the storage.
    * @returns Array of ingredients.
    */
-  async fetchIngredients(searchString?: string) {
+  async getIngredients(searchString?: string) {
     const ingredients = await appStorageService.getAll<Ingredient>(this.COLLECTION_NAME);
 
     if (searchString) {

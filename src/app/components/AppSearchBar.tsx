@@ -4,9 +4,9 @@ import { Searchbar } from 'react-native-paper';
 
 interface AppSearchBarProps {
   /**
-   * Initial value.
+   * Initial value of the input.
    */
-  value: string;
+  initialValue?: string;
 
   /**
    * Placeholder text to display.
@@ -19,14 +19,9 @@ interface AppSearchBarProps {
   style?: StyleProp<ViewStyle>;
 
   /**
-   * On value change handler.
+   * On search event handler.
    */
-  onChangeValue?: (value: string) => void;
-
-  /**
-   * Delayed value change handler.
-   */
-  onThrottledChangeValue?: (value: string) => void;
+  onSearch: (searchString: string) => void;
 }
 
 const THROTTLE_DELAY = 300;
@@ -36,27 +31,24 @@ let throttleTimeout: NodeJS.Timeout | null;
  * Application search bar component.
  */
 export function AppSearchBar(props: AppSearchBarProps) {
-  const { value, placeholder, style, onChangeValue, onThrottledChangeValue } = props;
+  const { initialValue = '', placeholder, style, onSearch } = props;
 
-  const [localValue, setLocalValue] = useState(value);
+  const [value, setValue] = useState(initialValue);
 
   function onBeforeChangeValue(newValue: string) {
-    setLocalValue(newValue);
-    onChangeValue && onChangeValue(newValue);
+    setValue(newValue);
 
-    if (onThrottledChangeValue) {
-      throttleTimeout && clearTimeout(throttleTimeout);
+    throttleTimeout && clearTimeout(throttleTimeout);
 
-      throttleTimeout = setTimeout(() => {
-        onThrottledChangeValue(newValue);
-      }, THROTTLE_DELAY);
-    }
+    throttleTimeout = setTimeout(() => {
+      onSearch(newValue);
+    }, THROTTLE_DELAY);
   }
 
   return (
     <Searchbar
       style={style}
-      value={localValue}
+      value={value}
       placeholder={placeholder}
       onChangeText={onBeforeChangeValue}
     />
