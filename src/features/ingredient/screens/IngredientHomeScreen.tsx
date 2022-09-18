@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AppStackScreenProps } from 'app/models';
 import { AppButton } from 'app/components';
+import { appTheme } from 'app/theme';
 import { ingredientService } from '../services';
 import { IngredientStackParamList, Ingredient } from '../models';
 import { IngredientTable } from '../components';
@@ -56,9 +57,9 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 14,
+    margin: appTheme.gaps.medium,
   },
   newIngredientButton: {
-    marginBottom: 20,
+    marginBottom: appTheme.gaps.medium,
   },
 });

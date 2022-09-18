@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Dialog, Portal } from 'react-native-paper';
 
+import { appTheme } from '../theme';
+
 interface AppModalProps {
   /**
    * Visibility indicator.
@@ -39,6 +41,6 @@ export function AppModal(props: AppModalProps) {
 
 const styles = StyleSheet.create({
   content: {
-    padding: 14,
+    padding: appTheme.gaps.medium,
   },
 });

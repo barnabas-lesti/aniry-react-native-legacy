@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
 import { AppSearchBar, AppLoader } from 'app/components';
+import { appTheme } from 'app/theme';
 import { Ingredient } from '../models';
 
 interface IngredientTableProps {
@@ -92,13 +93,13 @@ export function IngredientTable(props: IngredientTableProps) {
 
 const styles = StyleSheet.create({
   searchInput: {
-    marginBottom: 10,
+    marginBottom: appTheme.gaps.small,
   },
   loader: {
-    marginTop: 20,
+    marginTop: appTheme.gaps.medium,
   },
   noItemsText: {
-    marginTop: 20,
+    marginTop: appTheme.gaps.medium,
     textAlign: 'center',
   },
 });

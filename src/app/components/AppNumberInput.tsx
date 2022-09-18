@@ -42,8 +42,6 @@ interface AppNumberInputProps {
 
 /**
  * App number input component.
- * @example
- * <AppInput label="Count" value={count} onChangeValue={onChangeCount} />
  */
 export function AppNumberInput(props: AppNumberInputProps) {
   const { value, label, postfix, placeholder, isInvalid, style, onChangeValue } = props;

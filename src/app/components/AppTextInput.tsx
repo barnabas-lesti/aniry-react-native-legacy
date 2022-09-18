@@ -53,8 +53,6 @@ interface AppTextInputProps {
 
 /**
  * App text input component.
- * @example
- * <AppInput label="Name" value={name} onChangeValue={onChangeName} />
  */
 export function AppTextInput(props: AppTextInputProps) {
   const {
