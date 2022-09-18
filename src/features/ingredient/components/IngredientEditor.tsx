@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { AppTextInput, AppNumberInput, AppSelectInput, AppButton, AppConfirmationModal } from 'app/components';
 import { appTheme } from 'app/theme';
 import { Ingredient, ingredientServingUnits } from '../models';
+import { ingredientService } from '../services';
 
 interface IngredientEditorProps {
   /**
@@ -25,21 +26,21 @@ interface IngredientEditorProps {
   /**
    * On save event handler.
    */
-  onSave: (ingredient: Ingredient) => Promise<void>;
+  onAfterSave: (ingredient: Ingredient) => void;
 
   /**
    * On delete event handler.
    */
-  onDelete?: (ingredient: Ingredient) => Promise<void>;
+  onAfterDelete?: (ingredient: Ingredient) => void;
 }
 
 /**
  * Ingredient editor component.
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient = new Ingredient(), style, onDiscard, onSave, onDelete } = props;
+  const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
   const { serving, nutrients } = ingredient;
-  const canDelete = ingredient.id && onDelete;
+  const canDelete = !!ingredient.id;
 
   const { t } = useTranslation();
 
@@ -80,7 +81,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   async function onSaveButtonPress() {
     if (validateForm() && !isSaveInProgress && !isDeleteInProgress) {
       setIsSaveInProgress(true);
-      await onSave(
+      const savedIngredient = await ingredientService.saveIngredient(
         new Ingredient({
           id: ingredient.id,
           name,
@@ -97,6 +98,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
         })
       );
       setIsSaveInProgress(false);
+
+      onAfterSave(savedIngredient);
     }
   }
 
@@ -108,9 +111,12 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
+
     setIsDeleteInProgress(true);
-    onDelete && (await onDelete(ingredient));
+    await ingredientService.deleteIngredient(ingredient);
     setIsDeleteInProgress(false);
+
+    onAfterDelete && onAfterDelete(ingredient);
   }
 
   function validateForm() {
