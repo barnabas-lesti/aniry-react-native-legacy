@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text } from 'react-native';
 
+import { appTheme } from '../theme';
 import { AppButton } from './AppButton';
 import { AppModal } from './AppModal';
 
@@ -42,7 +43,7 @@ export function AppConfirmationModal(props: AppConfirmationModalProps) {
     >
       <Text style={styles.text}>{text}</Text>
       <AppButton
-        style={styles.button}
+        style={styles.confirmButton}
         label={t('app.labels.confirm')}
         onPress={onConfirmation}
       />
@@ -57,10 +58,10 @@ export function AppConfirmationModal(props: AppConfirmationModalProps) {
 
 const styles = StyleSheet.create({
   text: {
-    marginBottom: 14,
+    marginBottom: appTheme.gaps.medium,
     textAlign: 'center',
   },
-  button: {
-    marginBottom: 14,
+  confirmButton: {
+    marginBottom: appTheme.gaps.small,
   },
 });

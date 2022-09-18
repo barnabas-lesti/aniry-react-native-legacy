@@ -1,3 +1,4 @@
+import { appTheme } from 'app/theme';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
@@ -11,6 +12,6 @@ export function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10,
+    padding: appTheme.gaps.medium,
   },
 });

@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
+import { appTheme } from 'app/theme';
 import { Ingredient, IngredientStackParamList } from '../models';
 import { IngredientEditor } from '../components';
 import { ingredientService } from '../services';
@@ -43,6 +44,6 @@ export function IngredientEditScreen(props: IngredientEditScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: 14,
+    margin: appTheme.gaps.medium,
   },
 });
