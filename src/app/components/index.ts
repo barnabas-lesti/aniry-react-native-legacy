@@ -5,3 +5,4 @@ export * from './AppTextInput';
 export * from './AppModal';
 export * from './AppConfirmationModal';
 export * from './AppIcon';
+export * from './AppSearchBar';

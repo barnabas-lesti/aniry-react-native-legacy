@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
-import { AppTextInput } from 'app/components';
+import { AppSearchBar } from 'app/components';
 import { Ingredient } from '../models';
 
 interface IngredientTableProps {
@@ -45,7 +45,7 @@ export function IngredientTable(props: IngredientTableProps) {
   return (
     <View style={style}>
       {onSearch && (
-        <AppTextInput
+        <AppSearchBar
           style={styles.searchInput}
           placeholder={t('ingredient.ingredientTable.searchPlaceholder')}
           value={localSearchString}

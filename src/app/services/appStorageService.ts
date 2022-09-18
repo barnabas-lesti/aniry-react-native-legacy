@@ -20,6 +20,8 @@ class AppStorageService {
       return cachedCollection;
     }
 
+    await this._debugDelayRequest();
+
     const jsonString = await AsyncStorage.getItem(collection);
     const items: Array<T> = jsonString != null ? JSON.parse(jsonString) : [];
     this.cache[collection] = items;
@@ -72,9 +74,15 @@ class AppStorageService {
   }
 
   private async _storeCollection<T extends AppStorableItem>(collection: string, items: Array<T>) {
+    await this._debugDelayRequest();
+
     this.cache[collection] = items;
     await AsyncStorage.setItem(collection, JSON.stringify(items));
     return items;
+  }
+
+  private async _debugDelayRequest() {
+    return new Promise((resolve) => setTimeout(resolve, 1000));
   }
 }
 
