@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
 import { appTheme } from 'app/theme';
@@ -18,17 +18,18 @@ export function IngredientCreateScreen(props: IngredientCreateScreenProps) {
   }
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <IngredientEditor
         onDiscard={() => navigation.goBack()}
         onSave={onSave}
       />
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    margin: appTheme.gaps.medium,
+    padding: appTheme.gaps.medium,
+    flex: 1,
   },
 });

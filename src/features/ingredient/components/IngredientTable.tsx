@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, StyleProp, ViewStyle, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
@@ -49,7 +49,7 @@ export function IngredientTable(props: IngredientTableProps) {
   const [localSearchString, setLocalSearchString] = useState(searchString || '');
 
   return (
-    <View style={style}>
+    <View style={[styles.container, style]}>
       {onSearch && (
         <AppSearchBar
           style={styles.searchInput}
@@ -65,26 +65,28 @@ export function IngredientTable(props: IngredientTableProps) {
       ) : ingredients.length < 1 ? (
         <Text style={styles.noItemsText}>{t('ingredient.ingredientTable.noItems')}</Text>
       ) : (
-        <DataTable>
+        <DataTable style={styles.table}>
           <DataTable.Header>
             <DataTable.Title>{t('ingredient.ingredientTable.name')}</DataTable.Title>
             <DataTable.Title numeric>{t('ingredient.ingredientTable.calories')}</DataTable.Title>
             <DataTable.Title numeric>{t('ingredient.ingredientTable.serving')}</DataTable.Title>
           </DataTable.Header>
 
-          {ingredients.map((ingredient) => {
-            const { id, name, nutrients, serving } = ingredient;
-            return (
-              <DataTable.Row
-                key={id}
-                onPress={() => onSelectIngredient && onSelectIngredient(ingredient)}
-              >
-                <DataTable.Cell>{name}</DataTable.Cell>
-                <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
-                <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
-              </DataTable.Row>
-            );
-          })}
+          <ScrollView>
+            {ingredients.map((ingredient) => {
+              const { id, name, nutrients, serving } = ingredient;
+              return (
+                <DataTable.Row
+                  key={id}
+                  onPress={() => onSelectIngredient && onSelectIngredient(ingredient)}
+                >
+                  <DataTable.Cell>{name}</DataTable.Cell>
+                  <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
+                  <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
+                </DataTable.Row>
+              );
+            })}
+          </ScrollView>
         </DataTable>
       )}
     </View>
@@ -92,6 +94,12 @@ export function IngredientTable(props: IngredientTableProps) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  table: {
+    flex: 1,
+  },
   searchInput: {
     marginBottom: appTheme.gaps.small,
   },
