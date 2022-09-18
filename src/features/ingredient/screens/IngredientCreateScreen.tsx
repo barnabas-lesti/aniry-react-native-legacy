@@ -2,27 +2,25 @@ import React from 'react';
 import { StyleSheet, ScrollView } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
-import { IngredientStackParamList } from '../models';
+import { Ingredient, IngredientStackParamList } from '../models';
 import { IngredientEditor } from '../components';
+import { ingredientService } from '../services';
 
 type IngredientCreateScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientCreate'>;
 
 export function IngredientCreateScreen(props: IngredientCreateScreenProps) {
   const { navigation } = props;
 
-  async function onAfterSave() {
+  async function onSave(ingredient: Ingredient) {
+    await ingredientService.saveIngredient(ingredient);
     navigation.push('IngredientHome');
-  }
-
-  function onDiscard() {
-    navigation.goBack();
   }
 
   return (
     <ScrollView style={styles.container}>
       <IngredientEditor
-        onDiscard={onDiscard}
-        onAfterSave={onAfterSave}
+        onDiscard={() => navigation.goBack()}
+        onSave={onSave}
       />
     </ScrollView>
   );
