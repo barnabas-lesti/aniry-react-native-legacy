@@ -44,6 +44,7 @@ export function IngredientEditScreen(props: IngredientEditScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: appTheme.gaps.medium,
+    padding: appTheme.gaps.medium,
+    flex: 1,
   },
 });

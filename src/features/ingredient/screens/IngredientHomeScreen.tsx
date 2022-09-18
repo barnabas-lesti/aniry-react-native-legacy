@@ -46,6 +46,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
       />
 
       <IngredientTable
+        style={styles.table}
         ingredients={ingredients}
         isLoading={isLoading}
         onSelectIngredient={selectIngredient}
@@ -57,7 +58,12 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
 
 const styles = StyleSheet.create({
   container: {
-    margin: appTheme.gaps.medium,
+    padding: appTheme.gaps.medium,
+    paddingBottom: 0,
+    flex: 1,
+  },
+  table: {
+    marginBottom: appTheme.gaps.medium,
   },
   newIngredientButton: {
     marginBottom: appTheme.gaps.medium,
