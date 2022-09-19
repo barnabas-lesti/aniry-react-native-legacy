@@ -40,7 +40,8 @@ interface IngredientEditorProps {
 export function IngredientEditor(props: IngredientEditorProps) {
   const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
   const { serving, nutrients } = ingredient;
-  const canDelete = !!ingredient.id;
+
+  const isNewIngredient = !ingredient.id;
 
   const { t } = useTranslation();
 
@@ -80,26 +81,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm() && !isSaveInProgress && !isDeleteInProgress) {
-      setIsSaveInProgress(true);
-      const savedIngredient = await ingredientService.saveIngredient(
-        new Ingredient({
-          id: ingredient.id,
-          name,
-          serving: {
-            value: servingValue,
-            unit: servingUnit,
-          },
-          nutrients: {
-            calories,
-            carbs,
-            protein,
-            fat,
-          },
-        })
-      );
-      setIsSaveInProgress(false);
-
-      onAfterSave(savedIngredient);
+      onAfterSave(await saveIngredient());
     }
   }
 
@@ -111,12 +93,42 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
+    await deleteIngredient();
+    onAfterDelete && onAfterDelete(ingredient);
+  }
 
+  async function saveIngredient() {
+    setIsSaveInProgress(true);
+    const ingredientToSave = new Ingredient({
+      id: ingredient.id,
+      name,
+      serving: {
+        value: servingValue,
+        unit: servingUnit,
+      },
+      nutrients: {
+        calories,
+        carbs,
+        protein,
+        fat,
+      },
+    });
+
+    let savedIngredient: Ingredient;
+    if (isNewIngredient) {
+      savedIngredient = await ingredientService.createIngredient(ingredientToSave);
+    } else {
+      savedIngredient = await ingredientService.updateIngredient(ingredientToSave);
+    }
+    setIsSaveInProgress(false);
+
+    return savedIngredient;
+  }
+
+  async function deleteIngredient() {
     setIsDeleteInProgress(true);
     await ingredientService.deleteIngredient(ingredient);
     setIsDeleteInProgress(false);
-
-    onAfterDelete && onAfterDelete(ingredient);
   }
 
   function validateForm() {
@@ -199,27 +211,27 @@ export function IngredientEditor(props: IngredientEditorProps) {
       <AppButton
         style={styles.row}
         isLoading={isSaveInProgress}
-        label={t('app.labels.save')}
+        label={t(`ingredient.ingredientEditor.buttons.${isNewIngredient ? 'create' : 'update'}`)}
         onPress={onSaveButtonPress}
       />
 
       <AppButton
         type="secondary"
         style={styles.row}
-        label={t('app.labels.discard')}
+        label={t('ingredient.ingredientEditor.buttons.discard')}
         onPress={onDiscard}
       />
 
-      {canDelete && (
+      {!isNewIngredient && (
         <AppButton
           type="danger"
           isLoading={isDeleteInProgress}
-          label={t('app.labels.delete')}
+          label={t('ingredient.ingredientEditor.buttons.delete')}
           onPress={onDeleteButtonPress}
         />
       )}
 
-      {canDelete && (
+      {!isNewIngredient && (
         <AppConfirmationModal
           isVisible={isDeleteConfirmationVisible}
           text={t('ingredient.ingredientEditor.deleteConfirmation')}
