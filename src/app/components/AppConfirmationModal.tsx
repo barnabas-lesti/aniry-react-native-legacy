@@ -1,10 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text } from 'react-native';
-
-import { appTheme } from '../theme';
-import { AppButton } from './AppButton';
-import { AppModal } from './AppModal';
+import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 
 interface AppConfirmationModalProps {
   /**
@@ -37,31 +33,19 @@ export function AppConfirmationModal(props: AppConfirmationModalProps) {
   const { t } = useTranslation();
 
   return (
-    <AppModal
-      isVisible={isVisible}
-      onDismiss={onCancel}
-    >
-      <Text style={styles.text}>{text}</Text>
-      <AppButton
-        style={styles.confirmButton}
-        label={t('app.labels.confirm')}
-        onPress={onConfirmation}
-      />
-      <AppButton
-        type="secondary"
-        label={t('app.labels.cancel')}
-        onPress={onCancel}
-      />
-    </AppModal>
+    <Portal>
+      <Dialog
+        visible={isVisible}
+        onDismiss={onCancel}
+      >
+        <Dialog.Content>
+          <Paragraph>{text}</Paragraph>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={onCancel}>{t('app.labels.cancel')}</Button>
+          <Button onPress={onConfirmation}>{t('app.labels.ok')}</Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Portal>
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    marginBottom: appTheme.gaps.medium,
-    textAlign: 'center',
-  },
-  confirmButton: {
-    marginBottom: appTheme.gaps.small,
-  },
-});
