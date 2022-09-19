@@ -22,7 +22,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
     <ScrollView style={styles.container}>
       <AppButton
         style={styles.newIngredientButton}
-        type="primary"
+        backgroundColor={appTheme.colors.ingredientPrimary}
         label={t('ingredient.ingredientHomeScreen.createIngredient')}
         onPress={() => navigation.push('IngredientCreate')}
       />

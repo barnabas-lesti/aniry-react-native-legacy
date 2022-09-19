@@ -211,12 +211,14 @@ export function IngredientEditor(props: IngredientEditorProps) {
       <AppButton
         style={styles.row}
         isLoading={isSaveInProgress}
+        backgroundColor={appTheme.colors.ingredientPrimary}
         label={t(`app.labels.${isNewIngredient ? 'create' : 'update'}`)}
         onPress={onSaveButtonPress}
       />
 
       <AppButton
         type="secondary"
+        textColor={appTheme.colors.ingredientPrimary}
         style={styles.row}
         label={t('app.labels.discard')}
         onPress={onDiscard}

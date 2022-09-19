@@ -22,7 +22,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
     <ScrollView style={styles.container}>
       <AppButton
         style={styles.newIngredientButton}
-        type="primary"
+        backgroundColor={appTheme.colors.recipePrimary}
         label={t('recipe.recipeHomeScreen.createRecipe')}
         onPress={() => navigation.push('RecipeCreate')}
       />
