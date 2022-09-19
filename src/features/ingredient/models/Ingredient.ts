@@ -1,9 +1,10 @@
-import { AppServing, AppNutrients } from 'app/models';
+import { AppNutrients } from 'app/models';
+import { IngredientServing } from './IngredientServing';
 
 export class Ingredient {
   public id: string;
   public name: string;
-  public serving: AppServing;
+  public serving: IngredientServing;
   public nutrients: AppNutrients;
 
   constructor(props?: IngredientProps) {
@@ -27,6 +28,6 @@ export class Ingredient {
 interface IngredientProps {
   id: string;
   name: string;
-  serving: AppServing;
+  serving: IngredientServing;
   nutrients: AppNutrients;
 }

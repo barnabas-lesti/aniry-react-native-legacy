@@ -1,12 +1,14 @@
-import { AppServing } from 'app/models';
+import { RecipeServing } from './RecipeServing';
+import { RecipeIngredient } from './RecipeIngredient';
 
 export class Recipe {
   public id: string;
   public name: string;
-  public serving: AppServing;
+  public serving: RecipeServing;
+  public ingredients: RecipeIngredient[];
 
   constructor(props?: RecipeProps) {
-    const { serving } = props || {};
+    const { serving, ingredients } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
@@ -14,11 +16,13 @@ export class Recipe {
       unit: serving?.unit || 'g',
       value: serving?.value || 0,
     };
+    this.ingredients = ingredients || [];
   }
 }
 
 interface RecipeProps {
   id: string;
   name: string;
-  serving: AppServing;
+  serving: RecipeServing;
+  ingredients: RecipeIngredient[];
 }

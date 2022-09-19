@@ -53,4 +53,8 @@ export const en = {
   'recipe.recipeTable.noItems': 'No recipes to display',
 
   'recipe.recipeEditor.deleteConfirmation': 'Are you sure you want to delete the recipe?',
+
+  'recipe.notifications.created': 'Recipe successfully created!',
+  'recipe.notifications.updated': 'Recipe successfully updated!',
+  'recipe.notifications.deleted': 'Recipe successfully deleted!',
 };

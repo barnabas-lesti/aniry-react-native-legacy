@@ -102,6 +102,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
         value: servingValue,
         unit: servingUnit,
       },
+      ingredients: [],
     });
 
     let savedRecipe: Recipe;

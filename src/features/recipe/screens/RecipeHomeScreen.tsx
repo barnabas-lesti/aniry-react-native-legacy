@@ -14,8 +14,8 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
   const { navigation } = props;
   const { t } = useTranslation();
 
-  function onSelectRecipe() {
-    navigation.push('RecipeEdit', { recipe: new Recipe() });
+  function onSelectRecipe(recipe: Recipe) {
+    navigation.push('RecipeEdit', { recipe });
   }
 
   return (
