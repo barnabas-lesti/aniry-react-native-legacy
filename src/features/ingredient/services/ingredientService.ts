@@ -37,14 +37,14 @@ class IngredientService {
    * @returns Updated ingredient.
    */
   async updateIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    const createdIngredient = await this.saveIngredient(ingredient);
+    const updatedIngredient = await this.saveIngredient(ingredient);
     appNotificationService.pushNotification('ingredient.notifications.updated');
-    return createdIngredient;
+    return updatedIngredient;
   }
 
   /**
    * Removes the provided ingredient from storage.
-   * @param ingredientId Ingredient to remove.
+   * @param ingredient Ingredient to remove.
    */
   async deleteIngredient(ingredient: Ingredient): Promise<Ingredient> {
     await appStorageService.deleteOne<Ingredient>(this.COLLECTION_NAME, ingredient);

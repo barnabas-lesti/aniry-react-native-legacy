@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
 import { appTheme } from 'app/theme';
 import { RecipeStackParamList } from '../models';
+import { RecipeEditor } from '../components';
 
 type RecipeCreateScreenProps = AppStackScreenProps<RecipeStackParamList, 'RecipeCreate'>;
 
@@ -20,7 +21,10 @@ export function RecipeCreateScreen(props: RecipeCreateScreenProps) {
 
   return (
     <View style={styles.container}>
-      <Text>RecipeCreateScreen</Text>
+      <RecipeEditor
+        onDiscard={onDiscard}
+        onAfterSave={onAfterSave}
+      />
     </View>
   );
 }

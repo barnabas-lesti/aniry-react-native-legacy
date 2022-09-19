@@ -1,1 +1,1 @@
-export type IngredientServingUnit = 'g' | 'ml';
+export type IngredientServingUnit = 'g' | 'ml' | 'piece';

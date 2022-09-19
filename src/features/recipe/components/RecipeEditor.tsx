@@ -4,14 +4,14 @@ import { useTranslation } from 'react-i18next';
 
 import { AppTextInput, AppNumberInput, AppSelectInput, AppButton, AppConfirmationModal } from 'app/components';
 import { appTheme } from 'app/theme';
-import { Ingredient, ingredientServingUnits } from '../models';
-import { ingredientService } from '../services';
+import { Recipe, recipeServingUnits } from '../models';
+import { recipeService } from '../services';
 
-interface IngredientEditorProps {
+interface RecipeEditorProps {
   /**
-   * The ingredient object.
+   * The recipe object.
    */
-  ingredient?: Ingredient;
+  recipe?: Recipe;
 
   /**
    * Custom styles.
@@ -26,32 +26,28 @@ interface IngredientEditorProps {
   /**
    * On save event handler.
    */
-  onAfterSave: (ingredient: Ingredient) => void;
+  onAfterSave: (recipe: Recipe) => void;
 
   /**
    * On delete event handler.
    */
-  onAfterDelete?: (ingredient: Ingredient) => void;
+  onAfterDelete?: (recipe: Recipe) => void;
 }
 
 /**
- * Ingredient editor component.
+ * Recipe editor component.
  */
-export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
-  const { serving, nutrients } = ingredient;
+export function RecipeEditor(props: RecipeEditorProps) {
+  const { recipe = new Recipe(), style, onDiscard, onAfterSave, onAfterDelete } = props;
+  const { serving } = recipe;
 
-  const isNewIngredient = !ingredient.id;
+  const isNewRecipe = !recipe.id;
 
   const { t } = useTranslation();
 
-  const [name, setName] = useState(ingredient.name);
+  const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(serving.value);
   const [servingUnit, setServingUnit] = useState(serving.unit);
-  const [calories, setCalories] = useState(nutrients.calories);
-  const [carbs, setCarbs] = useState(nutrients.carbs);
-  const [protein, setProtein] = useState(nutrients.protein);
-  const [fat, setFat] = useState(nutrients.fat);
 
   const [canValidate, setCanValidate] = useState(false);
   const [nameIsValid, setNameIsValid] = useState(validateName(name));
@@ -62,9 +58,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [isSaveInProgress, setIsSaveInProgress] = useState(false);
   const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
 
-  const servingUnitOptions = Object.keys(ingredientServingUnits).map((unit) => ({
+  const servingUnitOptions = Object.keys(recipeServingUnits).map((unit) => ({
     value: unit,
-    label: t(ingredientServingUnits[unit as keyof typeof ingredientServingUnits]),
+    label: t(recipeServingUnits[unit as keyof typeof recipeServingUnits]),
   }));
 
   useEffect(() => {
@@ -81,7 +77,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm() && !isSaveInProgress && !isDeleteInProgress) {
-      onAfterSave(await saveIngredient());
+      onAfterSave(await saveRecipe());
     }
   }
 
@@ -93,41 +89,36 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    await deleteIngredient();
-    onAfterDelete && onAfterDelete(ingredient);
+    await deleteRecipe();
+    onAfterDelete && onAfterDelete(recipe);
   }
 
-  async function saveIngredient() {
+  async function saveRecipe() {
     setIsSaveInProgress(true);
-    const ingredientToSave = new Ingredient({
-      id: ingredient.id,
+    const recipeToSave = new Recipe({
+      id: recipe.id,
       name,
       serving: {
         value: servingValue,
         unit: servingUnit,
       },
-      nutrients: {
-        calories,
-        carbs,
-        protein,
-        fat,
-      },
+      ingredients: [],
     });
 
-    let savedIngredient: Ingredient;
-    if (isNewIngredient) {
-      savedIngredient = await ingredientService.createIngredient(ingredientToSave);
+    let savedRecipe: Recipe;
+    if (isNewRecipe) {
+      savedRecipe = await recipeService.createRecipe(recipeToSave);
     } else {
-      savedIngredient = await ingredientService.updateIngredient(ingredientToSave);
+      savedRecipe = await recipeService.updateRecipe(recipeToSave);
     }
     setIsSaveInProgress(false);
 
-    return savedIngredient;
+    return savedRecipe;
   }
 
-  async function deleteIngredient() {
+  async function deleteRecipe() {
     setIsDeleteInProgress(true);
-    await ingredientService.deleteIngredient(ingredient);
+    await recipeService.deleteRecipe(recipe);
     setIsDeleteInProgress(false);
   }
 
@@ -144,8 +135,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
     return value > 0;
   }
 
-  function validateServingUnit(value: keyof typeof ingredientServingUnits) {
-    return !!ingredientServingUnits[value];
+  function validateServingUnit(value: keyof typeof recipeServingUnits) {
+    return !!recipeServingUnits[value];
   }
 
   return (
@@ -153,26 +144,26 @@ export function IngredientEditor(props: IngredientEditorProps) {
       <View style={styles.buttons}>
         <AppButton
           type="secondary"
-          label={t('app.labels.discard')}
-          textColor={appTheme.colors.ingredientPrimary}
+          textColor={appTheme.colors.recipePrimary}
           style={styles.button}
+          label={t('app.labels.discard')}
           onPress={onDiscard}
         />
 
         <AppButton
-          label={t(`app.labels.${isNewIngredient ? 'create' : 'update'}`)}
           style={styles.button}
           isLoading={isSaveInProgress}
-          backgroundColor={appTheme.colors.ingredientPrimary}
+          backgroundColor={appTheme.colors.recipePrimary}
+          label={t(`app.labels.${isNewRecipe ? 'create' : 'update'}`)}
           onPress={onSaveButtonPress}
         />
 
-        {!isNewIngredient && (
+        {!isNewRecipe && (
           <AppButton
             type="danger"
-            label={t('app.labels.delete')}
             style={styles.button}
             isLoading={isDeleteInProgress}
+            label={t('app.labels.delete')}
             onPress={onDeleteButtonPress}
           />
         )}
@@ -203,41 +194,10 @@ export function IngredientEditor(props: IngredientEditorProps) {
         />
       </View>
 
-      <AppNumberInput
-        label={t('app.labels.calories')}
-        postfix={t('app.units.kcal')}
-        style={styles.row}
-        value={calories}
-        onChangeValue={setCalories}
-      />
-
-      <AppNumberInput
-        label={t('app.labels.carbs')}
-        postfix={t('app.units.g')}
-        style={styles.row}
-        value={carbs}
-        onChangeValue={setCarbs}
-      />
-
-      <AppNumberInput
-        label={t('app.labels.protein')}
-        postfix={t('app.units.g')}
-        style={styles.row}
-        value={protein}
-        onChangeValue={setProtein}
-      />
-
-      <AppNumberInput
-        label={t('app.labels.fat')}
-        postfix={t('app.units.g')}
-        value={fat}
-        onChangeValue={setFat}
-      />
-
-      {!isNewIngredient && (
+      {!isNewRecipe && (
         <AppConfirmationModal
           isVisible={isDeleteConfirmationVisible}
-          text={t('ingredient.ingredientEditor.deleteConfirmation')}
+          text={t('recipe.recipeEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
           onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
@@ -247,6 +207,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
 }
 
 const styles = StyleSheet.create({
+  row: {
+    marginBottom: appTheme.gaps.small,
+  },
   buttons: {
     marginBottom: appTheme.gaps.medium,
     flexDirection: 'row',
@@ -255,9 +218,6 @@ const styles = StyleSheet.create({
   button: {
     flexGrow: 1,
     marginHorizontal: appTheme.gaps.small / 2,
-  },
-  row: {
-    marginBottom: appTheme.gaps.small,
   },
   servingContainer: {
     flexDirection: 'row',
