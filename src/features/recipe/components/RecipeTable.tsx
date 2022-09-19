@@ -5,44 +5,44 @@ import { DataTable } from 'react-native-paper';
 
 import { AppSearchBar, AppLoader } from 'app/components';
 import { appTheme } from 'app/theme';
-import { Ingredient } from '../models';
-import { ingredientService } from '../services';
+import { Recipe } from '../models';
+import { recipeService } from '../services';
 
-interface IngredientTableProps {
+interface RecipeTableProps {
   /**
    * Custom styles.
    */
   style?: StyleProp<ViewStyle>;
 
   /**
-   * Ingredient select event handler.
+   * Recipe select event handler.
    */
-  onSelectIngredient?: (ingredient: Ingredient) => void;
+  onSelectRecipe?: (recipe: Recipe) => void;
 }
 
 /**
- * Ingredient list component.
+ * Recipe list component.
  */
-export function IngredientTable(props: IngredientTableProps) {
-  const { style, onSelectIngredient } = props;
+export function RecipeTable(props: RecipeTableProps) {
+  const { style, onSelectRecipe } = props;
 
   const initialSearchString = '';
 
   const { t } = useTranslation();
-  const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
+  const [recipes, setRecipes] = useState<Array<Recipe>>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    loadIngredients(initialSearchString);
+    loadRecipes(initialSearchString);
   }, []);
 
   async function onSearch(searchString: string) {
-    await loadIngredients(searchString);
+    await loadRecipes(searchString);
   }
 
-  async function loadIngredients(searchString: string) {
+  async function loadRecipes(searchString: string) {
     setIsLoading(true);
-    setIngredients(await ingredientService.getIngredients(searchString));
+    setRecipes(await recipeService.getRecipes(searchString));
     setIsLoading(false);
   }
 
@@ -51,31 +51,29 @@ export function IngredientTable(props: IngredientTableProps) {
       <AppSearchBar
         style={styles.searchInput}
         initialValue={initialSearchString}
-        placeholder={t('ingredient.ingredientTable.searchPlaceholder')}
+        placeholder={t('recipe.recipeTable.searchPlaceholder')}
         onSearch={onSearch}
       />
 
       {isLoading ? (
         <AppLoader style={styles.loader} />
-      ) : ingredients.length < 1 ? (
-        <Text style={styles.noItemsText}>{t('ingredient.ingredientTable.noItems')}</Text>
+      ) : recipes.length < 1 ? (
+        <Text style={styles.noItemsText}>{t('recipe.recipeTable.noItems')}</Text>
       ) : (
         <DataTable>
           <DataTable.Header>
-          <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
-            <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
+            <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
             <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
           </DataTable.Header>
 
-          {ingredients.map((ingredient) => {
-            const { id, name, nutrients, serving } = ingredient;
+          {recipes.map((recipe) => {
+            const { id, name, serving } = recipe;
             return (
               <DataTable.Row
                 key={id}
-                onPress={() => onSelectIngredient && onSelectIngredient(ingredient)}
+                onPress={() => onSelectRecipe && onSelectRecipe(recipe)}
               >
                 <DataTable.Cell>{name}</DataTable.Cell>
-                <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
                 <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
               </DataTable.Row>
             );

@@ -4,3 +4,6 @@ export * from './AppStackScreenProps';
 export * from './AppStackTabScreenProps';
 export * from './AppTabBarIconProps';
 export * from './AppSelectOption';
+export * from './AppServing';
+export * from './AppServingUnit';
+export * from './AppNutrients';

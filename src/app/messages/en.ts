@@ -3,6 +3,7 @@ export const en = {
   'app.units.g': 'g',
   'app.units.ml': 'ml',
   'app.units.kcal': 'kcal',
+  'app.units.piece': 'piece',
 
   'app.labels.save': 'Save',
   'app.labels.delete': 'Delete',
@@ -32,9 +33,6 @@ export const en = {
 
   'ingredient.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
 
-  'ingredient.ingredientTable.name': 'Name',
-  'ingredient.ingredientTable.calories': 'Calories',
-  'ingredient.ingredientTable.serving': 'Serving',
   'ingredient.ingredientTable.searchPlaceholder': 'Search for ingredients',
   'ingredient.ingredientTable.noItems': 'No ingredients to display',
 
@@ -44,8 +42,12 @@ export const en = {
 
   // Recipe
   'recipe.recipeHomeScreen.title': 'Recipes',
+  'recipe.recipeHomeScreen.createRecipe': 'Create recipe',
 
   'recipe.recipeCreateScreen.title': 'Create recipe',
 
   'recipe.recipeEditScreen.title': 'Edit recipe',
+
+  'recipe.recipeTable.searchPlaceholder': 'Search for recipes',
+  'recipe.recipeTable.noItems': 'No recipes to display',
 };

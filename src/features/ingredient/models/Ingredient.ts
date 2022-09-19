@@ -1,10 +1,10 @@
-import { IngredientServingUnit } from './IngredientServingUnit';
+import { AppServing, AppNutrients } from 'app/models';
 
 export class Ingredient {
   public id: string;
   public name: string;
-  public serving: Serving;
-  public nutrients: Nutrients;
+  public serving: AppServing;
+  public nutrients: AppNutrients;
 
   constructor(props?: IngredientProps) {
     const { serving, nutrients } = props || {};
@@ -24,21 +24,9 @@ export class Ingredient {
   }
 }
 
-interface Serving {
-  value: number;
-  unit: IngredientServingUnit;
-}
-
-interface Nutrients {
-  calories: number;
-  carbs: number;
-  protein: number;
-  fat: number;
-}
-
 interface IngredientProps {
   id: string;
   name: string;
-  serving: Serving;
-  nutrients: Nutrients;
+  serving: AppServing;
+  nutrients: AppNutrients;
 }
