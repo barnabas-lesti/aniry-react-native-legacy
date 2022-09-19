@@ -10,6 +10,8 @@ export const en = {
   'app.labels.ok': 'OK',
   'app.labels.cancel': 'Cancel',
   'app.labels.confirm': 'Confirm',
+  'app.labels.create': 'Create',
+  'app.labels.update': 'Update',
   'app.labels.name': 'Name',
   'app.labels.serving': 'Serving',
   'app.labels.calories': 'Calories',
@@ -28,10 +30,6 @@ export const en = {
 
   'ingredient.ingredientEditScreen.title': 'Edit ingredient',
 
-  'ingredient.ingredientEditor.buttons.create': 'Create',
-  'ingredient.ingredientEditor.buttons.update': 'Update',
-  'ingredient.ingredientEditor.buttons.discard': 'Discard',
-  'ingredient.ingredientEditor.buttons.delete': 'Delete',
   'ingredient.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
 
   'ingredient.ingredientTable.name': 'Name',
@@ -43,4 +41,11 @@ export const en = {
   'ingredient.notifications.created': 'Ingredient successfully created!',
   'ingredient.notifications.updated': 'Ingredient successfully updated!',
   'ingredient.notifications.deleted': 'Ingredient successfully deleted!',
+
+  // Recipe
+  'recipe.recipeHomeScreen.title': 'Recipes',
+
+  'recipe.recipeCreateScreen.title': 'Create recipe',
+
+  'recipe.recipeEditScreen.title': 'Edit recipe',
 };

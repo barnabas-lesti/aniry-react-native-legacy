@@ -211,14 +211,14 @@ export function IngredientEditor(props: IngredientEditorProps) {
       <AppButton
         style={styles.row}
         isLoading={isSaveInProgress}
-        label={t(`ingredient.ingredientEditor.buttons.${isNewIngredient ? 'create' : 'update'}`)}
+        label={t(`app.labels.${isNewIngredient ? 'create' : 'update'}`)}
         onPress={onSaveButtonPress}
       />
 
       <AppButton
         type="secondary"
         style={styles.row}
-        label={t('ingredient.ingredientEditor.buttons.discard')}
+        label={t('app.labels.discard')}
         onPress={onDiscard}
       />
 
@@ -226,7 +226,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
         <AppButton
           type="danger"
           isLoading={isDeleteInProgress}
-          label={t('ingredient.ingredientEditor.buttons.delete')}
+          label={t('app.labels.delete')}
           onPress={onDeleteButtonPress}
         />
       )}
