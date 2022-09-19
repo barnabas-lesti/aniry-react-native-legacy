@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
 import { appTheme } from '../theme';
@@ -68,15 +68,16 @@ export function AppButton(props: AppButtonProps) {
   }
 
   return (
-    <Button
-      onPress={onPress}
-      mode={getMode()}
-      style={style}
-      loading={isLoading}
-      buttonColor={getBackgroundColor()}
-      textColor={getTextColor()}
-    >
-      {label}
-    </Button>
+    <View style={style}>
+      <Button
+        onPress={onPress}
+        mode={getMode()}
+        loading={isLoading}
+        buttonColor={getBackgroundColor()}
+        textColor={getTextColor()}
+      >
+        {label}
+      </Button>
+    </View>
   );
 }

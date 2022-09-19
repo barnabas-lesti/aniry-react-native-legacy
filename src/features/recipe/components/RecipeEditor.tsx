@@ -140,57 +140,58 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   return (
     <View style={style}>
-      <View style={styles.inputs}>
-        <AppTextInput
-          label={t('app.labels.name')}
-          style={styles.row}
-          value={name}
-          isInvalid={canValidate && !nameIsValid}
-          onChangeValue={setName}
+      <View style={styles.buttons}>
+        <AppButton
+          type="secondary"
+          textColor={appTheme.colors.recipePrimary}
+          style={styles.button}
+          label={t('app.labels.discard')}
+          onPress={onDiscard}
         />
 
-        <View style={[styles.row, styles.servingContainer]}>
-          <AppNumberInput
-            style={styles.servingValue}
-            label={t('app.labels.serving')}
-            value={servingValue}
-            isInvalid={canValidate && !servingValueIsValid}
-            onChangeValue={setServingValue}
+        <AppButton
+          style={styles.button}
+          isLoading={isSaveInProgress}
+          backgroundColor={appTheme.colors.recipePrimary}
+          label={t(`app.labels.${isNewRecipe ? 'create' : 'update'}`)}
+          onPress={onSaveButtonPress}
+        />
+
+        {!isNewRecipe && (
+          <AppButton
+            type="danger"
+            style={styles.button}
+            isLoading={isDeleteInProgress}
+            label={t('app.labels.delete')}
+            onPress={onDeleteButtonPress}
           />
-          <AppSelectInput
-            style={styles.servingUnit}
-            options={servingUnitOptions}
-            value={servingUnit}
-            isInvalid={canValidate && !servingUnitIsValid}
-            onChangeValue={setServingUnit}
-          />
-        </View>
+        )}
       </View>
 
-      <AppButton
+      <AppTextInput
+        label={t('app.labels.name')}
         style={styles.row}
-        isLoading={isSaveInProgress}
-        backgroundColor={appTheme.colors.recipePrimary}
-        label={t(`app.labels.${isNewRecipe ? 'create' : 'update'}`)}
-        onPress={onSaveButtonPress}
+        value={name}
+        isInvalid={canValidate && !nameIsValid}
+        onChangeValue={setName}
       />
 
-      <AppButton
-        type="secondary"
-        textColor={appTheme.colors.recipePrimary}
-        style={styles.row}
-        label={t('app.labels.discard')}
-        onPress={onDiscard}
-      />
-
-      {!isNewRecipe && (
-        <AppButton
-          type="danger"
-          isLoading={isDeleteInProgress}
-          label={t('app.labels.delete')}
-          onPress={onDeleteButtonPress}
+      <View style={[styles.row, styles.servingContainer]}>
+        <AppNumberInput
+          style={styles.servingValue}
+          label={t('app.labels.serving')}
+          value={servingValue}
+          isInvalid={canValidate && !servingValueIsValid}
+          onChangeValue={setServingValue}
         />
-      )}
+        <AppSelectInput
+          style={styles.servingUnit}
+          options={servingUnitOptions}
+          value={servingUnit}
+          isInvalid={canValidate && !servingUnitIsValid}
+          onChangeValue={setServingUnit}
+        />
+      </View>
 
       {!isNewRecipe && (
         <AppConfirmationModal
@@ -208,8 +209,14 @@ const styles = StyleSheet.create({
   row: {
     marginBottom: appTheme.gaps.small,
   },
-  inputs: {
+  buttons: {
     marginBottom: appTheme.gaps.medium,
+    flexDirection: 'row',
+    marginHorizontal: appTheme.gaps.small / -2,
+  },
+  button: {
+    flexGrow: 1,
+    marginHorizontal: appTheme.gaps.small / 2,
   },
   servingContainer: {
     flexDirection: 'row',
