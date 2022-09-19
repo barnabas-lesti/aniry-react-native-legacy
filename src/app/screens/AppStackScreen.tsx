@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { HomeScreen } from 'features/home';
 import { IngredientStackScreen } from 'features/ingredient';
+import { RecipeStackScreen } from 'features/recipe';
 import { appTheme } from '../theme';
 import { AppStackParamList, AppTabBarIconProps, AppScreenOptions } from '../models';
 import { AppIcon } from '../components';
@@ -25,13 +26,21 @@ const screens = [
     name: 'Home',
     titleKey: 'home.homeScreen.title',
     Component: HomeScreen,
-    tabBarIcon: tabBarIconFactory('home'),
+    tabBarIcon: tabBarIconFactory(appTheme.icons.home),
   },
   {
     name: 'Ingredient',
     headerShown: false,
     Component: IngredientStackScreen,
-    tabBarIcon: tabBarIconFactory('food-apple'),
+    tabBarIcon: tabBarIconFactory(appTheme.icons.ingredient),
+    activeColor: appTheme.colors.ingredientPrimary,
+  },
+  {
+    name: 'Recipe',
+    headerShown: false,
+    Component: RecipeStackScreen,
+    tabBarIcon: tabBarIconFactory(appTheme.icons.recipe),
+    activeColor: appTheme.colors.recipePrimary,
   },
 ] as AppScreenOptions[];
 
@@ -43,7 +52,7 @@ export function AppStackScreen() {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        {screens.map(({ name, titleKey, headerShown, Component, tabBarIcon }) => (
+        {screens.map(({ name, titleKey, headerShown, activeColor, Component, tabBarIcon }) => (
           <Tab.Screen
             key={name}
             name={name}
@@ -52,7 +61,7 @@ export function AppStackScreen() {
               title: titleKey && t(titleKey),
               tabBarIcon,
               tabBarLabel: '',
-              tabBarActiveTintColor: appTheme.colors.primary,
+              tabBarActiveTintColor: activeColor || appTheme.colors.primary,
               headerShown,
             }}
           />

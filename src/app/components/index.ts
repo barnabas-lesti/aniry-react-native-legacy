@@ -7,3 +7,4 @@ export * from './AppConfirmationModal';
 export * from './AppIcon';
 export * from './AppSearchBar';
 export * from './AppLoader';
+export * from './AppNotification';

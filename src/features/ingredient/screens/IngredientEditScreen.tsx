@@ -3,9 +3,8 @@ import { StyleSheet, ScrollView } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
 import { appTheme } from 'app/theme';
-import { Ingredient, IngredientStackParamList } from '../models';
+import { IngredientStackParamList } from '../models';
 import { IngredientEditor } from '../components';
-import { ingredientService } from '../services';
 
 type IngredientEditScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientEdit'>;
 
@@ -20,23 +19,25 @@ export function IngredientEditScreen(props: IngredientEditScreenProps) {
     },
   } = props;
 
-  async function onSave(ingredientToSave: Ingredient) {
-    await ingredientService.saveIngredient(ingredientToSave);
+  function onAfterSave() {
     navigation.push('IngredientHome');
   }
 
-  async function onDelete(ingredientToDelete: Ingredient) {
-    await ingredientService.deleteIngredient(ingredientToDelete);
+  function onAfterDelete() {
     navigation.push('IngredientHome');
+  }
+
+  function onDiscard() {
+    navigation.goBack();
   }
 
   return (
     <ScrollView style={styles.container}>
       <IngredientEditor
         ingredient={ingredient}
-        onDiscard={() => navigation.goBack()}
-        onSave={onSave}
-        onDelete={onDelete}
+        onDiscard={onDiscard}
+        onAfterSave={onAfterSave}
+        onAfterDelete={onAfterDelete}
       />
     </ScrollView>
   );

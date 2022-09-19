@@ -3,16 +3,16 @@ import { StyleSheet, View } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
 import { appTheme } from 'app/theme';
-import { IngredientStackParamList } from '../models';
-import { IngredientEditor } from '../components';
+import { RecipeStackParamList } from '../models';
+import { RecipeEditor } from '../components';
 
-type IngredientCreateScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientCreate'>;
+type RecipeCreateScreenProps = AppStackScreenProps<RecipeStackParamList, 'RecipeCreate'>;
 
-export function IngredientCreateScreen(props: IngredientCreateScreenProps) {
+export function RecipeCreateScreen(props: RecipeCreateScreenProps) {
   const { navigation } = props;
 
   function onAfterSave() {
-    navigation.push('IngredientHome');
+    navigation.push('RecipeHome');
   }
 
   function onDiscard() {
@@ -21,7 +21,7 @@ export function IngredientCreateScreen(props: IngredientCreateScreenProps) {
 
   return (
     <View style={styles.container}>
-      <IngredientEditor
+      <RecipeEditor
         onDiscard={onDiscard}
         onAfterSave={onAfterSave}
       />

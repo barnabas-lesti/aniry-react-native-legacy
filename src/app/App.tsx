@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
 
+import { AppNotification } from './components';
 import { AppStackScreen } from './screens';
 import { appLocalizationService } from './services';
 import { appTheme } from './theme';
@@ -14,6 +15,8 @@ export function App() {
   return (
     <PaperProvider theme={appTheme}>
       <AppStackScreen />
+
+      <AppNotification />
     </PaperProvider>
   );
 }

@@ -4,4 +4,5 @@
 export type AppStackParamList = {
   Home: undefined;
   Ingredient: undefined;
+  Recipe: undefined;
 };
