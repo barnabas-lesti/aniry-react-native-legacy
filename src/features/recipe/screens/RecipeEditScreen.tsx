@@ -1,16 +1,29 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, ScrollView } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
 import { appTheme } from 'app/theme';
 import { RecipeStackParamList } from '../models';
+import { RecipeEditor } from '../components';
 
 type RecipeEditScreenProps = AppStackScreenProps<RecipeStackParamList, 'RecipeEdit'>;
 
+/**
+ * Recipe editing screen.
+ */
 export function RecipeEditScreen(props: RecipeEditScreenProps) {
-  const { navigation } = props;
+  const {
+    navigation,
+    route: {
+      params: { recipe },
+    },
+  } = props;
 
   function onAfterSave() {
+    navigation.push('RecipeHome');
+  }
+
+  function onAfterDelete() {
     navigation.push('RecipeHome');
   }
 
@@ -19,9 +32,14 @@ export function RecipeEditScreen(props: RecipeEditScreenProps) {
   }
 
   return (
-    <View style={styles.container}>
-      <Text>RecipeCreateScreen</Text>
-    </View>
+    <ScrollView style={styles.container}>
+      <RecipeEditor
+        recipe={recipe}
+        onDiscard={onDiscard}
+        onAfterSave={onAfterSave}
+        onAfterDelete={onAfterDelete}
+      />
+    </ScrollView>
   );
 }
 

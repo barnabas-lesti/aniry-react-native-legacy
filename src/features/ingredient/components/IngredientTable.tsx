@@ -62,7 +62,7 @@ export function IngredientTable(props: IngredientTableProps) {
       ) : (
         <DataTable>
           <DataTable.Header>
-          <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
+            <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
             <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
             <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
           </DataTable.Header>

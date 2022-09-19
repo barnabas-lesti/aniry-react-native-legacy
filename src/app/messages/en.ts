@@ -4,6 +4,7 @@ export const en = {
   'app.units.ml': 'ml',
   'app.units.kcal': 'kcal',
   'app.units.piece': 'piece',
+  'app.units.plate': 'plate',
 
   'app.labels.save': 'Save',
   'app.labels.delete': 'Delete',
@@ -50,4 +51,6 @@ export const en = {
 
   'recipe.recipeTable.searchPlaceholder': 'Search for recipes',
   'recipe.recipeTable.noItems': 'No recipes to display',
+
+  'recipe.recipeEditor.deleteConfirmation': 'Are you sure you want to delete the recipe?',
 };
