@@ -1,4 +1,4 @@
-import { appStorageService } from 'app/services';
+import { appStorageService, appNotificationService } from 'app/services';
 import { Ingredient } from '../models';
 
 class IngredientService {
@@ -21,19 +21,35 @@ class IngredientService {
   }
 
   /**
-   * Saves the provided ingredient in storage.
-   * @param ingredient Ingredient to save.
+   * Creates a new ingredient in storage.
+   * @param ingredient Ingredient to create.
+   * @returns Created ingredient.
    */
-  async saveIngredient(ingredient: Ingredient) {
-    return await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
+  async createIngredient(ingredient: Ingredient): Promise<Ingredient> {
+    const createdIngredient = await this.saveIngredient(ingredient);
+    appNotificationService.pushNotification('ingredient.notifications.created');
+    return createdIngredient;
+  }
+
+  /**
+   * Updates the ingredient in storage.
+   * @param ingredient Ingredient to update.
+   * @returns Updated ingredient.
+   */
+  async updateIngredient(ingredient: Ingredient): Promise<Ingredient> {
+    const createdIngredient = await this.saveIngredient(ingredient);
+    appNotificationService.pushNotification('ingredient.notifications.updated');
+    return createdIngredient;
   }
 
   /**
    * Removes the provided ingredient from storage.
    * @param ingredientId Ingredient to remove.
    */
-  async deleteIngredient(ingredient: Ingredient) {
+  async deleteIngredient(ingredient: Ingredient): Promise<Ingredient> {
     await appStorageService.deleteOne<Ingredient>(this.COLLECTION_NAME, ingredient);
+    appNotificationService.pushNotification('ingredient.notifications.deleted');
+    return ingredient;
   }
 
   /**
@@ -49,6 +65,15 @@ class IngredientService {
         return 0;
       }),
     ];
+  }
+
+  /**
+   * Saves the provided ingredient in storage.
+   * @param ingredient Ingredient to save.
+   * @returns Saved ingredient.
+   */
+  private async saveIngredient(ingredient: Ingredient): Promise<Ingredient> {
+    return await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
   }
 }
 
