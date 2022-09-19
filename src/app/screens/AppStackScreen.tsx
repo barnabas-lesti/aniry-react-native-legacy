@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { HomeScreen } from 'features/home';
 import { IngredientStackScreen } from 'features/ingredient';
+import { RecipeStackScreen } from 'features/recipe';
 import { appTheme } from '../theme';
 import { AppStackParamList, AppTabBarIconProps, AppScreenOptions } from '../models';
 import { AppIcon } from '../components';
@@ -32,6 +33,12 @@ const screens = [
     headerShown: false,
     Component: IngredientStackScreen,
     tabBarIcon: tabBarIconFactory('food-apple'),
+  },
+  {
+    name: 'Recipe',
+    headerShown: false,
+    Component: RecipeStackScreen,
+    tabBarIcon: tabBarIconFactory('food-variant'),
   },
 ] as AppScreenOptions[];
 
