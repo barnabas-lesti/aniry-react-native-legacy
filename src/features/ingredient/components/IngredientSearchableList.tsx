@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, StyleProp, ViewStyle, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
@@ -8,7 +8,12 @@ import { appTheme } from 'app/theme';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 
-interface IngredientTableProps {
+interface IngredientSearchableListProps {
+  /**
+   * Selected ingredients.
+   */
+  selectedIngredients?: Ingredient[];
+
   /**
    * Custom styles.
    */
@@ -23,8 +28,8 @@ interface IngredientTableProps {
 /**
  * Ingredient list component.
  */
-export function IngredientTable(props: IngredientTableProps) {
-  const { style, onSelectIngredient } = props;
+export function IngredientSearchableList(props: IngredientSearchableListProps) {
+  const { selectedIngredients = [], style, onSelectIngredient } = props;
 
   const initialSearchString = '';
 
@@ -46,8 +51,12 @@ export function IngredientTable(props: IngredientTableProps) {
     setIsLoading(false);
   }
 
+  function isIngredientSelected(ingredient: Ingredient) {
+    return selectedIngredients.filter(({ id }) => ingredient.id === id).length > 0;
+  }
+
   return (
-    <View style={style}>
+    <View style={[styles.container, style]}>
       <AppSearchBar
         style={styles.searchInput}
         initialValue={initialSearchString}
@@ -60,33 +69,39 @@ export function IngredientTable(props: IngredientTableProps) {
       ) : ingredients.length < 1 ? (
         <Text style={styles.noItemsText}>{t('ingredient.ingredientTable.noItems')}</Text>
       ) : (
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
-            <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
-            <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
-          </DataTable.Header>
+        <ScrollView>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
+              <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
+              <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
+            </DataTable.Header>
 
-          {ingredients.map((ingredient) => {
-            const { id, name, nutrients, serving } = ingredient;
-            return (
-              <DataTable.Row
-                key={id}
-                onPress={() => onSelectIngredient && onSelectIngredient(ingredient)}
-              >
-                <DataTable.Cell>{name}</DataTable.Cell>
-                <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
-                <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
-              </DataTable.Row>
-            );
-          })}
-        </DataTable>
+            {ingredients.map((ingredient) => {
+              const { id, name, nutrients, serving } = ingredient;
+              return (
+                <DataTable.Row
+                  style={[isIngredientSelected(ingredient) && styles.selectedRow]}
+                  key={id}
+                  onPress={() => onSelectIngredient && onSelectIngredient(ingredient)}
+                >
+                  <DataTable.Cell>{name}</DataTable.Cell>
+                  <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
+                  <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
+                </DataTable.Row>
+              );
+            })}
+          </DataTable>
+        </ScrollView>
       )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   searchInput: {
     marginBottom: appTheme.gaps.small,
   },
@@ -96,5 +111,8 @@ const styles = StyleSheet.create({
   noItemsText: {
     marginTop: appTheme.gaps.medium,
     textAlign: 'center',
+  },
+  selectedRow: {
+    backgroundColor: appTheme.colors.tableRowSelected,
   },
 });

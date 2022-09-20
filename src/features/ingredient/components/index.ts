@@ -1,2 +1,2 @@
 export * from './IngredientEditor';
-export * from './IngredientTable';
+export * from './IngredientSearchableList';

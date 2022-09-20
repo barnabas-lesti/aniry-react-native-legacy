@@ -1,14 +1,14 @@
 import { RecipeServing } from './RecipeServing';
-import { RecipeIngredient } from './RecipeIngredient';
+import { IngredientProxy } from 'features/ingredient/models';
 
 export class Recipe {
   public id: string;
   public name: string;
   public serving: RecipeServing;
-  public ingredients: RecipeIngredient[];
+  public ingredientProxies: IngredientProxy[];
 
   constructor(props?: RecipeProps) {
-    const { serving, ingredients } = props || {};
+    const { serving, ingredientProxies } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
@@ -16,7 +16,7 @@ export class Recipe {
       unit: serving?.unit || 'g',
       value: serving?.value || 0,
     };
-    this.ingredients = ingredients || [];
+    this.ingredientProxies = ingredientProxies || [];
   }
 }
 
@@ -24,5 +24,5 @@ interface RecipeProps {
   id: string;
   name: string;
   serving: RecipeServing;
-  ingredients: RecipeIngredient[];
+  ingredientProxies: IngredientProxy[];
 }

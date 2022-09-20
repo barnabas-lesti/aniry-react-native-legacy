@@ -57,4 +57,8 @@ export const en = {
   'recipe.notifications.created': 'Recipe successfully created!',
   'recipe.notifications.updated': 'Recipe successfully updated!',
   'recipe.notifications.deleted': 'Recipe successfully deleted!',
+
+  'recipe.recipeEditor.buttons.addIngredients': 'Add ingredients',
+  'recipe.recipeEditor.buttons.editIngredients': 'Edit ingredients',
+  'recipe.recipeEditor.buttons.editServings': 'Edit servings',
 };

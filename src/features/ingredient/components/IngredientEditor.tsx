@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppTextInput, AppNumberInput, AppSelectInput, AppButton, AppConfirmationModal } from 'app/components';
+import { AppTextInput, AppNumberInput, AppSelectInput, AppConfirmationDialog, AppButtonGroup } from 'app/components';
 import { appTheme } from 'app/theme';
 import { Ingredient, ingredientServingUnits } from '../models';
 import { ingredientService } from '../services';
@@ -150,33 +150,30 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   return (
     <View style={style}>
-      <View style={styles.buttons}>
-        <AppButton
-          type="secondary"
-          label={t('app.labels.discard')}
-          textColor={appTheme.colors.ingredientPrimary}
-          style={styles.button}
-          onPress={onDiscard}
-        />
-
-        <AppButton
-          label={t(`app.labels.${isNewIngredient ? 'create' : 'update'}`)}
-          style={styles.button}
-          isLoading={isSaveInProgress}
-          backgroundColor={appTheme.colors.ingredientPrimary}
-          onPress={onSaveButtonPress}
-        />
-
-        {!isNewIngredient && (
-          <AppButton
-            type="danger"
-            label={t('app.labels.delete')}
-            style={styles.button}
-            isLoading={isDeleteInProgress}
-            onPress={onDeleteButtonPress}
-          />
-        )}
-      </View>
+      <AppButtonGroup
+        style={styles.buttonGroup}
+        buttons={[
+          {
+            labelKey: 'app.labels.discard',
+            type: 'secondary',
+            textColor: appTheme.colors.ingredientPrimary,
+            onPress: onDiscard,
+          },
+          {
+            labelKey: `app.labels.${isNewIngredient ? 'create' : 'update'}`,
+            isLoading: isSaveInProgress,
+            backgroundColor: appTheme.colors.ingredientPrimary,
+            onPress: onSaveButtonPress,
+          },
+          {
+            labelKey: 'app.labels.delete',
+            type: 'danger',
+            isHidden: isNewIngredient,
+            isLoading: isDeleteInProgress,
+            onPress: onDeleteButtonPress,
+          },
+        ]}
+      />
 
       <AppTextInput
         label={t('app.labels.name')}
@@ -235,7 +232,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
       />
 
       {!isNewIngredient && (
-        <AppConfirmationModal
+        <AppConfirmationDialog
           isVisible={isDeleteConfirmationVisible}
           text={t('ingredient.ingredientEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
@@ -247,14 +244,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
 }
 
 const styles = StyleSheet.create({
-  buttons: {
+  buttonGroup: {
     marginBottom: appTheme.gaps.medium,
-    flexDirection: 'row',
-    marginHorizontal: appTheme.gaps.small / -2,
-  },
-  button: {
-    flexGrow: 1,
-    marginHorizontal: appTheme.gaps.small / 2,
   },
   row: {
     marginBottom: appTheme.gaps.small,
