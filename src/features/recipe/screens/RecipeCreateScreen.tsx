@@ -11,19 +11,11 @@ type RecipeCreateScreenProps = AppStackScreenProps<RecipeStackParamList, 'Recipe
 export function RecipeCreateScreen(props: RecipeCreateScreenProps) {
   const { navigation } = props;
 
-  function onAfterSave() {
-    navigation.push('RecipeHome');
-  }
-
-  function onDiscard() {
-    navigation.goBack();
-  }
-
   return (
     <View style={styles.container}>
       <RecipeEditor
-        onDiscard={onDiscard}
-        onAfterSave={onAfterSave}
+        onDiscard={() => navigation.goBack()}
+        onAfterSave={() => navigation.push('RecipeHome')}
       />
     </View>
   );

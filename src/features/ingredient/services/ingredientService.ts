@@ -21,12 +21,25 @@ class IngredientService {
   }
 
   /**
+   * Creates or updates an ingredient in storage.
+   * @param ingredient Ingredient to save.
+   * @returns Saved ingredient.
+   */
+  async saveIngredient(ingredient: Ingredient): Promise<Ingredient> {
+    if (ingredient.id) {
+      return this.updateIngredient(ingredient);
+    } else {
+      return this.createIngredient(ingredient);
+    }
+  }
+
+  /**
    * Creates a new ingredient in storage.
    * @param ingredient Ingredient to create.
    * @returns Created ingredient.
    */
   async createIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    const createdIngredient = await this.saveIngredient(ingredient);
+    const createdIngredient = await this.storeIngredient(ingredient);
     appNotificationService.pushNotification('ingredient.notifications.created');
     return createdIngredient;
   }
@@ -37,7 +50,7 @@ class IngredientService {
    * @returns Updated ingredient.
    */
   async updateIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    const updatedIngredient = await this.saveIngredient(ingredient);
+    const updatedIngredient = await this.storeIngredient(ingredient);
     appNotificationService.pushNotification('ingredient.notifications.updated');
     return updatedIngredient;
   }
@@ -68,11 +81,11 @@ class IngredientService {
   }
 
   /**
-   * Saves the provided ingredient in storage.
+   * Stores the provided ingredient in storage.
    * @param ingredient Ingredient to save.
    * @returns Saved ingredient.
    */
-  private async saveIngredient(ingredient: Ingredient): Promise<Ingredient> {
+  private async storeIngredient(ingredient: Ingredient): Promise<Ingredient> {
     return await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
   }
 }

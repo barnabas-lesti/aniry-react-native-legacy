@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { AppButtonGroup, AppDialog } from 'app/components';
 import { appTheme } from 'app/theme';
-import { Ingredient, IngredientSearchableList } from 'features/ingredient';
+import { Ingredient } from '../models';
+import { IngredientSearchableList } from './IngredientSearchableList';
 
-interface RecipeIngredientsEditorDialogProps {
+interface IngredientSelectorDialogProps {
   /**
    * Selected ingredients.
    */
@@ -30,9 +32,10 @@ interface RecipeIngredientsEditorDialogProps {
 /**
  * Recipe ingredient editor dialog component.
  */
-export function RecipeIngredientsEditorDialog(props: RecipeIngredientsEditorDialogProps) {
+export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
   const { selectedIngredients, isVisible, onSave, onDiscard } = props;
 
+  const { t } = useTranslation();
   const [localSelectedIngredients, setLocalSelectedIngredients] = useState(selectedIngredients);
 
   function onSelectIngredient(ingredient: Ingredient) {
@@ -65,13 +68,13 @@ export function RecipeIngredientsEditorDialog(props: RecipeIngredientsEditorDial
         style={styles.buttonGroup}
         buttons={[
           {
-            labelKey: 'app.labels.discard',
+            label: t('app.labels.discard'),
             type: 'secondary',
             textColor: appTheme.colors.ingredientPrimary,
             onPress: onDiscard,
           },
           {
-            labelKey: 'app.labels.save',
+            label: t('app.labels.save'),
             backgroundColor: appTheme.colors.ingredientPrimary,
             onPress: () => onSave(localSelectedIngredients),
           },

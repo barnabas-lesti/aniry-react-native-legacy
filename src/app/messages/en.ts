@@ -34,8 +34,9 @@ export const en = {
 
   'ingredient.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
 
-  'ingredient.ingredientTable.searchPlaceholder': 'Search for ingredients',
-  'ingredient.ingredientTable.noItems': 'No ingredients to display',
+  'ingredient.ingredientSearchableList.placeholder': 'Search for ingredients',
+
+  'ingredient.ingredientList.noItems': 'No ingredients to display',
 
   'ingredient.notifications.created': 'Ingredient successfully created!',
   'ingredient.notifications.updated': 'Ingredient successfully updated!',
@@ -49,8 +50,9 @@ export const en = {
 
   'recipe.recipeEditScreen.title': 'Edit recipe',
 
-  'recipe.recipeTable.searchPlaceholder': 'Search for recipes',
-  'recipe.recipeTable.noItems': 'No recipes to display',
+  'recipe.recipeList.noItems': 'No recipes to display',
+
+  'recipe.recipeSearchableList.placeholder': 'Search for recipes',
 
   'recipe.recipeEditor.deleteConfirmation': 'Are you sure you want to delete the recipe?',
 

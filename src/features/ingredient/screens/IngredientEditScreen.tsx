@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
 import { appTheme } from 'app/theme';
@@ -19,27 +19,15 @@ export function IngredientEditScreen(props: IngredientEditScreenProps) {
     },
   } = props;
 
-  function onAfterSave() {
-    navigation.push('IngredientHome');
-  }
-
-  function onAfterDelete() {
-    navigation.push('IngredientHome');
-  }
-
-  function onDiscard() {
-    navigation.goBack();
-  }
-
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <IngredientEditor
         ingredient={ingredient}
-        onDiscard={onDiscard}
-        onAfterSave={onAfterSave}
-        onAfterDelete={onAfterDelete}
+        onDiscard={() => navigation.goBack()}
+        onAfterSave={() => navigation.push('IngredientHome')}
+        onAfterDelete={() => navigation.push('IngredientHome')}
       />
-    </ScrollView>
+    </View>
   );
 }
 

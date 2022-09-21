@@ -13,7 +13,7 @@ export class Recipe {
     this.id = props?.id || '';
     this.name = props?.name || '';
     this.serving = {
-      unit: serving?.unit || 'g',
+      unit: serving?.unit || 'plate',
       value: serving?.value || 0,
     };
     this.ingredientProxies = ingredientProxies || [];

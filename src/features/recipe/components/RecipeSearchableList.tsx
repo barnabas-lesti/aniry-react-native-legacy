@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next';
 
 import { AppSearchBar, AppLoader } from 'app/components';
 import { appTheme } from 'app/theme';
-import { Ingredient } from '../models';
-import { ingredientService } from '../services';
-import { IngredientList } from './IngredientList';
+import { Recipe } from '../models';
+import { recipeService } from '../services';
+import { RecipeList } from './RecipeList';
 
-interface IngredientSearchableListProps {
+interface RecipeSearchableListProps {
   /**
-   * Selected ingredients.
+   * Selected recipes.
    */
-  selectedIngredients?: Ingredient[];
+  selectedRecipes?: Recipe[];
 
   /**
    * Custom styles.
@@ -20,32 +20,32 @@ interface IngredientSearchableListProps {
   style?: StyleProp<ViewStyle>;
 
   /**
-   * Ingredient select event handler.
+   * Recipe select event handler.
    */
-  onSelectIngredient?: (ingredient: Ingredient) => void;
+  onSelectRecipe?: (recipe: Recipe) => void;
 }
 
 /**
- * Ingredient searchable list component.
+ * Recipe searchable list component.
  */
-export function IngredientSearchableList(props: IngredientSearchableListProps) {
-  const { selectedIngredients = [], style, onSelectIngredient } = props;
+export function RecipeSearchableList(props: RecipeSearchableListProps) {
+  const { selectedRecipes = [], style, onSelectRecipe } = props;
 
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
-  const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
+  const [recipes, setRecipes] = useState<Array<Recipe>>([]);
 
   useEffect(() => {
-    loadIngredients('');
+    loadRecipes('');
   }, []);
 
   async function onSearch(searchString: string) {
-    await loadIngredients(searchString);
+    await loadRecipes(searchString);
   }
 
-  async function loadIngredients(searchString: string) {
+  async function loadRecipes(searchString: string) {
     setIsLoading(true);
-    setIngredients(await ingredientService.getIngredients(searchString));
+    setRecipes(await recipeService.getRecipes(searchString));
     setIsLoading(false);
   }
 
@@ -53,17 +53,17 @@ export function IngredientSearchableList(props: IngredientSearchableListProps) {
     <View style={[styles.container, style]}>
       <AppSearchBar
         style={styles.searchInput}
-        placeholder={t('ingredient.ingredientSearchableList.placeholder')}
+        placeholder={t('recipe.recipeSearchableList.placeholder')}
         onSearch={onSearch}
       />
 
       {isLoading ? (
         <AppLoader style={styles.loader} />
       ) : (
-        <IngredientList
-          ingredients={ingredients}
-          selectedIngredients={selectedIngredients}
-          onSelectIngredient={onSelectIngredient}
+        <RecipeList
+          recipes={recipes}
+          selectedRecipes={selectedRecipes}
+          onSelectRecipe={onSelectRecipe}
         />
       )}
     </View>

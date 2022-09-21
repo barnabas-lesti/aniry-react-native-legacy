@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { AppStackScreenProps } from 'app/models';
 import { AppButton } from 'app/components';
 import { appTheme } from 'app/theme';
-import { IngredientStackParamList, Ingredient } from '../models';
+import { IngredientStackParamList } from '../models';
 import { IngredientSearchableList } from '../components';
 
 type IngredientHomeScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientHome'>;
@@ -13,10 +13,6 @@ type IngredientHomeScreenProps = AppStackScreenProps<IngredientStackParamList, '
 export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   const { navigation } = props;
   const { t } = useTranslation();
-
-  function onSelectIngredient(ingredient: Ingredient) {
-    navigation.push('IngredientEdit', { ingredient });
-  }
 
   return (
     <View style={styles.container}>
@@ -27,7 +23,9 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
         onPress={() => navigation.push('IngredientCreate')}
       />
 
-      <IngredientSearchableList onSelectIngredient={onSelectIngredient} />
+      <IngredientSearchableList
+        onSelectIngredient={(ingredient) => navigation.push('IngredientEdit', { ingredient })}
+      />
     </View>
   );
 }

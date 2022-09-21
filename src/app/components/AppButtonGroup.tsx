@@ -1,12 +1,11 @@
 import React from 'react';
 import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
-import { useTranslation } from 'react-i18next';
 
 import { AppButton } from './AppButton';
 import { appTheme } from 'app/theme';
 
 interface AppButtonGroupButtonOptions {
-  labelKey: string;
+  label: string;
   type?: 'primary' | 'secondary' | 'danger';
   textColor?: string;
   backgroundColor?: string;
@@ -31,16 +30,14 @@ interface AppButtonGroupProps {
 export function AppButtonGroup(props: AppButtonGroupProps) {
   const { buttons, style } = props;
 
-  const { t } = useTranslation();
-
   return (
     <View style={[styles.buttons, style]}>
       {buttons.map((button) => {
         if (!button.isHidden)
           return (
             <AppButton
-              key={button.labelKey}
-              label={t(button.labelKey)}
+              key={button.label}
+              label={button.label}
               type={button.type || 'primary'}
               textColor={button.textColor}
               backgroundColor={button.backgroundColor}

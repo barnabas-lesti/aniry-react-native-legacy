@@ -19,12 +19,25 @@ class RecipeService {
   }
 
   /**
+   * Creates or updates a recipe in storage.
+   * @param recipe Recipe to save.
+   * @returns Saved recipe.
+   */
+  async saveRecipe(recipe: Recipe): Promise<Recipe> {
+    if (recipe.id) {
+      return this.updateRecipe(recipe);
+    } else {
+      return this.updateRecipe(recipe);
+    }
+  }
+
+  /**
    * Creates a new recipe in storage.
    * @param recipe Recipe to create.
    * @returns Created recipe.
    */
   async createRecipe(recipe: Recipe): Promise<Recipe> {
-    const createdRecipe = await this.saveRecipe(recipe);
+    const createdRecipe = await this.storeRecipe(recipe);
     appNotificationService.pushNotification('recipe.notifications.created');
     return createdRecipe;
   }
@@ -35,7 +48,7 @@ class RecipeService {
    * @returns Updated recipe.
    */
   async updateRecipe(recipe: Recipe): Promise<Recipe> {
-    const updatedRecipe = await this.saveRecipe(recipe);
+    const updatedRecipe = await this.storeRecipe(recipe);
     appNotificationService.pushNotification('recipe.notifications.updated');
     return updatedRecipe;
   }
@@ -66,11 +79,11 @@ class RecipeService {
   }
 
   /**
-   * Saves the provided recipe in storage.
+   * Stores the provided recipe in storage.
    * @param recipe Recipe to save.
    * @returns Saved recipe.
    */
-  private async saveRecipe(recipe: Recipe): Promise<Recipe> {
+  private async storeRecipe(recipe: Recipe): Promise<Recipe> {
     return await appStorageService.saveOne<Recipe>(this.COLLECTION_NAME, recipe);
   }
 }
