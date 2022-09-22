@@ -65,7 +65,7 @@ export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogPr
 
       <AppNumberInput
         label={t('app.labels.serving')}
-        postfix={t(`app.units.${ingredientProxy?.serving.unit}`)}
+        postfix={t(`app.units.${ingredientProxy?.ingredient.serving.unit}`)}
         value={servingValue}
         onChangeValue={setServingValue}
       />

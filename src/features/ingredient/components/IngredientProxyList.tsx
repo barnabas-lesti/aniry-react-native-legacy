@@ -52,7 +52,7 @@ export function IngredientProxyList(props: IngredientProxyListProps) {
               >
                 <DataTable.Cell>{ingredient.name}</DataTable.Cell>
                 <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
-                <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
+                <DataTable.Cell numeric>{`${serving.value} ${ingredient.serving.unit}`}</DataTable.Cell>
               </DataTable.Row>
             );
           })}

@@ -1,15 +1,13 @@
 import { AppNutrients } from 'app/models';
 import { Ingredient } from './Ingredient';
-import { IngredientServing } from './IngredientServing';
 
 export class IngredientProxy {
-  public serving: IngredientServing;
   public ingredient: Ingredient;
+  public serving: IngredientProxyServing;
 
   constructor(props: IngredientProxyProps) {
     this.ingredient = props.ingredient;
     this.serving = {
-      unit: this.ingredient.serving.unit,
       value: props.serving.value,
     };
   }
@@ -33,8 +31,10 @@ export class IngredientProxy {
 }
 
 interface IngredientProxyProps {
-  serving: {
-    value: number;
-  };
+  serving: IngredientProxyServing;
   ingredient: Ingredient;
+}
+
+interface IngredientProxyServing {
+  value: number;
 }

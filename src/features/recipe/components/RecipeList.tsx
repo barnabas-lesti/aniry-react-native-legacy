@@ -48,11 +48,12 @@ export function RecipeList(props: RecipeListProps) {
         <DataTable>
           <DataTable.Header>
             <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
+            <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
             <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
           </DataTable.Header>
 
           {recipes.map((recipe) => {
-            const { id, name, serving } = recipe;
+            const { id, name, serving, nutrients } = recipe;
             return (
               <DataTable.Row
                 style={[isRecipeSelected(recipe) && styles.selectedRow]}
@@ -60,6 +61,7 @@ export function RecipeList(props: RecipeListProps) {
                 onPress={() => onSelectRecipe && onSelectRecipe(recipe)}
               >
                 <DataTable.Cell>{name}</DataTable.Cell>
+                <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
                 <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
               </DataTable.Row>
             );
