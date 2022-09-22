@@ -1,14 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, StyleProp, ViewStyle } from 'react-native';
+import React from 'react';
+import { StyleSheet, StyleProp, ViewStyle, ScrollView, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
-import { AppSearchBar, AppLoader } from 'app/components';
 import { appTheme } from 'app/theme';
 import { Ingredient } from '../models';
-import { ingredientService } from '../services';
 
-interface IngredientTableProps {
+interface IngredientListProps {
+  /**
+   * Ingredients to display.
+   */
+  ingredients: Ingredient[];
+
+  /**
+   * Selected ingredients.
+   */
+  selectedIngredients?: Ingredient[];
+
   /**
    * Custom styles.
    */
@@ -23,42 +31,19 @@ interface IngredientTableProps {
 /**
  * Ingredient list component.
  */
-export function IngredientTable(props: IngredientTableProps) {
-  const { style, onSelectIngredient } = props;
-
-  const initialSearchString = '';
+export function IngredientList(props: IngredientListProps) {
+  const { ingredients, selectedIngredients = [], style, onSelectIngredient } = props;
 
   const { t } = useTranslation();
-  const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    loadIngredients(initialSearchString);
-  }, []);
-
-  async function onSearch(searchString: string) {
-    await loadIngredients(searchString);
-  }
-
-  async function loadIngredients(searchString: string) {
-    setIsLoading(true);
-    setIngredients(await ingredientService.getIngredients(searchString));
-    setIsLoading(false);
+  function isIngredientSelected(ingredient: Ingredient) {
+    return !!selectedIngredients.filter(({ id }) => ingredient.id === id).length;
   }
 
   return (
-    <View style={style}>
-      <AppSearchBar
-        style={styles.searchInput}
-        initialValue={initialSearchString}
-        placeholder={t('ingredient.ingredientTable.searchPlaceholder')}
-        onSearch={onSearch}
-      />
-
-      {isLoading ? (
-        <AppLoader style={styles.loader} />
-      ) : ingredients.length < 1 ? (
-        <Text style={styles.noItemsText}>{t('ingredient.ingredientTable.noItems')}</Text>
+    <ScrollView style={[styles.container, style]}>
+      {!ingredients.length ? (
+        <Text style={styles.noItems}>{t('ingredient.ingredientList.noItems')}</Text>
       ) : (
         <DataTable>
           <DataTable.Header>
@@ -71,6 +56,7 @@ export function IngredientTable(props: IngredientTableProps) {
             const { id, name, nutrients, serving } = ingredient;
             return (
               <DataTable.Row
+                style={[isIngredientSelected(ingredient) && styles.selectedRow]}
                 key={id}
                 onPress={() => onSelectIngredient && onSelectIngredient(ingredient)}
               >
@@ -82,18 +68,18 @@ export function IngredientTable(props: IngredientTableProps) {
           })}
         </DataTable>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  searchInput: {
-    marginBottom: appTheme.gaps.small,
+  container: {
+    flex: 1,
   },
-  loader: {
-    marginTop: appTheme.gaps.medium,
+  selectedRow: {
+    backgroundColor: appTheme.colors.tableRowSelected,
   },
-  noItemsText: {
+  noItems: {
     marginTop: appTheme.gaps.medium,
     textAlign: 'center',
   },

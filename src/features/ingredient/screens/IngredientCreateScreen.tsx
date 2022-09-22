@@ -8,22 +8,17 @@ import { IngredientEditor } from '../components';
 
 type IngredientCreateScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientCreate'>;
 
+/**
+ * Ingredient create screen.
+ */
 export function IngredientCreateScreen(props: IngredientCreateScreenProps) {
   const { navigation } = props;
-
-  function onAfterSave() {
-    navigation.push('IngredientHome');
-  }
-
-  function onDiscard() {
-    navigation.goBack();
-  }
 
   return (
     <View style={styles.container}>
       <IngredientEditor
-        onDiscard={onDiscard}
-        onAfterSave={onAfterSave}
+        onDiscard={() => navigation.goBack()}
+        onAfterSave={() => navigation.push('IngredientHome')}
       />
     </View>
   );

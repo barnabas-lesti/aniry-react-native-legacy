@@ -1,4 +1,5 @@
 import { appStorageService, appNotificationService } from 'app/services';
+import { recipeService } from 'features/recipe/services';
 import { Ingredient } from '../models';
 
 class IngredientService {
@@ -9,7 +10,9 @@ class IngredientService {
    * @returns Array of ingredients.
    */
   async getIngredients(searchString?: string) {
-    const ingredients = await appStorageService.getAll<Ingredient>(this.COLLECTION_NAME);
+    const ingredients = (await appStorageService.getAll<Ingredient>(this.COLLECTION_NAME)).map(
+      (ingredient) => new Ingredient(ingredient)
+    );
 
     if (searchString) {
       return ingredients.filter(
@@ -21,12 +24,34 @@ class IngredientService {
   }
 
   /**
+   * Loads the ingredient from storage with the given ID.
+   * @param id ID of the ingredient.
+   * @returns The ingredient or null.
+   */
+  async getIngredientById(id: string): Promise<Ingredient | null> {
+    return (await this.getIngredients()).filter((ingredient) => ingredient.id === id)[0] || null;
+  }
+
+  /**
+   * Creates or updates an ingredient in storage.
+   * @param ingredient Ingredient to save.
+   * @returns Saved ingredient.
+   */
+  async saveIngredient(ingredient: Ingredient): Promise<Ingredient> {
+    if (ingredient.id) {
+      return this.updateIngredient(ingredient);
+    } else {
+      return this.createIngredient(ingredient);
+    }
+  }
+
+  /**
    * Creates a new ingredient in storage.
    * @param ingredient Ingredient to create.
    * @returns Created ingredient.
    */
   async createIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    const createdIngredient = await this.saveIngredient(ingredient);
+    const createdIngredient = await this.storeIngredient(ingredient);
     appNotificationService.pushNotification('ingredient.notifications.created');
     return createdIngredient;
   }
@@ -37,7 +62,8 @@ class IngredientService {
    * @returns Updated ingredient.
    */
   async updateIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    const updatedIngredient = await this.saveIngredient(ingredient);
+    const updatedIngredient = await this.storeIngredient(ingredient);
+    await recipeService.updateIngredientInRecipes(updatedIngredient);
     appNotificationService.pushNotification('ingredient.notifications.updated');
     return updatedIngredient;
   }
@@ -47,6 +73,7 @@ class IngredientService {
    * @param ingredient Ingredient to remove.
    */
   async deleteIngredient(ingredient: Ingredient): Promise<Ingredient> {
+    await recipeService.deleteIngredientFromRecipes(ingredient);
     await appStorageService.deleteOne<Ingredient>(this.COLLECTION_NAME, ingredient);
     appNotificationService.pushNotification('ingredient.notifications.deleted');
     return ingredient;
@@ -68,12 +95,12 @@ class IngredientService {
   }
 
   /**
-   * Saves the provided ingredient in storage.
+   * Stores the provided ingredient in storage.
    * @param ingredient Ingredient to save.
    * @returns Saved ingredient.
    */
-  private async saveIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    return await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient);
+  private async storeIngredient(ingredient: Ingredient): Promise<Ingredient> {
+    return new Ingredient(await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient));
   }
 }
 

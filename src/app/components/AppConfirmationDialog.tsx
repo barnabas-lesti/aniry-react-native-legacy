@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 
-interface AppConfirmationModalProps {
+interface AppConfirmationDialogProps {
   /**
    * Visibility indicator.
    */
@@ -25,9 +25,9 @@ interface AppConfirmationModalProps {
 }
 
 /**
- * Application confirmation modal component.
+ * Application confirmation dialog component.
  */
-export function AppConfirmationModal(props: AppConfirmationModalProps) {
+export function AppConfirmationDialog(props: AppConfirmationDialogProps) {
   const { isVisible, text, onConfirmation, onCancel } = props;
 
   const { t } = useTranslation();
