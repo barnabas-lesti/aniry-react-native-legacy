@@ -16,7 +16,7 @@ export class Recipe {
       unit: serving?.unit || 'plate',
       value: serving?.value || 0,
     };
-    this.ingredientProxies = ingredientProxies || [];
+    this.ingredientProxies = ingredientProxies?.map((ingredientProxy) => new IngredientProxy(ingredientProxy)) || [];
   }
 }
 

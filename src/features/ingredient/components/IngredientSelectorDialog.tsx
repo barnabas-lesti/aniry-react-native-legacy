@@ -30,7 +30,7 @@ interface IngredientSelectorDialogProps {
 }
 
 /**
- * Recipe ingredient editor dialog component.
+ * Ingredient editor dialog component.
  */
 export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
   const { selectedIngredients, isVisible, onSave, onDiscard } = props;

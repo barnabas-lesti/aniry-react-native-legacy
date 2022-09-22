@@ -38,6 +38,8 @@ export const en = {
 
   'ingredient.ingredientList.noItems': 'No ingredients to display',
 
+  'ingredient.ingredientProxyList.noItems': 'No ingredients to display',
+
   'ingredient.notifications.created': 'Ingredient successfully created!',
   'ingredient.notifications.updated': 'Ingredient successfully updated!',
   'ingredient.notifications.deleted': 'Ingredient successfully deleted!',

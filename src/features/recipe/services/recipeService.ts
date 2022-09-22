@@ -1,4 +1,5 @@
 import { appNotificationService, appStorageService } from 'app/services';
+import { Ingredient, IngredientProxy } from 'features/ingredient/models';
 import { Recipe } from '../models';
 
 class RecipeService {
@@ -9,13 +10,17 @@ class RecipeService {
    * @returns Array of recipes.
    */
   async getRecipes(searchString?: string) {
-    const recipes = await appStorageService.getAll<Recipe>(this.COLLECTION_NAME);
+    const recipes = (await appStorageService.getAll<Recipe>(this.COLLECTION_NAME)).map((recipe) => new Recipe(recipe));
 
     if (searchString) {
       return recipes.filter((recipe) => recipe.name.toLowerCase().search(searchString.toLowerCase()) !== -1);
     }
 
     return this.sortRecipesByName(recipes);
+  }
+
+  public isIngredientInRecipe(ingredient: Ingredient, recipe: Recipe) {
+    return !!recipe.ingredientProxies.filter((ingredientProxy) => ingredientProxy.id === ingredient.id).length;
   }
 
   /**
@@ -27,7 +32,7 @@ class RecipeService {
     if (recipe.id) {
       return this.updateRecipe(recipe);
     } else {
-      return this.updateRecipe(recipe);
+      return this.createRecipe(recipe);
     }
   }
 
@@ -54,13 +59,12 @@ class RecipeService {
   }
 
   /**
-   * Removes the provided recipe from storage.
-   * @param recipe Recipe to remove.
+   * Removes the recipe from storage.
+   * @param id ID of the recipe to remove.
    */
-  async deleteRecipe(recipe: Recipe): Promise<Recipe> {
-    await appStorageService.deleteOne<Recipe>(this.COLLECTION_NAME, recipe);
+  async deleteRecipeById(id: string): Promise<void> {
+    await appStorageService.deleteOneById<Recipe>(this.COLLECTION_NAME, id);
     appNotificationService.pushNotification('recipe.notifications.deleted');
-    return recipe;
   }
 
   /**
@@ -79,12 +83,48 @@ class RecipeService {
   }
 
   /**
+   * Removes the given ingredient from all recipes where present.
+   * @param ingredient Ingredient to remove.
+   */
+  async deleteIngredientFromRecipes(ingredient: Ingredient) {
+    const recipes = await this.getRecipes();
+    await Promise.all(
+      recipes.map(async (recipe) => {
+        if (this.isIngredientInRecipe(ingredient, recipe)) {
+          const ingredientProxies = recipe.ingredientProxies.filter(({ id }) => id !== ingredient.id);
+          await this.storeRecipe(new Recipe({ ...recipe, ingredientProxies }));
+        }
+      })
+    );
+  }
+
+  /**
+   * Updates or occurrences of the ingredient in recipes.
+   * @param ingredient Ingredient to update.
+   */
+  async updateIngredientInRecipes(ingredient: Ingredient) {
+    const recipes = await this.getRecipes();
+    await Promise.all(
+      recipes.map(async (recipe) => {
+        if (this.isIngredientInRecipe(ingredient, recipe)) {
+          const ingredientProxies = recipe.ingredientProxies.map((ingredientProxy) =>
+            ingredientProxy.id === ingredient.id
+              ? new IngredientProxy({ ...ingredientProxy, ingredient })
+              : ingredientProxy
+          );
+          await this.storeRecipe(new Recipe({ ...recipe, ingredientProxies }));
+        }
+      })
+    );
+  }
+
+  /**
    * Stores the provided recipe in storage.
    * @param recipe Recipe to save.
    * @returns Saved recipe.
    */
   private async storeRecipe(recipe: Recipe): Promise<Recipe> {
-    return await appStorageService.saveOne<Recipe>(this.COLLECTION_NAME, recipe);
+    return new Recipe(await appStorageService.saveOne<Recipe>(this.COLLECTION_NAME, recipe));
   }
 }
 

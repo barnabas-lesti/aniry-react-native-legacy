@@ -2,12 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppTextInput, AppNumberInput, AppSelectInput, AppConfirmationDialog, AppButtonGroup } from 'app/components';
+import {
+  AppTextInput,
+  AppNumberInput,
+  AppSelectInput,
+  AppConfirmationDialog,
+  AppButtonGroup,
+  AppButton,
+} from 'app/components';
 import { appTheme } from 'app/theme';
-import { Ingredient, IngredientProxy, IngredientSelectorDialog } from 'features/ingredient';
+import { Ingredient, IngredientProxyList, IngredientProxy, IngredientSelectorDialog } from 'features/ingredient';
 import { Recipe, recipeServingUnits } from '../models';
 import { recipeService } from '../services';
-import { RecipeIngredientProxyList } from './RecipeIngredientProxyList';
+import { IngredientProxyEditorDialog } from 'features/ingredient/components/IngredientProxyEditorDialog';
 
 interface RecipeEditorProps {
   /**
@@ -62,6 +69,8 @@ export function RecipeEditor(props: RecipeEditorProps) {
   const [ingredientProxies, setIngredientProxies] = useState(recipe.ingredientProxies || []);
   const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
 
+  const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<IngredientProxy | null>(null);
+
   const servingUnitOptions = Object.keys(recipeServingUnits).map((unit) => ({
     value: unit,
     label: t(recipeServingUnits[unit as keyof typeof recipeServingUnits]),
@@ -103,7 +112,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setIsDeleteConfirmationVisible(false);
 
     setIsDeleteInProgress(true);
-    await recipeService.deleteRecipe(recipe);
+    await recipeService.deleteRecipeById(recipe.id);
     setIsDeleteInProgress(false);
 
     onAfterDelete && onAfterDelete();
@@ -138,18 +147,25 @@ export function RecipeEditor(props: RecipeEditorProps) {
     return [
       ...ingredients.map((ingredient) => {
         const ingredientProxy = existingIngredientProxies.filter(({ ingredient: { id } }) => ingredient.id === id)[0];
-        return {
+        return new IngredientProxy({
           ingredient,
           serving: ingredientProxy?.serving || ingredient.serving,
-        };
+        });
       }),
     ];
   }
 
-  function onEditServings() {}
+  function onEditIngredientProxySave(updatedIngredientProxy: IngredientProxy) {
+    setSelectedIngredientProxy(null);
+    setIngredientProxies([
+      ...ingredientProxies.map((ingredientProxy) =>
+        ingredientProxy.id === updatedIngredientProxy.id ? updatedIngredientProxy : ingredientProxy
+      ),
+    ]);
+  }
 
   return (
-    <View style={style}>
+    <View style={[styles.container, style]}>
       <AppButtonGroup
         style={styles.buttonGroup}
         buttons={[
@@ -200,24 +216,16 @@ export function RecipeEditor(props: RecipeEditorProps) {
         />
       </View>
 
-      <AppButtonGroup
-        style={styles.buttonGroup}
-        buttons={[
-          {
-            label: t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`),
-            backgroundColor: appTheme.colors.ingredientPrimary,
-            onPress: () => setIsIngredientSelectorDialogVisible(true),
-          },
-          {
-            label: t('recipe.recipeEditor.buttons.editServings'),
-            backgroundColor: appTheme.colors.recipePrimary,
-            isDisabled: !ingredientProxies.length,
-            onPress: onEditServings,
-          },
-        ]}
+      <AppButton
+        label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
+        backgroundColor={appTheme.colors.ingredientPrimary}
+        onPress={() => setIsIngredientSelectorDialogVisible(true)}
       />
 
-      <RecipeIngredientProxyList ingredientProxies={ingredientProxies} />
+      <IngredientProxyList
+        ingredientProxies={ingredientProxies}
+        onSelectIngredientProxy={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+      />
 
       <IngredientSelectorDialog
         isVisible={isIngredientSelectorDialogVisible}
@@ -225,6 +233,15 @@ export function RecipeEditor(props: RecipeEditorProps) {
         onDiscard={() => setIsIngredientSelectorDialogVisible(false)}
         onSave={onEditIngredientsSave}
       />
+
+      {selectedIngredientProxy && (
+        <IngredientProxyEditorDialog
+          isVisible={!!selectedIngredientProxy}
+          ingredientProxy={selectedIngredientProxy}
+          onDiscard={() => setSelectedIngredientProxy(null)}
+          onSave={onEditIngredientProxySave}
+        />
+      )}
 
       {!isNewRecipe && (
         <AppConfirmationDialog
@@ -239,6 +256,9 @@ export function RecipeEditor(props: RecipeEditorProps) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   row: {
     marginBottom: appTheme.gaps.small,
   },
