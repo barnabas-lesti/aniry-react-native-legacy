@@ -133,7 +133,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   }
 
   return (
-    <View style={style}>
+    <View style={[styles.container, style]}>
       <AppButtonGroup
         style={styles.buttonGroup}
         buttons={[
@@ -228,6 +228,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   buttonGroup: {
     marginBottom: appTheme.gaps.medium,
   },
