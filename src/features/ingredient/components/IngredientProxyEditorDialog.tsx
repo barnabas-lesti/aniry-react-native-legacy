@@ -13,11 +13,6 @@ interface IngredientProxyEditorDialogProps {
   ingredientProxy: IngredientProxy | null;
 
   /**
-   * Visibility indicator.
-   */
-  isVisible: boolean;
-
-  /**
    * Confirmation event handler.
    */
   onSave: (ingredientProxy: IngredientProxy) => void;
@@ -26,26 +21,32 @@ interface IngredientProxyEditorDialogProps {
    * Cancellation event handler.
    */
   onDiscard: () => void;
+
+  /**
+   * On delete event handler.
+   */
+  onDelete: (ingredientProxy: IngredientProxy) => void;
 }
 
 /**
  * Ingredient proxy editor dialog.
  */
 export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogProps) {
-  const { ingredientProxy, isVisible, onSave, onDiscard } = props;
+  const { ingredientProxy, onSave, onDiscard, onDelete } = props;
 
   const { t } = useTranslation();
   const [servingValue, setServingValue] = useState(ingredientProxy?.serving.value || 0);
 
   function onBeforeSave() {
-    ingredientProxy && onSave(new IngredientProxy({ ...ingredientProxy, serving: { value: servingValue } }));
+    ingredientProxy && onSave(new IngredientProxy({ ...ingredientProxy, servingValue }));
+  }
+
+  function onBeforeDelete() {
+    ingredientProxy && onDelete(ingredientProxy);
   }
 
   return (
-    <AppDialog
-      isVisible={isVisible}
-      onDismiss={onDiscard}
-    >
+    <AppDialog onDismiss={onDiscard}>
       <AppButtonGroup
         style={styles.buttonGroup}
         buttons={[
@@ -53,12 +54,20 @@ export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogPr
             label: t('app.labels.discard'),
             type: 'secondary',
             textColor: appTheme.colors.ingredientPrimary,
+            compact: true,
             onPress: onDiscard,
           },
           {
             label: t('app.labels.save'),
             backgroundColor: appTheme.colors.ingredientPrimary,
+            compact: true,
             onPress: onBeforeSave,
+          },
+          {
+            label: t('app.labels.remove'),
+            type: 'danger',
+            compact: true,
+            onPress: onBeforeDelete,
           },
         ]}
       />

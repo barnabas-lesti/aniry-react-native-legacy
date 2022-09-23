@@ -6,7 +6,7 @@ import { appTheme } from 'app/theme';
 import { AppStackScreenProps } from 'app/models';
 import { AppButton } from 'app/components';
 import { RecipeStackParamList } from '../models';
-import { RecipeSearchableList } from '../components';
+import { RecipeList } from '../components';
 
 type RecipeHomeScreenProps = AppStackScreenProps<RecipeStackParamList, 'RecipeHome'>;
 
@@ -23,7 +23,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
         onPress={() => navigation.push('RecipeCreate')}
       />
 
-      <RecipeSearchableList onSelectRecipe={(recipe) => navigation.push('RecipeEdit', { recipe })} />
+      <RecipeList onSelectRecipe={(recipe) => navigation.push('RecipeEdit', { recipe })} />
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
 import { appTheme } from 'app/theme';
@@ -12,18 +12,16 @@ export function RecipeCreateScreen(props: RecipeCreateScreenProps) {
   const { navigation } = props;
 
   return (
-    <View style={styles.container}>
-      <RecipeEditor
-        onDiscard={() => navigation.goBack()}
-        onAfterSave={() => navigation.push('RecipeHome')}
-      />
-    </View>
+    <RecipeEditor
+      style={styles.container}
+      onDiscard={() => navigation.goBack()}
+      onAfterSave={() => navigation.push('RecipeHome')}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     padding: appTheme.gaps.medium,
-    flex: 1,
   },
 });

@@ -1,14 +1,20 @@
-import { AppNutrients } from 'app/models';
+import { AppItem, AppItemNutrients, AppItemServing } from 'app/models';
 import { Ingredient } from './Ingredient';
 
-export class IngredientProxy {
+interface IngredientProxyProps {
+  ingredient: Ingredient;
+  servingValue: number;
+}
+
+export class IngredientProxy implements AppItem {
   public ingredient: Ingredient;
-  public serving: IngredientProxyServing;
+  public serving: AppItemServing;
 
   constructor(props: IngredientProxyProps) {
     this.ingredient = props.ingredient;
     this.serving = {
-      value: props.serving.value,
+      value: props.servingValue,
+      unit: this.ingredient.serving.unit,
     };
   }
 
@@ -16,7 +22,11 @@ export class IngredientProxy {
     return this.ingredient.id;
   }
 
-  get nutrients(): AppNutrients {
+  get name() {
+    return this.ingredient.name;
+  }
+
+  get nutrients(): AppItemNutrients {
     const {
       serving: { value },
       nutrients: { calories, carbs, protein, fat },
@@ -28,13 +38,21 @@ export class IngredientProxy {
       fat: (fat / value) * this.serving.value,
     };
   }
-}
 
-interface IngredientProxyProps {
-  serving: IngredientProxyServing;
-  ingredient: Ingredient;
-}
-
-interface IngredientProxyServing {
-  value: number;
+  static mapIngredientsToIngredientProxies(
+    ingredients: Ingredient[],
+    existingIngredientProxies: IngredientProxy[] = []
+  ): IngredientProxy[] {
+    return [
+      ...ingredients.map((ingredient) => {
+        const existingIngredientProxy = existingIngredientProxies.filter(
+          ({ ingredient: { id } }) => ingredient.id === id
+        )[0];
+        return new IngredientProxy({
+          ingredient,
+          servingValue: existingIngredientProxy?.serving.value || ingredient.serving.value,
+        });
+      }),
+    ];
+  }
 }

@@ -12,6 +12,7 @@ interface AppButtonGroupButtonOptions {
   isLoading?: boolean;
   isDisabled?: boolean;
   isHidden?: boolean;
+  compact?: boolean;
   onPress: () => void;
 }
 
@@ -36,6 +37,7 @@ export function AppButtonGroup(props: AppButtonGroupProps) {
         if (!button.isHidden)
           return (
             <AppButton
+              style={styles.button}
               key={button.label}
               label={button.label}
               type={button.type || 'primary'}
@@ -43,8 +45,8 @@ export function AppButtonGroup(props: AppButtonGroupProps) {
               backgroundColor={button.backgroundColor}
               isLoading={button.isLoading}
               isDisabled={button.isDisabled}
+              compact={button.compact}
               onPress={button.onPress}
-              style={styles.button}
             />
           );
       })}

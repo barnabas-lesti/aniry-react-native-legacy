@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 
-import { HomeScreen } from 'features/home';
+// import { HomeScreen } from 'features/home';
 import { IngredientStackScreen } from 'features/ingredient';
 import { RecipeStackScreen } from 'features/recipe';
 import { appTheme } from '../theme';
@@ -22,12 +22,12 @@ const tabBarIconFactory =
     );
 
 const screens = [
-  {
-    name: 'Home',
-    titleKey: 'home.homeScreen.title',
-    Component: HomeScreen,
-    tabBarIcon: tabBarIconFactory(appTheme.icons.home),
-  },
+  // {
+  //   name: 'Home',
+  //   titleKey: 'home.homeScreen.title',
+  //   Component: HomeScreen,
+  //   tabBarIcon: tabBarIconFactory(appTheme.icons.home),
+  // },
   {
     name: 'Ingredient',
     headerShown: false,
@@ -60,7 +60,6 @@ export function AppStackScreen() {
             options={{
               title: titleKey && t(titleKey),
               tabBarIcon,
-              tabBarLabel: '',
               tabBarActiveTintColor: activeColor || appTheme.colors.primary,
               headerShown,
             }}

@@ -4,11 +4,6 @@ import { Dialog, Portal } from 'react-native-paper';
 
 interface AppDialogProps {
   /**
-   * Visibility indicator.
-   */
-  isVisible: boolean;
-
-  /**
    * Elements to be contained in the dialog popup.
    */
   children: JSX.Element | Array<JSX.Element>;
@@ -28,12 +23,12 @@ interface AppDialogProps {
  * Application dialog component.
  */
 export function AppDialog(props: AppDialogProps) {
-  const { isVisible, contentStyle, children, onDismiss } = props;
+  const { contentStyle, children, onDismiss } = props;
 
   return (
     <Portal>
       <Dialog
-        visible={isVisible}
+        visible
         onDismiss={onDismiss}
       >
         <Dialog.Content style={contentStyle}>{children}</Dialog.Content>

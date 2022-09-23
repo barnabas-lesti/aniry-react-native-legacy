@@ -11,16 +11,17 @@ interface AppCache {
 }
 
 class AppStorageService {
+  private DEBUG_REQUEST_DELAY = 0;
   private cache: AppCache = {};
 
   async getAll<T extends AppStorableItem>(collection: string) {
+    await this._debugDelayRequest();
+
     const cachedCollection: Array<T> = this.cache[collection];
 
     if (cachedCollection) {
       return cachedCollection;
     }
-
-    await this._debugDelayRequest();
 
     const jsonString = await AsyncStorage.getItem(collection);
     const items: Array<T> = jsonString != null ? JSON.parse(jsonString) : [];
@@ -82,7 +83,7 @@ class AppStorageService {
   }
 
   private async _debugDelayRequest() {
-    return new Promise((resolve) => setTimeout(resolve, 500));
+    return new Promise((resolve) => setTimeout(resolve, this.DEBUG_REQUEST_DELAY));
   }
 }
 

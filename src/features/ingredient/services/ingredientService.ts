@@ -20,7 +20,7 @@ class IngredientService {
       );
     }
 
-    return this.sortIngredientsByName(ingredients);
+    return Ingredient.sortIngredientsByName(ingredients);
   }
 
   /**
@@ -77,21 +77,6 @@ class IngredientService {
     await appStorageService.deleteOne<Ingredient>(this.COLLECTION_NAME, ingredient);
     appNotificationService.pushNotification('ingredient.notifications.deleted');
     return ingredient;
-  }
-
-  /**
-   * Sorts the ingredients by their name property.
-   * @param ingredients Ingredients to sort.
-   * @returns Sorted ingredients array.
-   */
-  sortIngredientsByName(ingredients: Array<Ingredient>) {
-    return [
-      ...ingredients.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }),
-    ];
   }
 
   /**

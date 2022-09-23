@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { AppTextInput, AppNumberInput, AppSelectInput, AppConfirmationDialog, AppButtonGroup } from 'app/components';
 import { appTheme } from 'app/theme';
-import { Ingredient, ingredientServingUnits } from '../models';
+import { appItemServingUnits } from 'app/models';
+import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 
 interface IngredientEditorProps {
@@ -62,9 +63,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [isSaveInProgress, setIsSaveInProgress] = useState(false);
   const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
 
-  const servingUnitOptions = Object.keys(ingredientServingUnits).map((unit) => ({
+  const servingUnitOptions = Object.keys(appItemServingUnits).map((unit) => ({
     value: unit,
-    label: t(ingredientServingUnits[unit as keyof typeof ingredientServingUnits]),
+    label: t(appItemServingUnits[unit as keyof typeof appItemServingUnits]),
   }));
 
   useEffect(() => {
@@ -127,12 +128,12 @@ export function IngredientEditor(props: IngredientEditorProps) {
     return value > 0;
   }
 
-  function validateServingUnit(value: keyof typeof ingredientServingUnits) {
-    return !!ingredientServingUnits[value];
+  function validateServingUnit(value: keyof typeof appItemServingUnits) {
+    return !!appItemServingUnits[value];
   }
 
   return (
-    <View style={style}>
+    <View style={[styles.container, style]}>
       <AppButtonGroup
         style={styles.buttonGroup}
         buttons={[
@@ -214,9 +215,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
         onChangeValue={setFat}
       />
 
-      {!isNewIngredient && (
+      {!isNewIngredient && isDeleteConfirmationVisible && (
         <AppConfirmationDialog
-          isVisible={isDeleteConfirmationVisible}
           text={t('ingredient.ingredientEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
           onCancel={() => setIsDeleteConfirmationVisible(false)}
@@ -227,6 +227,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   buttonGroup: {
     marginBottom: appTheme.gaps.medium,
   },

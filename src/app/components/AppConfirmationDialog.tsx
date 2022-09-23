@@ -4,11 +4,6 @@ import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 
 interface AppConfirmationDialogProps {
   /**
-   * Visibility indicator.
-   */
-  isVisible: boolean;
-
-  /**
    * Text to display for confirmation.
    */
   text: string;
@@ -28,14 +23,14 @@ interface AppConfirmationDialogProps {
  * Application confirmation dialog component.
  */
 export function AppConfirmationDialog(props: AppConfirmationDialogProps) {
-  const { isVisible, text, onConfirmation, onCancel } = props;
+  const { text, onConfirmation, onCancel } = props;
 
   const { t } = useTranslation();
 
   return (
     <Portal>
       <Dialog
-        visible={isVisible}
+        visible
         onDismiss={onCancel}
       >
         <Dialog.Content>

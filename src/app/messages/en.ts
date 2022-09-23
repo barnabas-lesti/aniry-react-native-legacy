@@ -9,6 +9,7 @@ export const en = {
   'app.labels.save': 'Save',
   'app.labels.delete': 'Delete',
   'app.labels.discard': 'Discard',
+  'app.labels.remove': 'Remove',
   'app.labels.ok': 'OK',
   'app.labels.cancel': 'Cancel',
   'app.labels.confirm': 'Confirm',
@@ -20,6 +21,9 @@ export const en = {
   'app.labels.carbs': 'Carbs',
   'app.labels.protein': 'Protein',
   'app.labels.fat': 'Fat',
+
+  'app.appItemList.searchPlaceholder': 'Search',
+  'app.appItemList.noItems': 'No items to display',
 
   // Home
   'home.homeScreen.title': 'Home',
