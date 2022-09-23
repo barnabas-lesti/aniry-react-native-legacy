@@ -2,12 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 
-interface AppConfirmationModalProps {
-  /**
-   * Visibility indicator.
-   */
-  isVisible: boolean;
-
+interface AppConfirmationDialogProps {
   /**
    * Text to display for confirmation.
    */
@@ -25,17 +20,17 @@ interface AppConfirmationModalProps {
 }
 
 /**
- * Application confirmation modal component.
+ * Application confirmation dialog component.
  */
-export function AppConfirmationModal(props: AppConfirmationModalProps) {
-  const { isVisible, text, onConfirmation, onCancel } = props;
+export function AppConfirmationDialog(props: AppConfirmationDialogProps) {
+  const { text, onConfirmation, onCancel } = props;
 
   const { t } = useTranslation();
 
   return (
     <Portal>
       <Dialog
-        visible={isVisible}
+        visible
         onDismiss={onCancel}
       >
         <Dialog.Content>

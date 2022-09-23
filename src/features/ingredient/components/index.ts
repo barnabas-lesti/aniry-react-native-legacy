@@ -1,2 +1,4 @@
 export * from './IngredientEditor';
-export * from './IngredientTable';
+export * from './IngredientList';
+export * from './IngredientProxyEditorDialog';
+export * from './IngredientSelectorDialog';

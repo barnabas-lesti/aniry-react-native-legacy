@@ -9,6 +9,7 @@ export const appTheme = {
     ingredientPrimary: '#568f4c',
     recipePrimary: '#614c23',
     error: '#993025',
+    tableRowSelected: '#dcdcdc',
   },
   icons: {
     home: 'home',

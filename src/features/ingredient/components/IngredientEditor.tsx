@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppTextInput, AppNumberInput, AppSelectInput, AppButton, AppConfirmationModal } from 'app/components';
+import { AppTextInput, AppNumberInput, AppSelectInput, AppConfirmationDialog, AppButtonGroup } from 'app/components';
 import { appTheme } from 'app/theme';
-import { Ingredient, ingredientServingUnits } from '../models';
+import { appItemServingUnits } from 'app/models';
+import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 
 interface IngredientEditorProps {
@@ -24,14 +25,14 @@ interface IngredientEditorProps {
   onDiscard: () => void;
 
   /**
-   * On save event handler.
+   * On after save event handler.
    */
-  onAfterSave: (ingredient: Ingredient) => void;
+  onAfterSave: () => void;
 
   /**
-   * On delete event handler.
+   * On after delete event handler.
    */
-  onAfterDelete?: (ingredient: Ingredient) => void;
+  onAfterDelete?: () => void;
 }
 
 /**
@@ -62,9 +63,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [isSaveInProgress, setIsSaveInProgress] = useState(false);
   const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
 
-  const servingUnitOptions = Object.keys(ingredientServingUnits).map((unit) => ({
+  const servingUnitOptions = Object.keys(appItemServingUnits).map((unit) => ({
     value: unit,
-    label: t(ingredientServingUnits[unit as keyof typeof ingredientServingUnits]),
+    label: t(appItemServingUnits[unit as keyof typeof appItemServingUnits]),
   }));
 
   useEffect(() => {
@@ -80,55 +81,38 @@ export function IngredientEditor(props: IngredientEditorProps) {
   }, [servingUnit]);
 
   async function onSaveButtonPress() {
-    if (validateForm() && !isSaveInProgress && !isDeleteInProgress) {
-      onAfterSave(await saveIngredient());
-    }
-  }
+    if (validateForm()) {
+      setIsSaveInProgress(true);
+      await ingredientService.saveIngredient(
+        new Ingredient({
+          id: ingredient.id,
+          name,
+          serving: {
+            value: servingValue,
+            unit: servingUnit,
+          },
+          nutrients: {
+            calories,
+            carbs,
+            protein,
+            fat,
+          },
+        })
+      );
+      setIsSaveInProgress(false);
 
-  function onDeleteButtonPress() {
-    if (!isSaveInProgress && !isDeleteInProgress) {
-      setIsDeleteConfirmationVisible(true);
+      onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    await deleteIngredient();
-    onAfterDelete && onAfterDelete(ingredient);
-  }
 
-  async function saveIngredient() {
-    setIsSaveInProgress(true);
-    const ingredientToSave = new Ingredient({
-      id: ingredient.id,
-      name,
-      serving: {
-        value: servingValue,
-        unit: servingUnit,
-      },
-      nutrients: {
-        calories,
-        carbs,
-        protein,
-        fat,
-      },
-    });
-
-    let savedIngredient: Ingredient;
-    if (isNewIngredient) {
-      savedIngredient = await ingredientService.createIngredient(ingredientToSave);
-    } else {
-      savedIngredient = await ingredientService.updateIngredient(ingredientToSave);
-    }
-    setIsSaveInProgress(false);
-
-    return savedIngredient;
-  }
-
-  async function deleteIngredient() {
     setIsDeleteInProgress(true);
     await ingredientService.deleteIngredient(ingredient);
     setIsDeleteInProgress(false);
+
+    onAfterDelete && onAfterDelete();
   }
 
   function validateForm() {
@@ -144,39 +128,36 @@ export function IngredientEditor(props: IngredientEditorProps) {
     return value > 0;
   }
 
-  function validateServingUnit(value: keyof typeof ingredientServingUnits) {
-    return !!ingredientServingUnits[value];
+  function validateServingUnit(value: keyof typeof appItemServingUnits) {
+    return !!appItemServingUnits[value];
   }
 
   return (
-    <View style={style}>
-      <View style={styles.buttons}>
-        <AppButton
-          type="secondary"
-          label={t('app.labels.discard')}
-          textColor={appTheme.colors.ingredientPrimary}
-          style={styles.button}
-          onPress={onDiscard}
-        />
-
-        <AppButton
-          label={t(`app.labels.${isNewIngredient ? 'create' : 'update'}`)}
-          style={styles.button}
-          isLoading={isSaveInProgress}
-          backgroundColor={appTheme.colors.ingredientPrimary}
-          onPress={onSaveButtonPress}
-        />
-
-        {!isNewIngredient && (
-          <AppButton
-            type="danger"
-            label={t('app.labels.delete')}
-            style={styles.button}
-            isLoading={isDeleteInProgress}
-            onPress={onDeleteButtonPress}
-          />
-        )}
-      </View>
+    <View style={[styles.container, style]}>
+      <AppButtonGroup
+        style={styles.buttonGroup}
+        buttons={[
+          {
+            label: t('app.labels.discard'),
+            type: 'secondary',
+            textColor: appTheme.colors.ingredientPrimary,
+            onPress: onDiscard,
+          },
+          {
+            label: t(`app.labels.${isNewIngredient ? 'create' : 'update'}`),
+            isLoading: isSaveInProgress,
+            backgroundColor: appTheme.colors.ingredientPrimary,
+            onPress: onSaveButtonPress,
+          },
+          {
+            label: t('app.labels.delete'),
+            type: 'danger',
+            isHidden: isNewIngredient,
+            isLoading: isDeleteInProgress,
+            onPress: () => setIsDeleteConfirmationVisible(true),
+          },
+        ]}
+      />
 
       <AppTextInput
         label={t('app.labels.name')}
@@ -234,9 +215,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
         onChangeValue={setFat}
       />
 
-      {!isNewIngredient && (
-        <AppConfirmationModal
-          isVisible={isDeleteConfirmationVisible}
+      {!isNewIngredient && isDeleteConfirmationVisible && (
+        <AppConfirmationDialog
           text={t('ingredient.ingredientEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
           onCancel={() => setIsDeleteConfirmationVisible(false)}
@@ -247,14 +227,11 @@ export function IngredientEditor(props: IngredientEditorProps) {
 }
 
 const styles = StyleSheet.create({
-  buttons: {
-    marginBottom: appTheme.gaps.medium,
-    flexDirection: 'row',
-    marginHorizontal: appTheme.gaps.small / -2,
+  container: {
+    flex: 1,
   },
-  button: {
-    flexGrow: 1,
-    marginHorizontal: appTheme.gaps.small / 2,
+  buttonGroup: {
+    marginBottom: appTheme.gaps.medium,
   },
   row: {
     marginBottom: appTheme.gaps.small,

@@ -21,6 +21,11 @@ interface AppButtonProps {
   isLoading?: boolean;
 
   /**
+   * Disabled state setting.
+   */
+  isDisabled?: boolean;
+
+  /**
    * Type of the button.
    */
   type?: 'primary' | 'secondary' | 'danger';
@@ -36,6 +41,11 @@ interface AppButtonProps {
   textColor?: string;
 
   /**
+   * Use a compact look.
+   */
+  compact?: boolean;
+
+  /**
    * On button press event handler.
    */
   onPress: () => void;
@@ -45,7 +55,7 @@ interface AppButtonProps {
  * App button component.
  */
 export function AppButton(props: AppButtonProps) {
-  const { label, type = 'primary', style, isLoading, backgroundColor, textColor, onPress } = props;
+  const { label, type = 'primary', style, isLoading, isDisabled, backgroundColor, textColor, compact, onPress } = props;
 
   function getBackgroundColor() {
     if (backgroundColor) return backgroundColor;
@@ -75,6 +85,8 @@ export function AppButton(props: AppButtonProps) {
         loading={isLoading}
         buttonColor={getBackgroundColor()}
         textColor={getTextColor()}
+        disabled={isDisabled}
+        compact={compact}
       >
         {label}
       </Button>

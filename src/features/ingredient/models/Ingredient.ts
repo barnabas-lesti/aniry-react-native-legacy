@@ -1,11 +1,17 @@
-import { AppNutrients } from 'app/models';
-import { IngredientServing } from './IngredientServing';
+import { AppItemNutrients, AppItemServing, AppItem } from 'app/models';
 
-export class Ingredient {
+interface IngredientProps {
+  id: string;
+  name: string;
+  serving: AppItemServing;
+  nutrients: AppItemNutrients;
+}
+
+export class Ingredient implements AppItem {
   public id: string;
   public name: string;
-  public serving: IngredientServing;
-  public nutrients: AppNutrients;
+  public serving: AppItemServing;
+  public nutrients: AppItemNutrients;
 
   constructor(props?: IngredientProps) {
     const { serving, nutrients } = props || {};
@@ -23,11 +29,19 @@ export class Ingredient {
       fat: nutrients?.fat || 0,
     };
   }
-}
 
-interface IngredientProps {
-  id: string;
-  name: string;
-  serving: IngredientServing;
-  nutrients: AppNutrients;
+  /**
+   * Sorts the ingredients by their name property.
+   * @param ingredients Ingredients to sort.
+   * @returns Sorted ingredients array.
+   */
+  static sortIngredientsByName(ingredients: Ingredient[]) {
+    return [
+      ...ingredients.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }),
+    ];
+  }
 }
