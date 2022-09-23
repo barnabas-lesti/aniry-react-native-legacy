@@ -21,6 +21,9 @@ export const en = {
   'app.labels.protein': 'Protein',
   'app.labels.fat': 'Fat',
 
+  'app.appItemList.searchPlaceholder': 'Search',
+  'app.appItemList.noItems': 'No items to display',
+
   // Home
   'home.homeScreen.title': 'Home',
 

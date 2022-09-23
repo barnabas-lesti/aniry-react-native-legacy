@@ -109,7 +109,7 @@ class RecipeService {
         if (this.isIngredientInRecipe(ingredient, recipe)) {
           const ingredientProxies = recipe.ingredientProxies.map((ingredientProxy) =>
             ingredientProxy.id === ingredient.id
-              ? new IngredientProxy({ ...ingredientProxy, ingredient })
+              ? new IngredientProxy({ ingredient, servingValue: ingredientProxy.serving.value })
               : ingredientProxy
           );
           await this.storeRecipe(new Recipe({ ...recipe, ingredientProxies }));

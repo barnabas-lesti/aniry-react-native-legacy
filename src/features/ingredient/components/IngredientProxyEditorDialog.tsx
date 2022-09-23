@@ -38,7 +38,7 @@ export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogPr
   const [servingValue, setServingValue] = useState(ingredientProxy?.serving.value || 0);
 
   function onBeforeSave() {
-    ingredientProxy && onSave(new IngredientProxy({ ...ingredientProxy, serving: { value: servingValue } }));
+    ingredientProxy && onSave(new IngredientProxy({ ...ingredientProxy, servingValue }));
   }
 
   return (

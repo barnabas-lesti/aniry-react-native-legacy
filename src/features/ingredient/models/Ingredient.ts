@@ -1,11 +1,17 @@
-import { AppNutrients } from 'app/models';
-import { IngredientServing } from './IngredientServing';
+import { AppItemNutrients, AppItemServing } from 'app/models';
+
+interface IngredientProps {
+  id: string;
+  name: string;
+  serving: AppItemServing;
+  nutrients: AppItemNutrients;
+}
 
 export class Ingredient {
   public id: string;
   public name: string;
-  public serving: IngredientServing;
-  public nutrients: AppNutrients;
+  public serving: AppItemServing;
+  public nutrients: AppItemNutrients;
 
   constructor(props?: IngredientProps) {
     const { serving, nutrients } = props || {};
@@ -23,11 +29,4 @@ export class Ingredient {
       fat: nutrients?.fat || 0,
     };
   }
-}
-
-interface IngredientProps {
-  id: string;
-  name: string;
-  serving: IngredientServing;
-  nutrients: AppNutrients;
 }

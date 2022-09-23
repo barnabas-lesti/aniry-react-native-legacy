@@ -1,17 +1,12 @@
-import React from 'react';
-import { StyleSheet, StyleProp, ViewStyle, ScrollView, Text } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleProp, ViewStyle } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { DataTable } from 'react-native-paper';
 
-import { appTheme } from 'app/theme';
+import { AppItemList } from 'app/components';
 import { Recipe } from '../models';
+import { recipeService } from '../services';
 
 interface RecipeListProps {
-  /**
-   * Recipes to display.
-   */
-  recipes: Recipe[];
-
   /**
    * Selected recipes.
    */
@@ -32,55 +27,35 @@ interface RecipeListProps {
  * Recipe list component.
  */
 export function RecipeList(props: RecipeListProps) {
-  const { recipes, selectedRecipes = [], style, onSelectRecipe } = props;
+  const { selectedRecipes = [], style, onSelectRecipe } = props;
 
   const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [recipes, setRecipes] = useState<Array<Recipe>>([]);
 
-  function isRecipeSelected(recipe: Recipe) {
-    return !!selectedRecipes.filter(({ id }) => recipe.id === id).length;
+  useEffect(() => {
+    fetchRecipes('');
+  }, []);
+
+  async function onSearch(searchString: string) {
+    await fetchRecipes(searchString);
+  }
+
+  async function fetchRecipes(searchString: string) {
+    setIsLoading(true);
+    setRecipes(await recipeService.getRecipes(searchString));
+    setIsLoading(false);
   }
 
   return (
-    <ScrollView style={[styles.container, style]}>
-      {!recipes.length ? (
-        <Text style={styles.noItems}>{t('recipe.recipeList.noItems')}</Text>
-      ) : (
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
-            <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
-            <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
-          </DataTable.Header>
-
-          {recipes.map((recipe) => {
-            const { id, name, serving, nutrients } = recipe;
-            return (
-              <DataTable.Row
-                style={[isRecipeSelected(recipe) && styles.selectedRow]}
-                key={id}
-                onPress={() => onSelectRecipe && onSelectRecipe(recipe)}
-              >
-                <DataTable.Cell>{name}</DataTable.Cell>
-                <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
-                <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
-              </DataTable.Row>
-            );
-          })}
-        </DataTable>
-      )}
-    </ScrollView>
+    <AppItemList
+      style={style}
+      items={recipes}
+      selectedItems={selectedRecipes}
+      noItemsText={t('recipe.recipeList.noItems')}
+      isLoading={isLoading}
+      onSelectItem={onSelectRecipe}
+      onSearch={onSearch}
+    />
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  selectedRow: {
-    backgroundColor: appTheme.colors.tableRowSelected,
-  },
-  noItems: {
-    marginTop: appTheme.gaps.medium,
-    textAlign: 'center',
-  },
-});

@@ -1,11 +1,10 @@
-import { AppNutrients } from 'app/models';
+import { AppItemNutrients, AppItemServing } from 'app/models';
 import { IngredientProxy } from 'features/ingredient/models';
-import { RecipeServing } from './RecipeServing';
 
 export class Recipe {
   public id: string;
   public name: string;
-  public serving: RecipeServing;
+  public serving: AppItemServing;
   public ingredientProxies: IngredientProxy[];
 
   constructor(props?: RecipeProps) {
@@ -17,10 +16,13 @@ export class Recipe {
       unit: serving?.unit || 'plate',
       value: serving?.value || 0,
     };
-    this.ingredientProxies = ingredientProxies?.map((ingredientProxy) => new IngredientProxy(ingredientProxy)) || [];
+    this.ingredientProxies =
+      ingredientProxies?.map(
+        ({ ingredient, serving: { value: servingValue } }) => new IngredientProxy({ ingredient, servingValue })
+      ) || [];
   }
 
-  get nutrients(): AppNutrients {
+  get nutrients(): AppItemNutrients {
     return this.ingredientProxies.reduce(
       (nutrients, ingredientProxy) => ({
         calories: nutrients.calories + ingredientProxy.nutrients.calories,
@@ -41,6 +43,6 @@ export class Recipe {
 interface RecipeProps {
   id: string;
   name: string;
-  serving: RecipeServing;
+  serving: AppItemServing;
   ingredientProxies: IngredientProxy[];
 }

@@ -6,7 +6,7 @@ import { AppStackScreenProps } from 'app/models';
 import { AppButton } from 'app/components';
 import { appTheme } from 'app/theme';
 import { IngredientStackParamList } from '../models';
-import { IngredientSearchableList } from '../components';
+import { IngredientList } from '../components';
 
 type IngredientHomeScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientHome'>;
 
@@ -23,9 +23,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
         onPress={() => navigation.push('IngredientCreate')}
       />
 
-      <IngredientSearchableList
-        onSelectIngredient={(ingredient) => navigation.push('IngredientEdit', { ingredient })}
-      />
+      <IngredientList onSelectIngredient={(ingredient) => navigation.push('IngredientEdit', { ingredient })} />
     </View>
   );
 }

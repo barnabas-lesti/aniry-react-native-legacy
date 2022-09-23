@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { AppButtonGroup, AppDialog } from 'app/components';
 import { appTheme } from 'app/theme';
 import { Ingredient } from '../models';
-import { IngredientSearchableList } from './IngredientSearchableList';
+import { IngredientList } from './IngredientList';
 
 interface IngredientSelectorDialogProps {
   /**
@@ -30,7 +30,7 @@ interface IngredientSelectorDialogProps {
 }
 
 /**
- * Ingredient editor dialog component.
+ * Ingredient selector dialog component.
  */
 export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
   const { selectedIngredients, isVisible, onSave, onDiscard } = props;
@@ -81,7 +81,7 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
         ]}
       />
 
-      <IngredientSearchableList
+      <IngredientList
         selectedIngredients={localSelectedIngredients}
         onSelectIngredient={onSelectIngredient}
       />

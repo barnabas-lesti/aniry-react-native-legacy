@@ -1,14 +1,20 @@
-import { AppNutrients } from 'app/models';
+import { AppItemNutrients, AppItemServing } from 'app/models';
 import { Ingredient } from './Ingredient';
+
+interface IngredientProxyProps {
+  ingredient: Ingredient;
+  servingValue: number;
+}
 
 export class IngredientProxy {
   public ingredient: Ingredient;
-  public serving: IngredientProxyServing;
+  public serving: AppItemServing;
 
   constructor(props: IngredientProxyProps) {
     this.ingredient = props.ingredient;
     this.serving = {
-      value: props.serving.value,
+      value: props.servingValue,
+      unit: this.ingredient.serving.unit,
     };
   }
 
@@ -16,7 +22,11 @@ export class IngredientProxy {
     return this.ingredient.id;
   }
 
-  get nutrients(): AppNutrients {
+  get name() {
+    return this.ingredient.name;
+  }
+
+  get nutrients(): AppItemNutrients {
     const {
       serving: { value },
       nutrients: { calories, carbs, protein, fat },
@@ -28,13 +38,4 @@ export class IngredientProxy {
       fat: (fat / value) * this.serving.value,
     };
   }
-}
-
-interface IngredientProxyProps {
-  serving: IngredientProxyServing;
-  ingredient: Ingredient;
-}
-
-interface IngredientProxyServing {
-  value: number;
 }
