@@ -35,8 +35,9 @@ export function AppSearchBar(props: AppSearchBarProps) {
 
   const [value, setValue] = useState(initialValue);
 
-  function onBeforeChangeValue(newValue: string) {
+  function onBeforeChangeText(newValue: string) {
     setValue(newValue);
+    console.log(newValue);
 
     throttleTimeout && clearTimeout(throttleTimeout);
 
@@ -50,7 +51,9 @@ export function AppSearchBar(props: AppSearchBarProps) {
       style={style}
       value={value}
       placeholder={placeholder}
-      onChangeText={onBeforeChangeValue}
+      onChangeText={onBeforeChangeText}
+      onIconPress={() => onSearch(value)}
+      onBlur={() => onSearch(value)}
     />
   );
 }

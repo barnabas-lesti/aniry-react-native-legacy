@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 import { appTheme } from 'app/theme';
@@ -13,6 +14,7 @@ type RecipeHomeScreenProps = AppStackScreenProps<RecipeStackParamList, 'RecipeHo
 export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
   const { navigation } = props;
   const { t } = useTranslation();
+  const isFocused = useIsFocused();
 
   return (
     <View style={styles.container}>
@@ -23,7 +25,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
         onPress={() => navigation.push('RecipeCreate')}
       />
 
-      <RecipeList onSelectRecipe={(recipe) => navigation.push('RecipeEdit', { recipe })} />
+      {isFocused && <RecipeList onSelectRecipe={(recipe) => navigation.push('RecipeEdit', { recipe })} />}
     </View>
   );
 }
