@@ -1,7 +1,14 @@
-import { AppItemNutrients, AppItemServing } from 'app/models';
+import { AppItem, AppItemNutrients, AppItemServing } from 'app/models';
 import { IngredientProxy } from 'features/ingredient/models';
 
-export class Recipe {
+interface RecipeProps {
+  id: string;
+  name: string;
+  serving: AppItemServing;
+  ingredientProxies: IngredientProxy[];
+}
+
+export class Recipe implements AppItem {
   public id: string;
   public name: string;
   public serving: AppItemServing;
@@ -38,11 +45,19 @@ export class Recipe {
       }
     );
   }
-}
 
-interface RecipeProps {
-  id: string;
-  name: string;
-  serving: AppItemServing;
-  ingredientProxies: IngredientProxy[];
+  /**
+   * Sorts the recipes by their name property.
+   * @param recipes Recipes to sort.
+   * @returns Sorted recipes array.
+   */
+  static sortRecipesByName(recipes: Array<Recipe>) {
+    return [
+      ...recipes.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }),
+    ];
+  }
 }

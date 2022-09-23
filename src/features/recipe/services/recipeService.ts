@@ -16,11 +16,7 @@ class RecipeService {
       return recipes.filter((recipe) => recipe.name.toLowerCase().search(searchString.toLowerCase()) !== -1);
     }
 
-    return this.sortRecipesByName(recipes);
-  }
-
-  public isIngredientInRecipe(ingredient: Ingredient, recipe: Recipe) {
-    return !!recipe.ingredientProxies.filter((ingredientProxy) => ingredientProxy.id === ingredient.id).length;
+    return Recipe.sortRecipesByName(recipes);
   }
 
   /**
@@ -68,21 +64,6 @@ class RecipeService {
   }
 
   /**
-   * Sorts the recipes by their name property.
-   * @param recipes Recipes to sort.
-   * @returns Sorted recipes array.
-   */
-  sortRecipesByName(recipes: Array<Recipe>) {
-    return [
-      ...recipes.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }),
-    ];
-  }
-
-  /**
    * Removes the given ingredient from all recipes where present.
    * @param ingredient Ingredient to remove.
    */
@@ -116,6 +97,10 @@ class RecipeService {
         }
       })
     );
+  }
+
+  private isIngredientInRecipe(ingredient: Ingredient, recipe: Recipe) {
+    return !!recipe.ingredientProxies.filter((ingredientProxy) => ingredientProxy.id === ingredient.id).length;
   }
 
   /**

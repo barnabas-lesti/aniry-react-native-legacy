@@ -14,11 +14,6 @@ interface IngredientSelectorDialogProps {
   selectedIngredients: Ingredient[];
 
   /**
-   * Visibility indicator.
-   */
-  isVisible: boolean;
-
-  /**
    * Confirmation event handler.
    */
   onSave: (ingredients: Ingredient[]) => void;
@@ -33,7 +28,7 @@ interface IngredientSelectorDialogProps {
  * Ingredient selector dialog component.
  */
 export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
-  const { selectedIngredients, isVisible, onSave, onDiscard } = props;
+  const { selectedIngredients, onSave, onDiscard } = props;
 
   const { t } = useTranslation();
   const [localSelectedIngredients, setLocalSelectedIngredients] = useState(selectedIngredients);
@@ -60,7 +55,6 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
 
   return (
     <AppDialog
-      isVisible={isVisible}
       onDismiss={onDiscard}
       contentStyle={styles.dialogContent}
     >

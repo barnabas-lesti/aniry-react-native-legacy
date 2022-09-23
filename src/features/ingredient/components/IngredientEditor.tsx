@@ -215,9 +215,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
         onChangeValue={setFat}
       />
 
-      {!isNewIngredient && (
+      {!isNewIngredient && isDeleteConfirmationVisible && (
         <AppConfirmationDialog
-          isVisible={isDeleteConfirmationVisible}
           text={t('ingredient.ingredientEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
           onCancel={() => setIsDeleteConfirmationVisible(false)}

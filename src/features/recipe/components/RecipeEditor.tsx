@@ -142,32 +142,24 @@ export function RecipeEditor(props: RecipeEditorProps) {
   }
 
   function onEditIngredientsSave(ingredients: Ingredient[]) {
-    setIngredientProxies(mapIngredientsToIngredientProxies(ingredientProxies, ingredients));
+    setIngredientProxies(IngredientProxy.mapIngredientsToIngredientProxies(ingredients, ingredientProxies));
     setIsIngredientSelectorDialogVisible(false);
   }
 
-  function mapIngredientsToIngredientProxies(
-    existingIngredientProxies: IngredientProxy[],
-    ingredients: Ingredient[]
-  ): IngredientProxy[] {
-    return [
-      ...ingredients.map((ingredient) => {
-        const ingredientProxy = existingIngredientProxies.filter(({ ingredient: { id } }) => ingredient.id === id)[0];
-        return new IngredientProxy({
-          ingredient,
-          servingValue: ingredientProxy?.serving.value || ingredient.serving.value,
-        });
-      }),
-    ];
-  }
-
   function onEditIngredientProxySave(updatedIngredientProxy: IngredientProxy) {
-    setSelectedIngredientProxy(null);
     setIngredientProxies([
       ...ingredientProxies.map((ingredientProxy) =>
         ingredientProxy.id === updatedIngredientProxy.id ? updatedIngredientProxy : ingredientProxy
       ),
     ]);
+    setSelectedIngredientProxy(null);
+  }
+
+  function onEditIngredientProxyDelete(ingredientProxyToDelete: IngredientProxy) {
+    setIngredientProxies([
+      ...ingredientProxies.filter((ingredientProxy) => ingredientProxy.id !== ingredientProxyToDelete.id),
+    ]);
+    setSelectedIngredientProxy(null);
   }
 
   return (
@@ -233,25 +225,25 @@ export function RecipeEditor(props: RecipeEditorProps) {
         onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
       />
 
-      <IngredientSelectorDialog
-        isVisible={isIngredientSelectorDialogVisible}
-        selectedIngredients={recipe.ingredientProxies.map(({ ingredient }) => ingredient)}
-        onDiscard={() => setIsIngredientSelectorDialogVisible(false)}
-        onSave={onEditIngredientsSave}
-      />
-
-      {selectedIngredientProxy && (
-        <IngredientProxyEditorDialog
-          isVisible={!!selectedIngredientProxy}
-          ingredientProxy={selectedIngredientProxy}
-          onDiscard={() => setSelectedIngredientProxy(null)}
-          onSave={onEditIngredientProxySave}
+      {isIngredientSelectorDialogVisible && (
+        <IngredientSelectorDialog
+          selectedIngredients={ingredientProxies.map(({ ingredient }) => ingredient)}
+          onDiscard={() => setIsIngredientSelectorDialogVisible(false)}
+          onSave={onEditIngredientsSave}
         />
       )}
 
-      {!isNewRecipe && (
+      {selectedIngredientProxy && (
+        <IngredientProxyEditorDialog
+          ingredientProxy={selectedIngredientProxy}
+          onDiscard={() => setSelectedIngredientProxy(null)}
+          onSave={onEditIngredientProxySave}
+          onDelete={onEditIngredientProxyDelete}
+        />
+      )}
+
+      {!isNewRecipe && isDeleteConfirmationVisible && (
         <AppConfirmationDialog
-          isVisible={isDeleteConfirmationVisible}
           text={t('recipe.recipeEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
           onCancel={() => setIsDeleteConfirmationVisible(false)}

@@ -1,4 +1,4 @@
-import { AppItemNutrients, AppItemServing } from 'app/models';
+import { AppItemNutrients, AppItemServing, AppItem } from 'app/models';
 
 interface IngredientProps {
   id: string;
@@ -7,7 +7,7 @@ interface IngredientProps {
   nutrients: AppItemNutrients;
 }
 
-export class Ingredient {
+export class Ingredient implements AppItem {
   public id: string;
   public name: string;
   public serving: AppItemServing;
@@ -28,5 +28,20 @@ export class Ingredient {
       protein: nutrients?.protein || 0,
       fat: nutrients?.fat || 0,
     };
+  }
+
+  /**
+   * Sorts the ingredients by their name property.
+   * @param ingredients Ingredients to sort.
+   * @returns Sorted ingredients array.
+   */
+  static sortIngredientsByName(ingredients: Ingredient[]) {
+    return [
+      ...ingredients.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }),
+    ];
   }
 }

@@ -9,6 +9,7 @@ export const en = {
   'app.labels.save': 'Save',
   'app.labels.delete': 'Delete',
   'app.labels.discard': 'Discard',
+  'app.labels.remove': 'Remove',
   'app.labels.ok': 'OK',
   'app.labels.cancel': 'Cancel',
   'app.labels.confirm': 'Confirm',

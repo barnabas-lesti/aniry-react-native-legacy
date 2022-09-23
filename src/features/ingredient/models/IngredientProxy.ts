@@ -1,4 +1,4 @@
-import { AppItemNutrients, AppItemServing } from 'app/models';
+import { AppItem, AppItemNutrients, AppItemServing } from 'app/models';
 import { Ingredient } from './Ingredient';
 
 interface IngredientProxyProps {
@@ -6,7 +6,7 @@ interface IngredientProxyProps {
   servingValue: number;
 }
 
-export class IngredientProxy {
+export class IngredientProxy implements AppItem {
   public ingredient: Ingredient;
   public serving: AppItemServing;
 
@@ -37,5 +37,22 @@ export class IngredientProxy {
       protein: (protein / value) * this.serving.value,
       fat: (fat / value) * this.serving.value,
     };
+  }
+
+  static mapIngredientsToIngredientProxies(
+    ingredients: Ingredient[],
+    existingIngredientProxies: IngredientProxy[] = []
+  ): IngredientProxy[] {
+    return [
+      ...ingredients.map((ingredient) => {
+        const existingIngredientProxy = existingIngredientProxies.filter(
+          ({ ingredient: { id } }) => ingredient.id === id
+        )[0];
+        return new IngredientProxy({
+          ingredient,
+          servingValue: existingIngredientProxy?.serving.value || ingredient.serving.value,
+        });
+      }),
+    ];
   }
 }
