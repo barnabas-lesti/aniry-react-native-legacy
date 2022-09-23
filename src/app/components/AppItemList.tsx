@@ -91,7 +91,9 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
                       onPress={() => onSelectItem && onSelectItem(item)}
                     >
                       <DataTable.Cell>{name}</DataTable.Cell>
-                      <DataTable.Cell numeric>{`${nutrients.calories} ${t('app.units.kcal')}`}</DataTable.Cell>
+                      <DataTable.Cell numeric>
+                        {`${nutrients.calories.toFixed()} ${t('app.units.kcal')}`}
+                      </DataTable.Cell>
                       <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
                     </DataTable.Row>
                   );
