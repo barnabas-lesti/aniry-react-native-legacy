@@ -1,1 +1,1 @@
-export type AppItemServingUnit = 'g' | 'ml' | 'piece' | 'plate';
+export type AppItemServingUnit = 'g' | 'ml' | 'piece' | 'plate' | 'tablespoon' | 'teaspoon' | 'pinch';

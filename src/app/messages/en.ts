@@ -5,6 +5,9 @@ export const en = {
   'app.units.kcal': 'kcal',
   'app.units.piece': 'piece',
   'app.units.plate': 'plate',
+  'app.units.tablespoon': 'tablespoon',
+  'app.units.teaspoon': 'teaspoon',
+  'app.units.pinch': 'pinch',
 
   'app.labels.save': 'Save',
   'app.labels.delete': 'Delete',
