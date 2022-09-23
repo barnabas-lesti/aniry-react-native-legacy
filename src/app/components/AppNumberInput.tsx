@@ -48,11 +48,6 @@ export function AppNumberInput(props: AppNumberInputProps) {
 
   const [stringValue, setStringValue] = useState(value.toString());
 
-  /**
-   * Before value change event handler.
-   * Strips non numeric characters and surprise dots.
-   * @param newValueCandidate New value of the input.
-   */
   function onBeforeChangeValue(newValueCandidate: string) {
     let newValue = newValueCandidate.replace(',', '.').replace(/[^\d.]/g, '');
     const lastCharacter = newValue.replace(stringValue, '');
@@ -62,6 +57,12 @@ export function AppNumberInput(props: AppNumberInputProps) {
 
     setStringValue(newValue);
     onChangeValue(parseFloat(newValue) || 0);
+  }
+
+  function onFocus() {
+    if (stringValue === '0') {
+      onBeforeChangeValue('');
+    }
   }
 
   return (
@@ -74,6 +75,7 @@ export function AppNumberInput(props: AppNumberInputProps) {
       isInvalid={isInvalid}
       value={stringValue}
       onChangeValue={(v) => onBeforeChangeValue(v.toString())}
+      onFocus={onFocus}
     />
   );
 }

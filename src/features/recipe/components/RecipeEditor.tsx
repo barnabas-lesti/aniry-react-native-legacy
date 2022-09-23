@@ -10,6 +10,7 @@ import {
   AppButtonGroup,
   AppButton,
   AppItemList,
+  AppScrollView,
 } from 'app/components';
 import { appTheme } from 'app/theme';
 import { appItemServingUnits } from 'app/models';
@@ -189,41 +190,43 @@ export function RecipeEditor(props: RecipeEditorProps) {
         ]}
       />
 
-      <AppTextInput
-        label={t('app.labels.name')}
-        style={styles.row}
-        value={name}
-        isInvalid={canValidate && !nameIsValid}
-        onChangeValue={setName}
-      />
-
-      <View style={[styles.row, styles.servingContainer]}>
-        <AppNumberInput
-          style={styles.servingValue}
-          label={t('app.labels.serving')}
-          value={servingValue}
-          isInvalid={canValidate && !servingValueIsValid}
-          onChangeValue={setServingValue}
+      <AppScrollView>
+        <AppTextInput
+          label={t('app.labels.name')}
+          style={styles.row}
+          value={name}
+          isInvalid={canValidate && !nameIsValid}
+          onChangeValue={setName}
         />
-        <AppSelectInput
-          style={styles.servingUnit}
-          options={servingUnitOptions}
-          value={servingUnit}
-          isInvalid={canValidate && !servingUnitIsValid}
-          onChangeValue={setServingUnit}
+
+        <View style={[styles.row, styles.servingContainer]}>
+          <AppNumberInput
+            style={styles.servingValue}
+            label={t('app.labels.serving')}
+            value={servingValue}
+            isInvalid={canValidate && !servingValueIsValid}
+            onChangeValue={setServingValue}
+          />
+          <AppSelectInput
+            style={styles.servingUnit}
+            options={servingUnitOptions}
+            value={servingUnit}
+            isInvalid={canValidate && !servingUnitIsValid}
+            onChangeValue={setServingUnit}
+          />
+        </View>
+
+        <AppButton
+          label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
+          backgroundColor={appTheme.colors.ingredientPrimary}
+          onPress={() => setIsIngredientSelectorDialogVisible(true)}
         />
-      </View>
 
-      <AppButton
-        label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
-        backgroundColor={appTheme.colors.ingredientPrimary}
-        onPress={() => setIsIngredientSelectorDialogVisible(true)}
-      />
-
-      <AppItemList
-        items={ingredientProxies}
-        onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
-      />
+        <AppItemList
+          items={ingredientProxies}
+          onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+        />
+      </AppScrollView>
 
       {isIngredientSelectorDialogVisible && (
         <IngredientSelectorDialog

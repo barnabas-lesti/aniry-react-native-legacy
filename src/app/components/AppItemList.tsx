@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, StyleProp, ViewStyle, ScrollView, Text, View } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
@@ -7,6 +7,7 @@ import { appTheme } from '../theme';
 import { AppItem } from '../models';
 import { AppSearchBar } from './AppSearchBar';
 import { AppLoader } from './AppLoader';
+import { AppScrollView } from './AppScrollView';
 
 interface AppItemListProps<T extends AppItem> {
   /**
@@ -30,6 +31,11 @@ interface AppItemListProps<T extends AppItem> {
   isLoading?: boolean;
 
   /**
+   * Is scroll disabled for the table.
+   */
+  isScrollDisabled?: boolean;
+
+  /**
    * Custom styles.
    */
   style?: StyleProp<ViewStyle>;
@@ -49,7 +55,7 @@ interface AppItemListProps<T extends AppItem> {
  * App item list component.
  */
 export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
-  const { items, selectedItems = [], noItemsText, isLoading, style, onSelectItem, onSearch } = props;
+  const { items, selectedItems = [], noItemsText, isLoading, isScrollDisabled, style, onSelectItem, onSearch } = props;
 
   const { t } = useTranslation();
 
@@ -74,14 +80,17 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
           {!items.length ? (
             <Text style={styles.noItems}>{noItemsText || t('app.appItemList.noItems')}</Text>
           ) : (
-            <ScrollView style={styles.scrollView}>
-              <DataTable>
-                <DataTable.Header>
-                  <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
-                  <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
-                  <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
-                </DataTable.Header>
+            <DataTable style={styles.table}>
+              <DataTable.Header>
+                <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
+                <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
+                <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
+              </DataTable.Header>
 
+              <AppScrollView
+                style={styles.scrollView}
+                isDisabled={isScrollDisabled}
+              >
                 {items.map((item) => {
                   const { id, name, nutrients, serving } = item;
                   return (
@@ -98,8 +107,8 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
                     </DataTable.Row>
                   );
                 })}
-              </DataTable>
-            </ScrollView>
+              </AppScrollView>
+            </DataTable>
           )}
         </>
       )}
@@ -120,6 +129,9 @@ const styles = StyleSheet.create({
   noItems: {
     marginTop: appTheme.gaps.medium,
     textAlign: 'center',
+  },
+  table: {
+    flex: 1,
   },
   scrollView: {
     flex: 1,

@@ -7,6 +7,7 @@ export * from './AppItemList';
 export * from './AppLoader';
 export * from './AppNotification';
 export * from './AppNumberInput';
+export * from './AppScrollView';
 export * from './AppSearchBar';
 export * from './AppSelectInput';
 export * from './AppTextInput';

@@ -33,5 +33,6 @@ export function RecipeEditScreen(props: RecipeEditScreenProps) {
 const styles = StyleSheet.create({
   container: {
     padding: appTheme.gaps.medium,
+    paddingBottom: -appTheme.gaps.medium,
   },
 });
