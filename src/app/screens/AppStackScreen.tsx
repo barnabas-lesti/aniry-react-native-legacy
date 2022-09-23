@@ -30,17 +30,19 @@ const screens = [
   // },
   {
     name: 'Ingredient',
+    titleKey: 'ingredient.ingredientHomeScreen.title',
+    activeColor: appTheme.colors.ingredientPrimary,
     headerShown: false,
     Component: IngredientStackScreen,
     tabBarIcon: tabBarIconFactory(appTheme.icons.ingredient),
-    activeColor: appTheme.colors.ingredientPrimary,
   },
   {
     name: 'Recipe',
+    titleKey: 'recipe.recipeHomeScreen.title',
+    activeColor: appTheme.colors.recipePrimary,
     headerShown: false,
     Component: RecipeStackScreen,
     tabBarIcon: tabBarIconFactory(appTheme.icons.recipe),
-    activeColor: appTheme.colors.recipePrimary,
   },
 ] as AppScreenOptions[];
 
