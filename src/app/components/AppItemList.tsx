@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, StyleProp, ViewStyle, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
@@ -58,6 +58,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
   const { items, selectedItems = [], noItemsText, isLoading, isScrollDisabled, style, onSelectItem, onSearch } = props;
 
   const { t } = useTranslation();
+  const [searchString, setSearchString] = useState('');
 
   function isItemSelected(item: AppItem) {
     return !!selectedItems.filter(({ id }) => item.id === id).length;
@@ -68,7 +69,9 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
       {onSearch && (
         <AppSearchBar
           style={styles.searchInput}
+          value={searchString}
           placeholder={t('app.appItemList.searchPlaceholder')}
+          onChangeValue={setSearchString}
           onSearch={onSearch}
         />
       )}
@@ -90,6 +93,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
               <AppScrollView
                 style={styles.scrollView}
                 isDisabled={isScrollDisabled}
+                onRefresh={onSearch && (async () => await onSearch(searchString))}
               >
                 {items.map((item) => {
                   const { id, name, nutrients, serving } = item;

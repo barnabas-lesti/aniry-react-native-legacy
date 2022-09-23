@@ -6,7 +6,7 @@ interface AppSearchBarProps {
   /**
    * Initial value of the input.
    */
-  initialValue?: string;
+  value?: string;
 
   /**
    * Placeholder text to display.
@@ -17,6 +17,11 @@ interface AppSearchBarProps {
    * Custom styles.
    */
   style?: StyleProp<ViewStyle>;
+
+  /**
+   * On value change handler.
+   */
+  onChangeValue?: (newValue: string) => void;
 
   /**
    * On search event handler.
@@ -31,13 +36,13 @@ let throttleTimeout: NodeJS.Timeout | null;
  * Application search bar component.
  */
 export function AppSearchBar(props: AppSearchBarProps) {
-  const { initialValue = '', placeholder, style, onSearch } = props;
+  const { value = '', placeholder, style, onChangeValue, onSearch } = props;
 
-  const [value, setValue] = useState(initialValue);
+  const [localValue, setLocalValue] = useState(value);
 
-  function onBeforeChangeText(newValue: string) {
-    setValue(newValue);
-    console.log(newValue);
+  function onChangeText(newValue: string) {
+    setLocalValue(newValue);
+    onChangeValue && onChangeValue(newValue);
 
     throttleTimeout && clearTimeout(throttleTimeout);
 
@@ -49,9 +54,9 @@ export function AppSearchBar(props: AppSearchBarProps) {
   return (
     <Searchbar
       style={style}
-      value={value}
+      value={localValue}
       placeholder={placeholder}
-      onChangeText={onBeforeChangeText}
+      onChangeText={onChangeText}
       onIconPress={() => onSearch(value)}
       onBlur={() => onSearch(value)}
     />
