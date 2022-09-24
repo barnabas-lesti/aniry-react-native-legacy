@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { AppTextInput, AppNumberInput, AppSelectInput, AppConfirmationDialog, AppButtonGroup } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appItemServingUnits } from 'app/models';
+import { appItemServingUnits, appServingUnitOptions } from 'app/models';
 import { appCommonService } from 'app/services';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
@@ -61,11 +61,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [servingUnitIsValid, setServingUnitIsValid] = useState(validateServingUnit(serving.unit));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
-
-  const servingUnitOptions = Object.keys(appItemServingUnits).map((unit) => ({
-    value: unit,
-    label: t(appItemServingUnits[unit as keyof typeof appItemServingUnits]),
-  }));
 
   useEffect(() => {
     setNameIsValid(validateName(name));
@@ -124,8 +119,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
     return value > 0;
   }
 
-  function validateServingUnit(value: keyof typeof appItemServingUnits) {
-    return !!appItemServingUnits[value];
+  function validateServingUnit(value: string) {
+    return !!appItemServingUnits.filter((unit) => unit === value)[0];
   }
 
   return (
@@ -171,7 +166,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
         />
         <AppSelectInput
           style={styles.servingUnit}
-          options={servingUnitOptions}
+          options={appServingUnitOptions}
           value={servingUnit}
           isInvalid={canValidate && !servingUnitIsValid}
           onChangeValue={setServingUnit}

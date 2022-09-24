@@ -13,7 +13,7 @@ import {
   AppScrollView,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appItemServingUnits } from 'app/models';
+import { appItemServingUnits, appServingUnitOptions } from 'app/models';
 import { appCommonService } from 'app/services';
 import {
   Ingredient,
@@ -77,11 +77,6 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<IngredientProxy | null>(null);
 
-  const servingUnitOptions = Object.keys(appItemServingUnits).map((unit) => ({
-    value: unit,
-    label: t(appItemServingUnits[unit as keyof typeof appItemServingUnits]),
-  }));
-
   useEffect(() => {
     setNameIsValid(validateName(name));
   }, [name]);
@@ -134,8 +129,8 @@ export function RecipeEditor(props: RecipeEditorProps) {
     return value > 0;
   }
 
-  function validateServingUnit(value: keyof typeof appItemServingUnits) {
-    return !!appItemServingUnits[value];
+  function validateServingUnit(value: string) {
+    return !!appItemServingUnits.filter((unit) => unit === value)[0];
   }
 
   function onEditIngredientsSave(ingredients: Ingredient[]) {
@@ -203,7 +198,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
           />
           <AppSelectInput
             style={styles.servingUnit}
-            options={servingUnitOptions}
+            options={appServingUnitOptions}
             value={servingUnit}
             isInvalid={canValidate && !servingUnitIsValid}
             onChangeValue={setServingUnit}
