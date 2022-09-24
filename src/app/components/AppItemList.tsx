@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, StyleProp, ViewStyle, Text, View } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
 import { appTheme } from '../theme';
 import { AppItem } from '../models';
 import { AppSearchBar } from './AppSearchBar';
-import { AppLoader } from './AppLoader';
 import { AppScrollView } from './AppScrollView';
 
 interface AppItemListProps<T extends AppItem> {
@@ -19,16 +18,6 @@ interface AppItemListProps<T extends AppItem> {
    * Selected items.
    */
   selectedItems?: Array<T>;
-
-  /**
-   * Text to display when no items are available.
-   */
-  noItemsText?: string;
-
-  /**
-   * Loading state indicator.
-   */
-  isLoading?: boolean;
 
   /**
    * Is scroll disabled for the table.
@@ -48,14 +37,14 @@ interface AppItemListProps<T extends AppItem> {
   /**
    * Search event handler.
    */
-  onSearch?: (searchString: string) => void;
+  onSearch?: (searchString: string) => Promise<void>;
 }
 
 /**
  * App item list component.
  */
 export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
-  const { items, selectedItems = [], noItemsText, isLoading, isScrollDisabled, style, onSelectItem, onSearch } = props;
+  const { items, selectedItems = [], isScrollDisabled, style, onSelectItem, onSearch } = props;
 
   const { t } = useTranslation();
   const [searchString, setSearchString] = useState('');
@@ -76,45 +65,35 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
         />
       )}
 
-      {isLoading ? (
-        <AppLoader style={styles.loader} />
-      ) : (
-        <>
-          {!items.length ? (
-            <Text style={styles.noItems}>{noItemsText || t('app.appItemList.noItems')}</Text>
-          ) : (
-            <DataTable style={styles.table}>
-              <DataTable.Header>
-                <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
-                <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
-                <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
-              </DataTable.Header>
+      {!!items.length && (
+        <DataTable style={styles.table}>
+          <DataTable.Header>
+            <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
+            <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
+            <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
+          </DataTable.Header>
 
-              <AppScrollView
-                style={styles.scrollView}
-                isDisabled={isScrollDisabled}
-                onRefresh={onSearch && (async () => await onSearch(searchString))}
-              >
-                {items.map((item) => {
-                  const { id, name, nutrients, serving } = item;
-                  return (
-                    <DataTable.Row
-                      style={[isItemSelected(item) && styles.selectedRow]}
-                      key={id}
-                      onPress={() => onSelectItem && onSelectItem(item)}
-                    >
-                      <DataTable.Cell>{name}</DataTable.Cell>
-                      <DataTable.Cell numeric>
-                        {`${nutrients.calories.toFixed()} ${t('app.units.kcal')}`}
-                      </DataTable.Cell>
-                      <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
-                    </DataTable.Row>
-                  );
-                })}
-              </AppScrollView>
-            </DataTable>
-          )}
-        </>
+          <AppScrollView
+            style={styles.scrollView}
+            isDisabled={isScrollDisabled}
+            onRefresh={onSearch && (async () => await onSearch(searchString))}
+          >
+            {items.map((item) => {
+              const { id, name, nutrients, serving } = item;
+              return (
+                <DataTable.Row
+                  style={[isItemSelected(item) && styles.selectedRow]}
+                  key={id}
+                  onPress={() => onSelectItem && onSelectItem(item)}
+                >
+                  <DataTable.Cell>{name}</DataTable.Cell>
+                  <DataTable.Cell numeric>{`${nutrients.calories.toFixed()} ${t('app.units.kcal')}`}</DataTable.Cell>
+                  <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
+                </DataTable.Row>
+              );
+            })}
+          </AppScrollView>
+        </DataTable>
       )}
     </View>
   );

@@ -1,4 +1,4 @@
-import { appStorageService, appNotificationService } from 'app/services';
+import { appStorageService, appCommonService } from 'app/services';
 import { recipeService } from 'features/recipe/services';
 import { Ingredient } from '../models';
 
@@ -52,7 +52,7 @@ class IngredientService {
    */
   async createIngredient(ingredient: Ingredient): Promise<Ingredient> {
     const createdIngredient = await this.storeIngredient(ingredient);
-    appNotificationService.pushNotification('ingredient.notifications.created');
+    appCommonService.pushNotification('ingredient.notifications.created');
     return createdIngredient;
   }
 
@@ -64,7 +64,7 @@ class IngredientService {
   async updateIngredient(ingredient: Ingredient): Promise<Ingredient> {
     const updatedIngredient = await this.storeIngredient(ingredient);
     await recipeService.updateIngredientInRecipes(updatedIngredient);
-    appNotificationService.pushNotification('ingredient.notifications.updated');
+    appCommonService.pushNotification('ingredient.notifications.updated');
     return updatedIngredient;
   }
 
@@ -75,7 +75,7 @@ class IngredientService {
   async deleteIngredient(ingredient: Ingredient): Promise<Ingredient> {
     await recipeService.deleteIngredientFromRecipes(ingredient);
     await appStorageService.deleteOne<Ingredient>(this.COLLECTION_NAME, ingredient);
-    appNotificationService.pushNotification('ingredient.notifications.deleted');
+    appCommonService.pushNotification('ingredient.notifications.deleted');
     return ingredient;
   }
 

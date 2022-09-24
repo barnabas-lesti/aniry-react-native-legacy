@@ -14,6 +14,7 @@ import {
 } from 'app/components';
 import { appTheme } from 'app/theme';
 import { appItemServingUnits } from 'app/models';
+import { appCommonService } from 'app/services';
 import {
   Ingredient,
   IngredientProxy,
@@ -70,8 +71,6 @@ export function RecipeEditor(props: RecipeEditorProps) {
   const [servingUnitIsValid, setServingUnitIsValid] = useState(validateServingUnit(recipe.serving.unit));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
-  const [isSaveInProgress, setIsSaveInProgress] = useState(false);
-  const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
 
   const [ingredientProxies, setIngredientProxies] = useState(recipe.ingredientProxies || []);
   const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
@@ -97,7 +96,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      setIsSaveInProgress(true);
+      appCommonService.startLoading();
       await recipeService.saveRecipe(
         new Recipe({
           id: recipe.id,
@@ -109,19 +108,16 @@ export function RecipeEditor(props: RecipeEditorProps) {
           ingredientProxies,
         })
       );
-      setIsSaveInProgress(false);
-
+      appCommonService.stopLoading();
       onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-
-    setIsDeleteInProgress(true);
+    appCommonService.startLoading();
     await recipeService.deleteRecipeById(recipe.id);
-    setIsDeleteInProgress(false);
-
+    appCommonService.stopLoading();
     onAfterDelete && onAfterDelete();
   }
 
@@ -176,7 +172,6 @@ export function RecipeEditor(props: RecipeEditorProps) {
           },
           {
             label: t(`app.labels.${isNewRecipe ? 'create' : 'update'}`),
-            isLoading: isSaveInProgress,
             backgroundColor: appTheme.colors.recipePrimary,
             onPress: onSaveButtonPress,
           },
@@ -184,7 +179,6 @@ export function RecipeEditor(props: RecipeEditorProps) {
             label: t('app.labels.delete'),
             type: 'danger',
             isHidden: isNewRecipe,
-            isLoading: isDeleteInProgress,
             onPress: () => setIsDeleteConfirmationVisible(true),
           },
         ]}

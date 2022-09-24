@@ -1,11 +1,11 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 
 import { appTheme } from 'app/theme';
 import { AppStackScreenProps } from 'app/models';
-import { AppButton } from 'app/components';
+import { AppButton, AppScreen } from 'app/components';
 import { RecipeStackParamList } from '../models';
 import { RecipeList } from '../components';
 
@@ -17,7 +17,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
   const isFocused = useIsFocused();
 
   return (
-    <View style={styles.container}>
+    <AppScreen>
       <AppButton
         style={styles.newRecipeButton}
         backgroundColor={appTheme.colors.recipePrimary}
@@ -26,15 +26,11 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
       />
 
       {isFocused && <RecipeList onSelectRecipe={(recipe) => navigation.push('RecipeEdit', { recipe })} />}
-    </View>
+    </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: appTheme.gaps.medium,
-    flex: 1,
-  },
   newRecipeButton: {
     marginBottom: appTheme.gaps.medium,
   },

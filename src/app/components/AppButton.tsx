@@ -16,11 +16,6 @@ interface AppButtonProps {
   style?: StyleProp<ViewStyle>;
 
   /**
-   * Loading state indicator.
-   */
-  isLoading?: boolean;
-
-  /**
    * Disabled state setting.
    */
   isDisabled?: boolean;
@@ -55,7 +50,7 @@ interface AppButtonProps {
  * App button component.
  */
 export function AppButton(props: AppButtonProps) {
-  const { label, type = 'primary', style, isLoading, isDisabled, backgroundColor, textColor, compact, onPress } = props;
+  const { label, type = 'primary', style, isDisabled, backgroundColor, textColor, compact, onPress } = props;
 
   function getBackgroundColor() {
     if (backgroundColor) return backgroundColor;
@@ -82,7 +77,6 @@ export function AppButton(props: AppButtonProps) {
       <Button
         onPress={onPress}
         mode={getMode()}
-        loading={isLoading}
         buttonColor={getBackgroundColor()}
         textColor={getTextColor()}
         disabled={isDisabled}

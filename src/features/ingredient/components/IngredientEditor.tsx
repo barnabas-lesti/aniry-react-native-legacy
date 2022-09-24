@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { AppTextInput, AppNumberInput, AppSelectInput, AppConfirmationDialog, AppButtonGroup } from 'app/components';
 import { appTheme } from 'app/theme';
 import { appItemServingUnits } from 'app/models';
+import { appCommonService } from 'app/services';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 
@@ -60,8 +61,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [servingUnitIsValid, setServingUnitIsValid] = useState(validateServingUnit(serving.unit));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
-  const [isSaveInProgress, setIsSaveInProgress] = useState(false);
-  const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
 
   const servingUnitOptions = Object.keys(appItemServingUnits).map((unit) => ({
     value: unit,
@@ -82,7 +81,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      setIsSaveInProgress(true);
+      appCommonService.startLoading();
       await ingredientService.saveIngredient(
         new Ingredient({
           id: ingredient.id,
@@ -99,19 +98,16 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
         })
       );
-      setIsSaveInProgress(false);
-
+      appCommonService.stopLoading();
       onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-
-    setIsDeleteInProgress(true);
+    appCommonService.startLoading();
     await ingredientService.deleteIngredient(ingredient);
-    setIsDeleteInProgress(false);
-
+    appCommonService.stopLoading();
     onAfterDelete && onAfterDelete();
   }
 
@@ -145,7 +141,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
           {
             label: t(`app.labels.${isNewIngredient ? 'create' : 'update'}`),
-            isLoading: isSaveInProgress,
             backgroundColor: appTheme.colors.ingredientPrimary,
             onPress: onSaveButtonPress,
           },
@@ -153,7 +148,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
             label: t('app.labels.delete'),
             type: 'danger',
             isHidden: isNewIngredient,
-            isLoading: isDeleteInProgress,
             onPress: () => setIsDeleteConfirmationVisible(true),
           },
         ]}
