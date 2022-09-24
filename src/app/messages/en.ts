@@ -47,6 +47,8 @@ export const en = {
 
   'ingredient.ingredientProxyList.noItems': 'No ingredients to display',
 
+  'ingredient.ingredientProxyEditorDialog.hint': 'How much is in this recipe?',
+
   'ingredient.notifications.created': 'Ingredient successfully created!',
   'ingredient.notifications.updated': 'Ingredient successfully updated!',
   'ingredient.notifications.deleted': 'Ingredient successfully deleted!',
