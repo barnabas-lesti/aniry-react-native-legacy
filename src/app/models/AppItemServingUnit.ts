@@ -1,1 +1,3 @@
-export type AppItemServingUnit = 'g' | 'ml' | 'piece' | 'plate';
+import { appItemServingUnits } from './appItemServingUnits';
+
+export type AppItemServingUnit = typeof appItemServingUnits[number];

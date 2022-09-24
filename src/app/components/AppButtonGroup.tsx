@@ -9,7 +9,6 @@ interface AppButtonGroupButtonOptions {
   type?: 'primary' | 'secondary' | 'danger';
   textColor?: string;
   backgroundColor?: string;
-  isLoading?: boolean;
   isDisabled?: boolean;
   isHidden?: boolean;
   compact?: boolean;
@@ -43,7 +42,6 @@ export function AppButtonGroup(props: AppButtonGroupProps) {
               type={button.type || 'primary'}
               textColor={button.textColor}
               backgroundColor={button.backgroundColor}
-              isLoading={button.isLoading}
               isDisabled={button.isDisabled}
               compact={button.compact}
               onPress={button.onPress}

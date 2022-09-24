@@ -10,9 +10,11 @@ import {
   AppButtonGroup,
   AppButton,
   AppItemList,
+  AppScrollView,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appItemServingUnits } from 'app/models';
+import { appServingUnitOptions } from 'app/models';
+import { appCommonService } from 'app/services';
 import {
   Ingredient,
   IngredientProxy,
@@ -54,49 +56,39 @@ interface RecipeEditorProps {
  */
 export function RecipeEditor(props: RecipeEditorProps) {
   const { recipe = new Recipe(), style, onDiscard, onAfterSave, onAfterDelete } = props;
-
   const isNewRecipe = !recipe.id;
-
   const { t } = useTranslation();
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
   const [servingUnit, setServingUnit] = useState(recipe.serving.unit);
-
-  const [canValidate, setCanValidate] = useState(false);
-  const [nameIsValid, setNameIsValid] = useState(validateName(name));
-  const [servingValueIsValid, setServingValueIsValid] = useState(validateServingValue(recipe.serving.value));
-  const [servingUnitIsValid, setServingUnitIsValid] = useState(validateServingUnit(recipe.serving.unit));
-
-  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
-  const [isSaveInProgress, setIsSaveInProgress] = useState(false);
-  const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
-
   const [ingredientProxies, setIngredientProxies] = useState(recipe.ingredientProxies || []);
-  const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
+
+  const [showValidation, setShowValidation] = useState(false);
+  const [nameIsValid, setNameIsValid] = useState(Recipe.validateName(name));
+  const [servingValueIsValid, setServingValueIsValid] = useState(Recipe.validateServingValue(recipe.serving.value));
+  const [servingUnitIsValid, setServingUnitIsValid] = useState(Recipe.validateServingUnit(recipe.serving.unit));
 
   const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<IngredientProxy | null>(null);
 
-  const servingUnitOptions = Object.keys(appItemServingUnits).map((unit) => ({
-    value: unit,
-    label: t(appItemServingUnits[unit as keyof typeof appItemServingUnits]),
-  }));
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
+  const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
 
   useEffect(() => {
-    setNameIsValid(validateName(name));
+    setNameIsValid(Recipe.validateName(name));
   }, [name]);
 
   useEffect(() => {
-    setServingValueIsValid(validateServingValue(servingValue));
+    setServingValueIsValid(Recipe.validateServingValue(servingValue));
   }, [servingValue]);
 
   useEffect(() => {
-    setServingUnitIsValid(validateServingUnit(servingUnit));
+    setServingUnitIsValid(Recipe.validateServingUnit(servingUnit));
   }, [servingUnit]);
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      setIsSaveInProgress(true);
+      appCommonService.startLoading();
       await recipeService.saveRecipe(
         new Recipe({
           id: recipe.id,
@@ -108,37 +100,22 @@ export function RecipeEditor(props: RecipeEditorProps) {
           ingredientProxies,
         })
       );
-      setIsSaveInProgress(false);
-
+      appCommonService.stopLoading();
       onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-
-    setIsDeleteInProgress(true);
+    appCommonService.startLoading();
     await recipeService.deleteRecipeById(recipe.id);
-    setIsDeleteInProgress(false);
-
+    appCommonService.stopLoading();
     onAfterDelete && onAfterDelete();
   }
 
   function validateForm() {
-    !canValidate && setCanValidate(true);
+    !showValidation && setShowValidation(true);
     return nameIsValid && servingValueIsValid && servingUnitIsValid;
-  }
-
-  function validateName(value: string) {
-    return !!value;
-  }
-
-  function validateServingValue(value: number) {
-    return value > 0;
-  }
-
-  function validateServingUnit(value: keyof typeof appItemServingUnits) {
-    return !!appItemServingUnits[value];
   }
 
   function onEditIngredientsSave(ingredients: Ingredient[]) {
@@ -162,6 +139,19 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setSelectedIngredientProxy(null);
   }
 
+  async function refreshRecipe() {
+    if (!isNewRecipe) {
+      appCommonService.startLoading();
+      const refreshedRecipe = (await recipeService.getRecipeById(recipe.id)) || recipe;
+      appCommonService.stopLoading();
+
+      setName(refreshedRecipe.name);
+      setServingValue(refreshedRecipe.serving.value);
+      setServingUnit(refreshedRecipe.serving.unit);
+      setIngredientProxies(refreshedRecipe.ingredientProxies || []);
+    }
+  }
+
   return (
     <View style={[styles.container, style]}>
       <AppButtonGroup
@@ -175,7 +165,6 @@ export function RecipeEditor(props: RecipeEditorProps) {
           },
           {
             label: t(`app.labels.${isNewRecipe ? 'create' : 'update'}`),
-            isLoading: isSaveInProgress,
             backgroundColor: appTheme.colors.recipePrimary,
             onPress: onSaveButtonPress,
           },
@@ -183,47 +172,48 @@ export function RecipeEditor(props: RecipeEditorProps) {
             label: t('app.labels.delete'),
             type: 'danger',
             isHidden: isNewRecipe,
-            isLoading: isDeleteInProgress,
             onPress: () => setIsDeleteConfirmationVisible(true),
           },
         ]}
       />
 
-      <AppTextInput
-        label={t('app.labels.name')}
-        style={styles.row}
-        value={name}
-        isInvalid={canValidate && !nameIsValid}
-        onChangeValue={setName}
-      />
-
-      <View style={[styles.row, styles.servingContainer]}>
-        <AppNumberInput
-          style={styles.servingValue}
-          label={t('app.labels.serving')}
-          value={servingValue}
-          isInvalid={canValidate && !servingValueIsValid}
-          onChangeValue={setServingValue}
+      <AppScrollView onRefresh={refreshRecipe}>
+        <AppTextInput
+          label={t('app.labels.name')}
+          style={styles.row}
+          value={name}
+          isInvalid={showValidation && !nameIsValid}
+          onChangeValue={setName}
         />
-        <AppSelectInput
-          style={styles.servingUnit}
-          options={servingUnitOptions}
-          value={servingUnit}
-          isInvalid={canValidate && !servingUnitIsValid}
-          onChangeValue={setServingUnit}
+
+        <View style={[styles.row, styles.servingContainer]}>
+          <AppNumberInput
+            style={styles.servingValue}
+            label={t('app.labels.serving')}
+            value={servingValue}
+            isInvalid={showValidation && !servingValueIsValid}
+            onChangeValue={setServingValue}
+          />
+          <AppSelectInput
+            style={styles.servingUnit}
+            options={appServingUnitOptions}
+            value={servingUnit}
+            isInvalid={showValidation && !servingUnitIsValid}
+            onChangeValue={setServingUnit}
+          />
+        </View>
+
+        <AppButton
+          label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
+          backgroundColor={appTheme.colors.ingredientPrimary}
+          onPress={() => setIsIngredientSelectorDialogVisible(true)}
         />
-      </View>
 
-      <AppButton
-        label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
-        backgroundColor={appTheme.colors.ingredientPrimary}
-        onPress={() => setIsIngredientSelectorDialogVisible(true)}
-      />
-
-      <AppItemList
-        items={ingredientProxies}
-        onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
-      />
+        <AppItemList
+          items={ingredientProxies}
+          onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+        />
+      </AppScrollView>
 
       {isIngredientSelectorDialogVisible && (
         <IngredientSelectorDialog

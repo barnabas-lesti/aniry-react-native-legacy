@@ -49,6 +49,11 @@ interface AppTextInputProps {
    * Text change handler.
    */
   onChangeValue: Dispatch<SetStateAction<string>>;
+
+  /**
+   * On focus event handler.
+   */
+  onFocus?: () => void;
 }
 
 /**
@@ -65,6 +70,7 @@ export function AppTextInput(props: AppTextInputProps) {
     readonly,
     style,
     onChangeValue,
+    onFocus,
   } = props;
 
   return (
@@ -81,6 +87,7 @@ export function AppTextInput(props: AppTextInputProps) {
       activeOutlineColor={appTheme.colors.primary}
       onChangeText={onChangeValue}
       right={postfix && <TextInput.Affix text={postfix} />}
+      onFocus={onFocus}
     />
   );
 }

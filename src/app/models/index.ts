@@ -2,6 +2,7 @@ export * from './AppItem';
 export * from './AppItemNutrients';
 export * from './AppItemServing';
 export * from './AppItemServingUnit';
+export * from './appItemServingUnitOptions';
 export * from './appItemServingUnits';
 export * from './AppScreenOptions';
 export * from './AppStackParamList';

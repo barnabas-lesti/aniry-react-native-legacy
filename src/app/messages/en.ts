@@ -5,6 +5,9 @@ export const en = {
   'app.units.kcal': 'kcal',
   'app.units.piece': 'piece',
   'app.units.plate': 'plate',
+  'app.units.tablespoon': 'tablespoon',
+  'app.units.teaspoon': 'teaspoon',
+  'app.units.pinch': 'pinch',
 
   'app.labels.save': 'Save',
   'app.labels.delete': 'Delete',
@@ -43,6 +46,8 @@ export const en = {
   'ingredient.ingredientList.noItems': 'No ingredients to display',
 
   'ingredient.ingredientProxyList.noItems': 'No ingredients to display',
+
+  'ingredient.ingredientProxyEditorDialog.hint': 'How much is in this recipe?',
 
   'ingredient.notifications.created': 'Ingredient successfully created!',
   'ingredient.notifications.updated': 'Ingredient successfully updated!',

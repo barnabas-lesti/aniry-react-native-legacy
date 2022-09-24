@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { AppTextInput, AppNumberInput, AppSelectInput, AppConfirmationDialog, AppButtonGroup } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appItemServingUnits } from 'app/models';
+import { appServingUnitOptions } from 'app/models';
+import { appCommonService } from 'app/services';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 
@@ -41,7 +42,6 @@ interface IngredientEditorProps {
 export function IngredientEditor(props: IngredientEditorProps) {
   const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
   const { serving, nutrients } = ingredient;
-
   const isNewIngredient = !ingredient.id;
 
   const { t } = useTranslation();
@@ -54,35 +54,28 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [protein, setProtein] = useState(nutrients.protein);
   const [fat, setFat] = useState(nutrients.fat);
 
-  const [canValidate, setCanValidate] = useState(false);
-  const [nameIsValid, setNameIsValid] = useState(validateName(name));
-  const [servingValueIsValid, setServingValueIsValid] = useState(validateServingValue(serving.value));
-  const [servingUnitIsValid, setServingUnitIsValid] = useState(validateServingUnit(serving.unit));
+  const [showValidation, setShowValidation] = useState(false);
+  const [nameIsValid, setNameIsValid] = useState(Ingredient.validateName(name));
+  const [servingValueIsValid, setServingValueIsValid] = useState(Ingredient.validateServingValue(serving.value));
+  const [servingUnitIsValid, setServingUnitIsValid] = useState(Ingredient.validateServingUnit(serving.unit));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
-  const [isSaveInProgress, setIsSaveInProgress] = useState(false);
-  const [isDeleteInProgress, setIsDeleteInProgress] = useState(false);
-
-  const servingUnitOptions = Object.keys(appItemServingUnits).map((unit) => ({
-    value: unit,
-    label: t(appItemServingUnits[unit as keyof typeof appItemServingUnits]),
-  }));
 
   useEffect(() => {
-    setNameIsValid(validateName(name));
+    setNameIsValid(Ingredient.validateName(name));
   }, [name]);
 
   useEffect(() => {
-    setServingValueIsValid(validateServingValue(servingValue));
+    setServingValueIsValid(Ingredient.validateServingValue(servingValue));
   }, [servingValue]);
 
   useEffect(() => {
-    setServingUnitIsValid(validateServingUnit(servingUnit));
+    setServingUnitIsValid(Ingredient.validateServingUnit(servingUnit));
   }, [servingUnit]);
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      setIsSaveInProgress(true);
+      appCommonService.startLoading();
       await ingredientService.saveIngredient(
         new Ingredient({
           id: ingredient.id,
@@ -99,37 +92,22 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
         })
       );
-      setIsSaveInProgress(false);
-
+      appCommonService.stopLoading();
       onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-
-    setIsDeleteInProgress(true);
+    appCommonService.startLoading();
     await ingredientService.deleteIngredient(ingredient);
-    setIsDeleteInProgress(false);
-
+    appCommonService.stopLoading();
     onAfterDelete && onAfterDelete();
   }
 
   function validateForm() {
-    !canValidate && setCanValidate(true);
+    !showValidation && setShowValidation(true);
     return nameIsValid && servingValueIsValid && servingUnitIsValid;
-  }
-
-  function validateName(value: string) {
-    return !!value;
-  }
-
-  function validateServingValue(value: number) {
-    return value > 0;
-  }
-
-  function validateServingUnit(value: keyof typeof appItemServingUnits) {
-    return !!appItemServingUnits[value];
   }
 
   return (
@@ -145,7 +123,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
           {
             label: t(`app.labels.${isNewIngredient ? 'create' : 'update'}`),
-            isLoading: isSaveInProgress,
             backgroundColor: appTheme.colors.ingredientPrimary,
             onPress: onSaveButtonPress,
           },
@@ -153,7 +130,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
             label: t('app.labels.delete'),
             type: 'danger',
             isHidden: isNewIngredient,
-            isLoading: isDeleteInProgress,
             onPress: () => setIsDeleteConfirmationVisible(true),
           },
         ]}
@@ -163,7 +139,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
         label={t('app.labels.name')}
         style={styles.row}
         value={name}
-        isInvalid={canValidate && !nameIsValid}
+        isInvalid={showValidation && !nameIsValid}
         onChangeValue={setName}
       />
 
@@ -172,14 +148,14 @@ export function IngredientEditor(props: IngredientEditorProps) {
           style={styles.servingValue}
           label={t('app.labels.serving')}
           value={servingValue}
-          isInvalid={canValidate && !servingValueIsValid}
+          isInvalid={showValidation && !servingValueIsValid}
           onChangeValue={setServingValue}
         />
         <AppSelectInput
           style={styles.servingUnit}
-          options={servingUnitOptions}
+          options={appServingUnitOptions}
           value={servingUnit}
-          isInvalid={canValidate && !servingUnitIsValid}
+          isInvalid={showValidation && !servingUnitIsValid}
           onChangeValue={setServingUnit}
         />
       </View>

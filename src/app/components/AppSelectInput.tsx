@@ -1,4 +1,5 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, ViewStyle, View, TouchableOpacity } from 'react-native';
 import { Menu } from 'react-native-paper';
 
@@ -42,24 +43,21 @@ interface AppSelectInputProps {
  */
 export function AppSelectInput(props: AppSelectInputProps) {
   const { value, label, options, isInvalid, style, onChangeValue } = props;
-
+  const { t } = useTranslation();
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
-  const openDropdown = () => setIsDropdownVisible(true);
-  const closeDropdown = () => setIsDropdownVisible(false);
-
-  const onOptionPress = (optionValue: string) => {
+  function onOptionPress(optionValue: string) {
     onChangeValue(optionValue);
-    closeDropdown();
-  };
+    setIsDropdownVisible(false);
+  }
 
   return (
     <View style={style}>
       <Menu
         visible={isDropdownVisible}
-        onDismiss={closeDropdown}
+        onDismiss={() => setIsDropdownVisible(false)}
         anchor={
-          <TouchableOpacity onPress={openDropdown}>
+          <TouchableOpacity onPress={() => setIsDropdownVisible(true)}>
             <View pointerEvents="none">
               <AppTextInput
                 readonly
@@ -77,7 +75,7 @@ export function AppSelectInput(props: AppSelectInputProps) {
             key={option.value}
             titleStyle={value === option.value && styles.selectedTitle}
             onPress={() => onOptionPress(option.value)}
-            title={option.label}
+            title={t(option.labelKey)}
           />
         ))}
       </Menu>
