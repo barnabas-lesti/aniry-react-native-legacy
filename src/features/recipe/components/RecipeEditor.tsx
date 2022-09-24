@@ -141,7 +141,10 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function refreshRecipe() {
     if (!isNewRecipe) {
+      appCommonService.startLoading();
       const refreshedRecipe = (await recipeService.getRecipeById(recipe.id)) || recipe;
+      appCommonService.stopLoading();
+
       setName(refreshedRecipe.name);
       setServingValue(refreshedRecipe.serving.value);
       setServingUnit(refreshedRecipe.serving.unit);
