@@ -56,26 +56,23 @@ interface RecipeEditorProps {
  */
 export function RecipeEditor(props: RecipeEditorProps) {
   const { recipe = new Recipe(), style, onDiscard, onAfterSave, onAfterDelete } = props;
-
   const isNewRecipe = !recipe.id;
-
   const { t } = useTranslation();
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
   const [servingUnit, setServingUnit] = useState(recipe.serving.unit);
+  const [ingredientProxies, setIngredientProxies] = useState(recipe.ingredientProxies || []);
 
   const [showValidation, setShowValidation] = useState(false);
   const [nameIsValid, setNameIsValid] = useState(Recipe.validateName(name));
   const [servingValueIsValid, setServingValueIsValid] = useState(Recipe.validateServingValue(recipe.serving.value));
   const [servingUnitIsValid, setServingUnitIsValid] = useState(Recipe.validateServingUnit(recipe.serving.unit));
 
-  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
-
-  const [ingredientProxies, setIngredientProxies] = useState(recipe.ingredientProxies || []);
-  const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
-
   const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<IngredientProxy | null>(null);
+
+  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
+  const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
 
   useEffect(() => {
     setNameIsValid(Recipe.validateName(name));
@@ -142,6 +139,16 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setSelectedIngredientProxy(null);
   }
 
+  async function refreshRecipe() {
+    if (!isNewRecipe) {
+      const refreshedRecipe = (await recipeService.getRecipeById(recipe.id)) || recipe;
+      setName(refreshedRecipe.name);
+      setServingValue(refreshedRecipe.serving.value);
+      setServingUnit(refreshedRecipe.serving.unit);
+      setIngredientProxies(refreshedRecipe.ingredientProxies || []);
+    }
+  }
+
   return (
     <View style={[styles.container, style]}>
       <AppButtonGroup
@@ -167,7 +174,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
         ]}
       />
 
-      <AppScrollView>
+      <AppScrollView onRefresh={refreshRecipe}>
         <AppTextInput
           label={t('app.labels.name')}
           style={styles.row}

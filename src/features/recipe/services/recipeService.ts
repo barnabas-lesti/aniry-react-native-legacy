@@ -19,6 +19,10 @@ class RecipeService {
     return Recipe.sortRecipesByName(recipes);
   }
 
+  async getRecipeById(id: string): Promise<Recipe | null> {
+    return (await this.getRecipes()).filter((recipe) => recipe.id === id)[0] || null;
+  }
+
   /**
    * Creates or updates a recipe in storage.
    * @param recipe Recipe to save.
