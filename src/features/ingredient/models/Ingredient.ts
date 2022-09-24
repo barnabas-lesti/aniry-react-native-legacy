@@ -1,4 +1,4 @@
-import { AppItemNutrients, AppItemServing, AppItem } from 'app/models';
+import { AppItemNutrients, AppItemServing, AppItem, appItemServingUnits } from 'app/models';
 
 interface IngredientProps {
   id: string;
@@ -43,5 +43,17 @@ export class Ingredient implements AppItem {
         return 0;
       }),
     ];
+  }
+
+  static validateName(value: string) {
+    return !!value;
+  }
+
+  static validateServingValue(value: number) {
+    return value > 0;
+  }
+
+  static validateServingUnit(value: string) {
+    return !!appItemServingUnits.filter((unit) => unit === value)[0];
   }
 }

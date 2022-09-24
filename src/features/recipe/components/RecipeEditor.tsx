@@ -13,7 +13,7 @@ import {
   AppScrollView,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appItemServingUnits, appServingUnitOptions } from 'app/models';
+import { appServingUnitOptions } from 'app/models';
 import { appCommonService } from 'app/services';
 import {
   Ingredient,
@@ -65,10 +65,10 @@ export function RecipeEditor(props: RecipeEditorProps) {
   const [servingValue, setServingValue] = useState(recipe.serving.value);
   const [servingUnit, setServingUnit] = useState(recipe.serving.unit);
 
-  const [canValidate, setCanValidate] = useState(false);
-  const [nameIsValid, setNameIsValid] = useState(validateName(name));
-  const [servingValueIsValid, setServingValueIsValid] = useState(validateServingValue(recipe.serving.value));
-  const [servingUnitIsValid, setServingUnitIsValid] = useState(validateServingUnit(recipe.serving.unit));
+  const [showValidation, setShowValidation] = useState(false);
+  const [nameIsValid, setNameIsValid] = useState(Recipe.validateName(name));
+  const [servingValueIsValid, setServingValueIsValid] = useState(Recipe.validateServingValue(recipe.serving.value));
+  const [servingUnitIsValid, setServingUnitIsValid] = useState(Recipe.validateServingUnit(recipe.serving.unit));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
 
@@ -78,15 +78,15 @@ export function RecipeEditor(props: RecipeEditorProps) {
   const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<IngredientProxy | null>(null);
 
   useEffect(() => {
-    setNameIsValid(validateName(name));
+    setNameIsValid(Recipe.validateName(name));
   }, [name]);
 
   useEffect(() => {
-    setServingValueIsValid(validateServingValue(servingValue));
+    setServingValueIsValid(Recipe.validateServingValue(servingValue));
   }, [servingValue]);
 
   useEffect(() => {
-    setServingUnitIsValid(validateServingUnit(servingUnit));
+    setServingUnitIsValid(Recipe.validateServingUnit(servingUnit));
   }, [servingUnit]);
 
   async function onSaveButtonPress() {
@@ -117,20 +117,8 @@ export function RecipeEditor(props: RecipeEditorProps) {
   }
 
   function validateForm() {
-    !canValidate && setCanValidate(true);
+    !showValidation && setShowValidation(true);
     return nameIsValid && servingValueIsValid && servingUnitIsValid;
-  }
-
-  function validateName(value: string) {
-    return !!value;
-  }
-
-  function validateServingValue(value: number) {
-    return value > 0;
-  }
-
-  function validateServingUnit(value: string) {
-    return !!appItemServingUnits.filter((unit) => unit === value)[0];
   }
 
   function onEditIngredientsSave(ingredients: Ingredient[]) {
@@ -184,7 +172,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
           label={t('app.labels.name')}
           style={styles.row}
           value={name}
-          isInvalid={canValidate && !nameIsValid}
+          isInvalid={showValidation && !nameIsValid}
           onChangeValue={setName}
         />
 
@@ -193,14 +181,14 @@ export function RecipeEditor(props: RecipeEditorProps) {
             style={styles.servingValue}
             label={t('app.labels.serving')}
             value={servingValue}
-            isInvalid={canValidate && !servingValueIsValid}
+            isInvalid={showValidation && !servingValueIsValid}
             onChangeValue={setServingValue}
           />
           <AppSelectInput
             style={styles.servingUnit}
             options={appServingUnitOptions}
             value={servingUnit}
-            isInvalid={canValidate && !servingUnitIsValid}
+            isInvalid={showValidation && !servingUnitIsValid}
             onChangeValue={setServingUnit}
           />
         </View>

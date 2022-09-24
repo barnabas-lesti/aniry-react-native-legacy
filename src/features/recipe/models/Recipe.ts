@@ -1,4 +1,4 @@
-import { AppItem, AppItemNutrients, AppItemServing } from 'app/models';
+import { AppItem, AppItemNutrients, AppItemServing, appItemServingUnits } from 'app/models';
 import { IngredientProxy } from 'features/ingredient/models';
 
 interface RecipeProps {
@@ -59,5 +59,17 @@ export class Recipe implements AppItem {
         return 0;
       }),
     ];
+  }
+
+  static validateName(value: string) {
+    return !!value;
+  }
+
+  static validateServingValue(value: number) {
+    return value > 0;
+  }
+
+  static validateServingUnit(value: string) {
+    return !!appItemServingUnits.filter((unit) => unit === value)[0];
   }
 }
