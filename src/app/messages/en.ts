@@ -20,6 +20,7 @@ export const en = {
   'app.labels.update': 'Update',
   'app.labels.name': 'Name',
   'app.labels.serving': 'Serving',
+  'app.labels.nutrient': 'Nutrient',
   'app.labels.calories': 'Calories',
   'app.labels.carbs': 'Carbs',
   'app.labels.protein': 'Protein',
