@@ -10,7 +10,7 @@ interface AppScrollViewProps {
   /**
    * Elements to be contained in the dialog popup.
    */
-  children: JSX.Element | Array<JSX.Element | boolean>;
+  children: React.ReactNode;
 
   /**
    * Custom styles.

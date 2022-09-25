@@ -213,6 +213,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
         />
 
         <AppItemList
+          isCaloriesSummaryVisible
           style={styles.ingredientProxiesList}
           items={ingredientProxies}
           onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
