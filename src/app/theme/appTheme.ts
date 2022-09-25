@@ -8,6 +8,7 @@ export const appTheme = {
     ...MD3LightTheme.colors,
     ingredientPrimary: '#568f4c',
     recipePrimary: '#614c23',
+    settingsPrimary: '#2596be',
     error: '#993025',
     tableRowSelected: '#dcdcdc',
   },
@@ -15,6 +16,7 @@ export const appTheme = {
     home: 'home',
     ingredient: 'food-apple',
     recipe: 'food-variant',
+    settings: 'cog',
   },
   gaps: {
     small: 10,

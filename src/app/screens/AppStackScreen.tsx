@@ -3,12 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 
-// import { HomeScreen } from 'features/home';
 import { IngredientStackScreen } from 'features/ingredient';
 import { RecipeStackScreen } from 'features/recipe';
 import { appTheme } from '../theme';
 import { AppStackParamList, AppTabBarIconProps, AppScreenOptions } from '../models';
 import { AppIcon } from '../components';
+import { AppSettingsScreen } from './AppSettingsScreen';
 
 const tabBarIconFactory =
   (icon: string) =>
@@ -22,25 +22,28 @@ const tabBarIconFactory =
     );
 
 const screens = [
-  // {
-  //   name: 'Home',
-  //   titleKey: 'home.homeScreen.title',
-  //   Component: HomeScreen,
-  //   tabBarIcon: tabBarIconFactory(appTheme.icons.home),
-  // },
   {
     name: 'Ingredient',
+    titleKey: 'ingredient.ingredientHomeScreen.title',
+    activeColor: appTheme.colors.ingredientPrimary,
     headerShown: false,
     Component: IngredientStackScreen,
     tabBarIcon: tabBarIconFactory(appTheme.icons.ingredient),
-    activeColor: appTheme.colors.ingredientPrimary,
   },
   {
     name: 'Recipe',
+    titleKey: 'recipe.recipeHomeScreen.title',
+    activeColor: appTheme.colors.recipePrimary,
     headerShown: false,
     Component: RecipeStackScreen,
     tabBarIcon: tabBarIconFactory(appTheme.icons.recipe),
-    activeColor: appTheme.colors.recipePrimary,
+  },
+  {
+    name: 'Settings',
+    titleKey: 'app.appSettingsScreen.title',
+    activeColor: appTheme.colors.settingsPrimary,
+    Component: AppSettingsScreen,
+    tabBarIcon: tabBarIconFactory(appTheme.icons.settings),
   },
 ] as AppScreenOptions[];
 

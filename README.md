@@ -7,8 +7,8 @@ Daisy calorie counter mobile application.
 # Install dependencies
 npm install
 
-# Start development server with android
-npm run android
+# Start the development server
+npm run start
 
 # Lint files
 npm run lint

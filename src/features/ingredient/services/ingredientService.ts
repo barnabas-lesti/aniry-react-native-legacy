@@ -1,26 +1,25 @@
-import { appStorageService, appNotificationService } from 'app/services';
+import { appCollectionService } from 'app/services';
 import { recipeService } from 'features/recipe/services';
 import { Ingredient } from '../models';
 
-class IngredientService {
-  private readonly COLLECTION_NAME = 'ingredients';
+const COLLECTION_NAME = 'ingredients';
 
+class IngredientService {
   /**
    * Loads ingredients from the storage.
+   * @param searchString Search string used to filter by name.
    * @returns Array of ingredients.
    */
-  async getIngredients(searchString?: string) {
-    const ingredients = (await appStorageService.getAll<Ingredient>(this.COLLECTION_NAME)).map(
+  async getMany(searchString: string = ''): Promise<Ingredient[]> {
+    const ingredients = (await appCollectionService.getAll<Ingredient>(COLLECTION_NAME)).map(
       (ingredient) => new Ingredient(ingredient)
     );
 
-    if (searchString) {
-      return ingredients.filter(
-        (ingredient) => ingredient.name.toLowerCase().search(searchString.toLowerCase()) !== -1
-      );
-    }
-
-    return Ingredient.sortIngredientsByName(ingredients);
+    return Ingredient.sortIngredientsByName(
+      searchString
+        ? ingredients.filter((ingredient) => ingredient.name.toLowerCase().search(searchString.toLowerCase()) !== -1)
+        : ingredients
+    );
   }
 
   /**
@@ -28,8 +27,9 @@ class IngredientService {
    * @param id ID of the ingredient.
    * @returns The ingredient or null.
    */
-  async getIngredientById(id: string): Promise<Ingredient | null> {
-    return (await this.getIngredients()).filter((ingredient) => ingredient.id === id)[0] || null;
+  async getOneById(id: string): Promise<Ingredient | null> {
+    const ingredient = await appCollectionService.getOneById<Ingredient>(COLLECTION_NAME, id);
+    return ingredient ? new Ingredient(ingredient) : null;
   }
 
   /**
@@ -37,56 +37,23 @@ class IngredientService {
    * @param ingredient Ingredient to save.
    * @returns Saved ingredient.
    */
-  async saveIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    if (ingredient.id) {
-      return this.updateIngredient(ingredient);
-    } else {
-      return this.createIngredient(ingredient);
-    }
+  async saveOne(ingredient: Ingredient): Promise<Ingredient> {
+    const savedIngredient = new Ingredient(await appCollectionService.saveOne<Ingredient>(COLLECTION_NAME, ingredient));
+    ingredient.id && (await recipeService.updateIngredientInRecipes(savedIngredient));
+    return savedIngredient;
   }
 
   /**
-   * Creates a new ingredient in storage.
-   * @param ingredient Ingredient to create.
-   * @returns Created ingredient.
-   */
-  async createIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    const createdIngredient = await this.storeIngredient(ingredient);
-    appNotificationService.pushNotification('ingredient.notifications.created');
-    return createdIngredient;
-  }
-
-  /**
-   * Updates the ingredient in storage.
-   * @param ingredient Ingredient to update.
-   * @returns Updated ingredient.
-   */
-  async updateIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    const updatedIngredient = await this.storeIngredient(ingredient);
-    await recipeService.updateIngredientInRecipes(updatedIngredient);
-    appNotificationService.pushNotification('ingredient.notifications.updated');
-    return updatedIngredient;
-  }
-
-  /**
-   * Removes the provided ingredient from storage.
+   * Removes the ingredient from storage.
    * @param ingredient Ingredient to remove.
    */
-  async deleteIngredient(ingredient: Ingredient): Promise<Ingredient> {
+  async deleteOne(ingredient: Ingredient): Promise<void> {
     await recipeService.deleteIngredientFromRecipes(ingredient);
-    await appStorageService.deleteOne<Ingredient>(this.COLLECTION_NAME, ingredient);
-    appNotificationService.pushNotification('ingredient.notifications.deleted');
-    return ingredient;
-  }
-
-  /**
-   * Stores the provided ingredient in storage.
-   * @param ingredient Ingredient to save.
-   * @returns Saved ingredient.
-   */
-  private async storeIngredient(ingredient: Ingredient): Promise<Ingredient> {
-    return new Ingredient(await appStorageService.saveOne<Ingredient>(this.COLLECTION_NAME, ingredient));
+    await appCollectionService.deleteOne<Ingredient>(COLLECTION_NAME, ingredient);
   }
 }
 
+/**
+ * Ingredient service.
+ */
 export const ingredientService = new IngredientService();

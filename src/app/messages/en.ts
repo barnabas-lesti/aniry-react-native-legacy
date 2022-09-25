@@ -5,6 +5,9 @@ export const en = {
   'app.units.kcal': 'kcal',
   'app.units.piece': 'piece',
   'app.units.plate': 'plate',
+  'app.units.tablespoon': 'tablespoon',
+  'app.units.teaspoon': 'teaspoon',
+  'app.units.pinch': 'pinch',
 
   'app.labels.save': 'Save',
   'app.labels.delete': 'Delete',
@@ -25,6 +28,14 @@ export const en = {
   'app.appItemList.searchPlaceholder': 'Search',
   'app.appItemList.noItems': 'No items to display',
 
+  'app.appSettingsScreen.title': 'Settings',
+  'app.appSettingsScreen.data.title': 'Data',
+  'app.appSettingsScreen.data.description': 'Export and restore your data.',
+  'app.appSettingsScreen.data.export': 'Export',
+  'app.appSettingsScreen.data.restore': 'Restore',
+  'app.appSettingsScreen.data.restoreConfirmation': 'Are you sure you want to overwrite all your data?',
+  'app.appSettingsScreen.data.restoreSuccessful': 'Successfully restored your data!',
+
   // Home
   'home.homeScreen.title': 'Home',
 
@@ -43,6 +54,8 @@ export const en = {
   'ingredient.ingredientList.noItems': 'No ingredients to display',
 
   'ingredient.ingredientProxyList.noItems': 'No ingredients to display',
+
+  'ingredient.ingredientProxyEditorDialog.hint': 'How much is in this recipe?',
 
   'ingredient.notifications.created': 'Ingredient successfully created!',
   'ingredient.notifications.updated': 'Ingredient successfully updated!',

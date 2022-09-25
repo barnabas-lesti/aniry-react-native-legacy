@@ -1,31 +1,25 @@
 import React, { useState } from 'react';
-import { StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Snackbar } from 'react-native-paper';
 
-import { appNotificationService } from '../services';
-
-interface AppNotificationProps {
-  /**
-   * Custom styles.
-   */
-  style?: StyleProp<ViewStyle>;
-}
+import { appCommonService } from '../services';
 
 /**
  * Application notification display.
  */
-export function AppNotification(props: AppNotificationProps) {
-  const { style } = props;
-  const duration = appNotificationService.NOTIFICATION_DURATION;
+export function AppNotifications() {
+  const duration = appCommonService.NOTIFICATION_DURATION;
 
   const { t } = useTranslation();
 
   const [isVisible, setIsVisible] = useState(false);
+  const [notification, setNotification] = useState('');
   const [notificationKey, setNotificationKey] = useState('');
 
-  appNotificationService.onNotification((newNotificationKey) => {
-    setNotificationKey(newNotificationKey);
+  appCommonService.onNotification(({ text, textKey }) => {
+    text && setNotification(text);
+    textKey && setNotificationKey(textKey);
     setIsVisible(true);
   });
 
@@ -35,12 +29,12 @@ export function AppNotification(props: AppNotificationProps) {
 
   return (
     <Snackbar
-      style={[styles.snackbar, style]}
+      style={styles.snackbar}
       visible={isVisible}
       onDismiss={onDismiss}
       duration={duration}
     >
-      {t(notificationKey)}
+      {notification || t(notificationKey)}
     </Snackbar>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppButtonGroup, AppDialog, AppNumberInput } from 'app/components';
@@ -10,7 +10,7 @@ interface IngredientProxyEditorDialogProps {
   /**
    * Ingredient proxy to edit.
    */
-  ingredientProxy: IngredientProxy | null;
+  ingredientProxy: IngredientProxy;
 
   /**
    * Confirmation event handler.
@@ -72,6 +72,8 @@ export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogPr
         ]}
       />
 
+      <Text style={styles.hint}>{t('ingredient.ingredientProxyEditorDialog.hint')}</Text>
+
       <AppNumberInput
         label={t('app.labels.serving')}
         postfix={t(`app.units.${ingredientProxy?.ingredient.serving.unit}`)}
@@ -84,6 +86,9 @@ export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogPr
 
 const styles = StyleSheet.create({
   buttonGroup: {
+    marginBottom: appTheme.gaps.medium,
+  },
+  hint: {
     marginBottom: appTheme.gaps.medium,
   },
 });
