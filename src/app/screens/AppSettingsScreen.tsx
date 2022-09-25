@@ -1,23 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Text, Divider } from 'react-native-paper';
 
-import { AppButtonGroup, AppScreen } from '../components';
+import { AppButtonGroup, AppScreen, AppConfirmationDialog } from '../components';
 import { appTheme } from '../theme';
-// import { appCollectionService } from '../services';
+import { appCollectionService, appCommonService, appSettingsService } from '../services';
 
 export function AppSettingsScreen() {
   const { t } = useTranslation();
+  const [stagedImportData, setStagedImportData] = useState<any | null>(null);
 
   async function onExportButtonPress() {
-    console.log('export');
-    // console.log(await appStorageService.exportData());
+    await appSettingsService.exportData();
   }
 
-  async function onImportButtonPress() {
-    console.log('import');
-    // console.log(await appStorageService.importData(''));
+  async function onRestoreButtonPress() {
+    setStagedImportData(await appSettingsService.importData());
+  }
+
+  function onRestoreCancel() {
+    setStagedImportData(null);
+  }
+
+  async function onRestoreConfirmation() {
+    if (stagedImportData) {
+      await appCollectionService.setCollections(stagedImportData.collections);
+      setStagedImportData(null);
+      appCommonService.pushNotificationKey('app.appSettingsScreen.data.restoreSuccessful');
+    }
   }
 
   return (
@@ -28,19 +39,27 @@ export function AppSettingsScreen() {
         <AppButtonGroup
           buttons={[
             {
-              label: t('app.appSettingsScreen.data.import'),
-              type: 'danger',
-              onPress: onImportButtonPress,
-            },
-            {
               label: t('app.appSettingsScreen.data.export'),
               backgroundColor: appTheme.colors.settingsPrimary,
               onPress: onExportButtonPress,
+            },
+            {
+              label: t('app.appSettingsScreen.data.restore'),
+              type: 'danger',
+              onPress: onRestoreButtonPress,
             },
           ]}
         />
       </View>
       <Divider />
+
+      {!!stagedImportData && (
+        <AppConfirmationDialog
+          text={t('app.appSettingsScreen.data.restoreConfirmation')}
+          onConfirmation={onRestoreConfirmation}
+          onCancel={onRestoreCancel}
+        />
+      )}
     </AppScreen>
   );
 }

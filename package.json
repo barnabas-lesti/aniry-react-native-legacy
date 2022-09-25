@@ -28,7 +28,10 @@
     "react-native-screens": "~3.15.0",
     "react-native-web": "~0.18.7",
     "rxjs": "^7.5.6",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "expo-sharing": "~10.3.0",
+    "expo-file-system": "~14.1.0",
+    "expo-document-picker": "~10.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

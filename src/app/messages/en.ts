@@ -30,9 +30,11 @@ export const en = {
 
   'app.appSettingsScreen.title': 'Settings',
   'app.appSettingsScreen.data.title': 'Data',
-  'app.appSettingsScreen.data.description': 'Import or export your data.',
+  'app.appSettingsScreen.data.description': 'Export and restore your data.',
   'app.appSettingsScreen.data.export': 'Export',
-  'app.appSettingsScreen.data.import': 'Import',
+  'app.appSettingsScreen.data.restore': 'Restore',
+  'app.appSettingsScreen.data.restoreConfirmation': 'Are you sure you want to overwrite all your data?',
+  'app.appSettingsScreen.data.restoreSuccessful': 'Successfully restored your data!',
 
   // Home
   'home.homeScreen.title': 'Home',
