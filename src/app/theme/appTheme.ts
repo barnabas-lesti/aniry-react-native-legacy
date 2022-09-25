@@ -8,7 +8,7 @@ export const appTheme = {
     ...MD3LightTheme.colors,
     ingredientPrimary: '#568f4c',
     recipePrimary: '#614c23',
-    settingsPrimary: MD3LightTheme.colors.primary,
+    settingsPrimary: '#2596be',
     error: '#993025',
     tableRowSelected: '#dcdcdc',
   },

@@ -28,10 +28,11 @@ export const en = {
   'app.appItemList.searchPlaceholder': 'Search',
   'app.appItemList.noItems': 'No items to display',
 
-  'app.appSettingsHomeScreen.title': 'Settings',
-  'app.appSettingsHomeScreen.importExportTitle': 'Manage data',
-  'app.appSettingsHomeScreen.exportData': 'Export data',
-  'app.appSettingsHomeScreen.importData': 'Import data',
+  'app.appSettingsScreen.title': 'Settings',
+  'app.appSettingsScreen.data.title': 'Data',
+  'app.appSettingsScreen.data.description': 'Import or export your data.',
+  'app.appSettingsScreen.data.export': 'Export',
+  'app.appSettingsScreen.data.import': 'Import',
 
   // Home
   'home.homeScreen.title': 'Home',

@@ -40,7 +40,7 @@ const screens = [
   },
   {
     name: 'Settings',
-    titleKey: 'app.appSettingsHomeScreen.title',
+    titleKey: 'app.appSettingsScreen.title',
     activeColor: appTheme.colors.settingsPrimary,
     Component: AppSettingsScreen,
     tabBarIcon: tabBarIconFactory(appTheme.icons.settings),

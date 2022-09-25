@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Text, Divider } from 'react-native-paper';
 
 import { AppButtonGroup, AppScreen } from '../components';
 import { appTheme } from '../theme';
@@ -22,31 +23,41 @@ export function AppSettingsScreen() {
   return (
     <AppScreen>
       <View style={styles.row}>
-        <Text style={styles.hintText}>{t('app.appSettingsHomeScreen.importExportTitle')}</Text>
+        <Text style={styles.title}>{t('app.appSettingsScreen.data.title')}</Text>
+        <Text style={styles.description}>{t('app.appSettingsScreen.data.description')}</Text>
         <AppButtonGroup
           buttons={[
             {
-              label: t('app.appSettingsHomeScreen.importData'),
+              label: t('app.appSettingsScreen.data.import'),
               type: 'danger',
               onPress: onImportButtonPress,
             },
             {
-              label: t('app.appSettingsHomeScreen.exportData'),
+              label: t('app.appSettingsScreen.data.export'),
               backgroundColor: appTheme.colors.settingsPrimary,
               onPress: onExportButtonPress,
             },
           ]}
         />
       </View>
+      <Divider />
     </AppScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  hintText: {
-    marginBottom: appTheme.gaps.small,
-  },
   row: {
     marginBottom: appTheme.gaps.medium,
+  },
+  title: {
+    fontWeight: '400',
+    fontSize: 22,
+    lineHeight: 22,
+    marginBottom: appTheme.gaps.small,
+  },
+  description: {
+    fontSize: 14,
+    lineHeight: 14,
+    marginBottom: appTheme.gaps.small,
   },
 });
