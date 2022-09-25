@@ -69,9 +69,7 @@ const styles = StyleSheet.create({
     marginBottom: appTheme.gaps.medium,
   },
   title: {
-    fontWeight: '400',
-    fontSize: 22,
-    lineHeight: 22,
+    ...appTheme.styles.title,
     marginBottom: appTheme.gaps.small,
   },
   description: {
