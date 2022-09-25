@@ -28,6 +28,14 @@ export const en = {
   'app.appItemList.searchPlaceholder': 'Search',
   'app.appItemList.noItems': 'No items to display',
 
+  'app.appSettingsScreen.title': 'Settings',
+  'app.appSettingsScreen.data.title': 'Data',
+  'app.appSettingsScreen.data.description': 'Export and restore your data.',
+  'app.appSettingsScreen.data.export': 'Export',
+  'app.appSettingsScreen.data.restore': 'Restore',
+  'app.appSettingsScreen.data.restoreConfirmation': 'Are you sure you want to overwrite all your data?',
+  'app.appSettingsScreen.data.restoreSuccessful': 'Successfully restored your data!',
+
   // Home
   'home.homeScreen.title': 'Home',
 

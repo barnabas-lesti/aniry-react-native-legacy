@@ -89,7 +89,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
   async function onSaveButtonPress() {
     if (validateForm()) {
       appCommonService.startLoading();
-      await recipeService.saveRecipe(
+      await recipeService.saveOne(
         new Recipe({
           id: recipe.id,
           name,
@@ -101,6 +101,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
         })
       );
       appCommonService.stopLoading();
+      appCommonService.pushNotificationKey(`recipe.notifications.${isNewRecipe ? 'created' : 'updated'}`);
       onAfterSave();
     }
   }
@@ -108,8 +109,9 @@ export function RecipeEditor(props: RecipeEditorProps) {
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
     appCommonService.startLoading();
-    await recipeService.deleteRecipeById(recipe.id);
+    await recipeService.deleteOne(recipe);
     appCommonService.stopLoading();
+    appCommonService.pushNotificationKey('recipe.notifications.deleted');
     onAfterDelete && onAfterDelete();
   }
 
@@ -142,7 +144,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
   async function refreshRecipe() {
     if (!isNewRecipe) {
       appCommonService.startLoading();
-      const refreshedRecipe = (await recipeService.getRecipeById(recipe.id)) || recipe;
+      const refreshedRecipe = (await recipeService.getOneById(recipe.id)) || recipe;
       appCommonService.stopLoading();
 
       setName(refreshedRecipe.name);

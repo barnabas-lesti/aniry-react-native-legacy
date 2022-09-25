@@ -41,7 +41,7 @@ export function IngredientList(props: IngredientListProps) {
 
   async function fetchIngredients(searchString: string) {
     appCommonService.startLoading();
-    setIngredients(await ingredientService.getIngredients(searchString));
+    setIngredients(await ingredientService.getMany(searchString));
     appCommonService.stopLoading();
   }
 
