@@ -30,20 +30,7 @@ export class Recipe implements AppItem {
   }
 
   get nutrients(): AppItemNutrients {
-    return this.ingredientProxies.reduce(
-      (nutrients, ingredientProxy) => ({
-        calories: nutrients.calories + ingredientProxy.nutrients.calories,
-        carbs: nutrients.carbs + ingredientProxy.nutrients.carbs,
-        protein: nutrients.protein + ingredientProxy.nutrients.protein,
-        fat: nutrients.fat + ingredientProxy.nutrients.fat,
-      }),
-      {
-        calories: 0,
-        carbs: 0,
-        protein: 0,
-        fat: 0,
-      }
-    );
+    return Recipe.getNutrientsFromIngredientProxies(this.ingredientProxies);
   }
 
   /**
@@ -71,5 +58,22 @@ export class Recipe implements AppItem {
 
   static validateServingUnit(value: string) {
     return !!appItemServingUnits.filter((unit) => unit === value)[0];
+  }
+
+  static getNutrientsFromIngredientProxies(ingredientProxies: IngredientProxy[]): AppItemNutrients {
+    return ingredientProxies.reduce(
+      (nutrients, ingredientProxy) => ({
+        calories: nutrients.calories + ingredientProxy.nutrients.calories,
+        carbs: nutrients.carbs + ingredientProxy.nutrients.carbs,
+        protein: nutrients.protein + ingredientProxy.nutrients.protein,
+        fat: nutrients.fat + ingredientProxy.nutrients.fat,
+      }),
+      {
+        calories: 0,
+        carbs: 0,
+        protein: 0,
+        fat: 0,
+      }
+    );
   }
 }

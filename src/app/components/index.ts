@@ -13,3 +13,4 @@ export * from './AppTextInput';
 export * from './AppScreen';
 export * from './AppNotifications';
 export * from './AppProgressBar';
+export * from './AppNutrientsPieChart';

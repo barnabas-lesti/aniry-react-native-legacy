@@ -11,6 +11,7 @@ import {
   AppButton,
   AppItemList,
   AppScrollView,
+  AppNutrientsPieChart,
 } from 'app/components';
 import { appTheme } from 'app/theme';
 import { appServingUnitOptions } from 'app/models';
@@ -212,8 +213,15 @@ export function RecipeEditor(props: RecipeEditorProps) {
         />
 
         <AppItemList
+          isCaloriesSummaryVisible
+          style={styles.ingredientProxiesList}
           items={ingredientProxies}
           onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+        />
+
+        <AppNutrientsPieChart
+          style={styles.chart}
+          nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)}
         />
       </AppScrollView>
 
@@ -266,5 +274,11 @@ const styles = StyleSheet.create({
   },
   servingUnit: {
     minWidth: 70,
+  },
+  ingredientProxiesList: {
+    marginBottom: appTheme.gaps.medium,
+  },
+  chart: {
+    marginBottom: appTheme.gaps.medium,
   },
 });

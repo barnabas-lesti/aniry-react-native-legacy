@@ -25,6 +25,11 @@ interface AppItemListProps<T extends AppItem> {
   isScrollDisabled?: boolean;
 
   /**
+   * Display calories summary.
+   */
+  isCaloriesSummaryVisible?: boolean;
+
+  /**
    * Custom styles.
    */
   style?: StyleProp<ViewStyle>;
@@ -44,13 +49,25 @@ interface AppItemListProps<T extends AppItem> {
  * App item list component.
  */
 export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
-  const { items, selectedItems = [], isScrollDisabled, style, onSelectItem, onSearch } = props;
+  const {
+    items,
+    selectedItems = [],
+    isScrollDisabled,
+    style,
+    isCaloriesSummaryVisible,
+    onSelectItem,
+    onSearch,
+  } = props;
 
   const { t } = useTranslation();
   const [searchString, setSearchString] = useState('');
 
   function isItemSelected(item: AppItem) {
     return !!selectedItems.filter(({ id }) => item.id === id).length;
+  }
+
+  function calculateTotalCalories(): number {
+    return items.reduce((total, item) => total + item.nutrients.calories, 0);
   }
 
   return (
@@ -69,8 +86,8 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
         <DataTable style={styles.table}>
           <DataTable.Header>
             <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
-            <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
             <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
+            <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
           </DataTable.Header>
 
           <AppScrollView
@@ -87,11 +104,22 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
                   onPress={() => onSelectItem && onSelectItem(item)}
                 >
                   <DataTable.Cell>{name}</DataTable.Cell>
-                  <DataTable.Cell numeric>{`${nutrients.calories.toFixed()} ${t('app.units.kcal')}`}</DataTable.Cell>
                   <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
+                  <DataTable.Cell numeric>{`${nutrients.calories.toFixed()} ${t('app.units.kcal')}`}</DataTable.Cell>
                 </DataTable.Row>
               );
             })}
+
+            {isCaloriesSummaryVisible && (
+              <DataTable.Row>
+                <DataTable.Cell textStyle={styles.totalCaloriesText}>{t('app.labels.total')}</DataTable.Cell>
+                <DataTable.Cell>{''}</DataTable.Cell>
+                <DataTable.Cell
+                  numeric
+                  textStyle={styles.totalCaloriesText}
+                >{`${calculateTotalCalories().toFixed()} ${t('app.units.kcal')}`}</DataTable.Cell>
+              </DataTable.Row>
+            )}
           </AppScrollView>
         </DataTable>
       )}
@@ -121,5 +149,8 @@ const styles = StyleSheet.create({
   },
   selectedRow: {
     backgroundColor: appTheme.colors.tableRowSelected,
+  },
+  totalCaloriesText: {
+    fontWeight: 'bold',
   },
 });

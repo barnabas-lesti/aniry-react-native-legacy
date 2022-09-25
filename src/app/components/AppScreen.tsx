@@ -3,8 +3,14 @@ import { StyleSheet, StyleProp, ViewStyle, View } from 'react-native';
 
 import { appTheme } from '../theme';
 import { AppProgressBar } from './AppProgressBar';
+import { AppScrollView } from './AppScrollView';
 
 interface AppScreenProps {
+  /**
+   * Use scroll view or simple view flag.
+   */
+  isScrollable?: boolean;
+
   /**
    * Elements to be contained in the dialog popup.
    */
@@ -17,12 +23,16 @@ interface AppScreenProps {
 }
 
 export function AppScreen(props: AppScreenProps) {
-  const { children, style } = props;
+  const { isScrollable, children, style } = props;
 
   return (
     <>
       <AppProgressBar />
-      <View style={[styles.content, style]}>{children}</View>
+      {isScrollable ? (
+        <AppScrollView style={[styles.content, style]}>{children}</AppScrollView>
+      ) : (
+        <View style={[styles.content, style]}>{children}</View>
+      )}
     </>
   );
 }
