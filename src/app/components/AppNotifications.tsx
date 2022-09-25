@@ -14,10 +14,12 @@ export function AppNotifications() {
   const { t } = useTranslation();
 
   const [isVisible, setIsVisible] = useState(false);
+  const [notification, setNotification] = useState('');
   const [notificationKey, setNotificationKey] = useState('');
 
-  appCommonService.onNotification((newNotificationKey) => {
-    setNotificationKey(newNotificationKey);
+  appCommonService.onNotification(({ text, textKey }) => {
+    text && setNotification(text);
+    textKey && setNotificationKey(textKey);
     setIsVisible(true);
   });
 
@@ -32,7 +34,7 @@ export function AppNotifications() {
       onDismiss={onDismiss}
       duration={duration}
     >
-      {t(notificationKey)}
+      {notification || t(notificationKey)}
     </Snackbar>
   );
 }

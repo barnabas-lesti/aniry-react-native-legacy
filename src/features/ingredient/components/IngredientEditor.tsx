@@ -76,7 +76,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   async function onSaveButtonPress() {
     if (validateForm()) {
       appCommonService.startLoading();
-      await ingredientService.saveIngredient(
+      await ingredientService.saveOne(
         new Ingredient({
           id: ingredient.id,
           name,
@@ -93,6 +93,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
         })
       );
       appCommonService.stopLoading();
+      appCommonService.pushNotificationKey(`ingredient.notifications.${isNewIngredient ? 'created' : 'updated'}`);
       onAfterSave();
     }
   }
@@ -100,8 +101,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
     appCommonService.startLoading();
-    await ingredientService.deleteIngredient(ingredient);
+    await ingredientService.deleteOne(ingredient);
     appCommonService.stopLoading();
+    appCommonService.pushNotificationKey('ingredient.notifications.deleted');
     onAfterDelete && onAfterDelete();
   }
 

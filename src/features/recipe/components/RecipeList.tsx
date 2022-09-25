@@ -41,7 +41,7 @@ export function RecipeList(props: RecipeListProps) {
 
   async function fetchRecipes(searchString: string) {
     appCommonService.startLoading();
-    setRecipes(await recipeService.getRecipes(searchString));
+    setRecipes(await recipeService.getMany(searchString));
     appCommonService.stopLoading();
   }
 
