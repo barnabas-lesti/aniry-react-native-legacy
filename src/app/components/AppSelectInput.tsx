@@ -75,7 +75,7 @@ export function AppSelectInput(props: AppSelectInputProps) {
             key={option.value}
             titleStyle={value === option.value && styles.selectedTitle}
             onPress={() => onOptionPress(option.value)}
-            title={t(option.labelKey)}
+            title={option.label || (option.labelKey && t(option.labelKey))}
           />
         ))}
       </Menu>

@@ -5,14 +5,13 @@ import { useTranslation } from 'react-i18next';
 import {
   AppTextInput,
   AppNumberInput,
-  AppSelectInput,
   AppConfirmationDialog,
   AppButtonGroup,
   AppNutrientsPieChart,
   AppScrollView,
+  AppServingInput,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { AppSelectOption, appServingUnitsAvailable } from 'app/models';
 import { appCommonService } from 'app/services';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
@@ -65,14 +64,8 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [showValidation, setShowValidation] = useState(false);
   const [nameIsValid, setNameIsValid] = useState(Ingredient.validateName(name));
   const [servingValueIsValid, setServingValueIsValid] = useState(Ingredient.validateServingValue(serving.value));
-  const [servingUnitIsValid, setServingUnitIsValid] = useState(Ingredient.validateServingUnit(serving.unit));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
-
-  const servingUnitOptions: AppSelectOption[] = appServingUnitsAvailable.map((unit) => ({
-    value: unit,
-    labelKey: `app.units.${unit}`,
-  }));
 
   useEffect(() => {
     setNameIsValid(Ingredient.validateName(name));
@@ -81,10 +74,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
   useEffect(() => {
     setServingValueIsValid(Ingredient.validateServingValue(servingValue));
   }, [servingValue]);
-
-  useEffect(() => {
-    setServingUnitIsValid(Ingredient.validateServingUnit(servingUnit));
-  }, [servingUnit]);
 
   async function onSaveButtonPress() {
     if (validateForm()) {
@@ -124,7 +113,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   function validateForm() {
     !showValidation && setShowValidation(true);
-    return nameIsValid && servingValueIsValid && servingUnitIsValid;
+    return nameIsValid && servingValueIsValid;
   }
 
   return (
@@ -162,22 +151,15 @@ export function IngredientEditor(props: IngredientEditorProps) {
             onChangeValue={setName}
           />
 
-          <View style={[styles.inputs, styles.servingContainer]}>
-            <AppNumberInput
-              style={styles.servingValue}
-              label={t('app.labels.serving')}
-              value={servingValue}
-              isInvalid={showValidation && !servingValueIsValid}
-              onChangeValue={setServingValue}
-            />
-            <AppSelectInput
-              style={styles.servingUnit}
-              options={servingUnitOptions}
-              value={servingUnit}
-              isInvalid={showValidation && !servingUnitIsValid}
-              onChangeValue={setServingUnit}
-            />
-          </View>
+          <AppServingInput
+            style={[styles.inputs]}
+            value={servingValue}
+            unit={servingUnit}
+            unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
+            isInvalid={showValidation && !servingValueIsValid}
+            onChangeValue={setServingValue}
+            onChangeUnit={setServingUnit}
+          />
 
           <AppNumberInput
             label={t('app.labels.calories')}
@@ -244,16 +226,5 @@ const styles = StyleSheet.create({
   },
   chart: {
     marginBottom: appTheme.gaps.medium,
-  },
-  servingContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
-  servingValue: {
-    marginRight: appTheme.gaps.small,
-    flexGrow: 1,
-  },
-  servingUnit: {
-    minWidth: 70,
   },
 });

@@ -1,4 +1,4 @@
-import { AppItem, AppItemProxy, AppNutrients, AppServing, AppServingUnit, appServingUnitsAvailable } from 'app/models';
+import { AppItem, AppItemProxy, AppNutrients, AppServing, AppServingUnit } from 'app/models';
 import { Ingredient } from 'features/ingredient/models';
 
 interface RecipeProps {
@@ -11,6 +11,7 @@ interface RecipeProps {
 export class Recipe implements AppItem {
   static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'plate';
   static readonly DEFAULT_SERVING_VALUE: number = 1;
+  static readonly AVAILABLE_SERVING_UNITS: AppServingUnit[] = ['plate', 'piece', 'g', 'ml'];
 
   id: string;
   name: string;
@@ -62,10 +63,6 @@ export class Recipe implements AppItem {
 
   static validateServingValue(value: number) {
     return value > 0;
-  }
-
-  static validateServingUnit(value: string) {
-    return !!appServingUnitsAvailable.filter((unit) => unit === value)[0];
   }
 
   static getNutrientsFromIngredientProxies(ingredientProxies: AppItemProxy<Ingredient>[]): AppNutrients {

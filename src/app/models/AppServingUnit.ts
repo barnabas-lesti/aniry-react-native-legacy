@@ -1,3 +1,3 @@
-import { appServingUnitsAvailable } from './appServingUnitsAvailable';
+import { appServingUnits } from './appServingUnits';
 
-export type AppServingUnit = typeof appServingUnitsAvailable[number];
+export type AppServingUnit = typeof appServingUnits[number];

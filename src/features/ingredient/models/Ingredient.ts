@@ -1,4 +1,4 @@
-import { AppNutrients, AppServing, AppItem, appServingUnitsAvailable, AppServingUnit } from 'app/models';
+import { AppNutrients, AppServing, AppItem, AppServingUnit } from 'app/models';
 
 type IngredientProps = {
   id: string;
@@ -10,6 +10,7 @@ type IngredientProps = {
 export class Ingredient implements AppItem {
   static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'g';
   static readonly DEFAULT_SERVING_VALUE: number = 100;
+  static readonly PRIMARY_SERVING_UNITS: AppServingUnit[] = ['g', 'ml'];
 
   public id: string;
   public name: string;
@@ -59,9 +60,5 @@ export class Ingredient implements AppItem {
 
   static validateServingValue(value: number) {
     return value > 0;
-  }
-
-  static validateServingUnit(value: string) {
-    return !!appServingUnitsAvailable.filter((unit) => unit === value)[0];
   }
 }
