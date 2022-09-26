@@ -1,4 +1,4 @@
-import { AppItem, AppItemNutrients, AppItemServing } from 'app/models';
+import { AppItem, AppNutrients, AppServing } from 'app/models';
 import { Ingredient } from './Ingredient';
 
 interface IngredientProxyProps {
@@ -8,7 +8,7 @@ interface IngredientProxyProps {
 
 export class IngredientProxy implements AppItem {
   public ingredient: Ingredient;
-  public serving: AppItemServing;
+  public serving: AppServing;
 
   constructor(props: IngredientProxyProps) {
     this.ingredient = props.ingredient;
@@ -26,7 +26,7 @@ export class IngredientProxy implements AppItem {
     return this.ingredient.name;
   }
 
-  get nutrients(): AppItemNutrients {
+  get nutrients(): AppNutrients {
     const {
       serving: { value },
       nutrients: { calories, carbs, protein, fat },

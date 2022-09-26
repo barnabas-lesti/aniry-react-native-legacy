@@ -12,7 +12,7 @@ import {
   AppScrollView,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appServingUnitOptions } from 'app/models';
+import { AppSelectOption, appServingUnitsAvailable } from 'app/models';
 import { appCommonService } from 'app/services';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
@@ -68,6 +68,11 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [servingUnitIsValid, setServingUnitIsValid] = useState(Ingredient.validateServingUnit(serving.unit));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
+
+  const servingUnitOptions: AppSelectOption[] = appServingUnitsAvailable.map((unit) => ({
+    value: unit,
+    labelKey: `app.units.${unit}`,
+  }));
 
   useEffect(() => {
     setNameIsValid(Ingredient.validateName(name));
@@ -165,7 +170,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
             />
             <AppSelectInput
               style={styles.servingUnit}
-              options={appServingUnitOptions}
+              options={servingUnitOptions}
               value={servingUnit}
               isInvalid={showValidation && !servingUnitIsValid}
               onChangeValue={setServingUnit}

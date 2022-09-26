@@ -1,17 +1,17 @@
-import { AppItemNutrients, AppItemServing, AppItem, appItemServingUnits } from 'app/models';
+import { AppNutrients, AppServing, AppItem, appServingUnitsAvailable } from 'app/models';
 
 interface IngredientProps {
   id: string;
   name: string;
-  serving: AppItemServing;
-  nutrients: AppItemNutrients;
+  serving: AppServing;
+  nutrients: AppNutrients;
 }
 
 export class Ingredient implements AppItem {
   public id: string;
   public name: string;
-  public serving: AppItemServing;
-  public nutrients: AppItemNutrients;
+  public serving: AppServing;
+  public nutrients: AppNutrients;
 
   constructor(props?: IngredientProps) {
     const { serving, nutrients } = props || {};
@@ -54,6 +54,6 @@ export class Ingredient implements AppItem {
   }
 
   static validateServingUnit(value: string) {
-    return !!appItemServingUnits.filter((unit) => unit === value)[0];
+    return !!appServingUnitsAvailable.filter((unit) => unit === value)[0];
   }
 }

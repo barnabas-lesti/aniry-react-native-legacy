@@ -14,7 +14,7 @@ import {
   AppNutrientsPieChart,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appServingUnitOptions } from 'app/models';
+import { AppSelectOption, appServingUnitsAvailable } from 'app/models';
 import { appCommonService } from 'app/services';
 import {
   Ingredient,
@@ -74,6 +74,11 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
   const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
+
+  const servingUnitOptions: AppSelectOption[] = appServingUnitsAvailable.map((unit) => ({
+    value: unit,
+    labelKey: `app.units.${unit}`,
+  }));
 
   useEffect(() => {
     setNameIsValid(Recipe.validateName(name));
@@ -199,7 +204,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
           />
           <AppSelectInput
             style={styles.servingUnit}
-            options={appServingUnitOptions}
+            options={servingUnitOptions}
             value={servingUnit}
             isInvalid={showValidation && !servingUnitIsValid}
             onChangeValue={setServingUnit}

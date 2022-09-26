@@ -1,9 +1,9 @@
 import { AppCollectionItem } from './AppCollectionItem';
-import { AppItemNutrients } from './AppItemNutrients';
-import { AppItemServing } from './AppItemServing';
+import { AppNutrients } from './AppNutrients';
+import { AppServing } from './AppServing';
 
 export interface AppItem extends AppCollectionItem {
   name: string;
-  serving: AppItemServing;
-  nutrients: AppItemNutrients;
+  serving: AppServing;
+  nutrients: AppNutrients;
 }
