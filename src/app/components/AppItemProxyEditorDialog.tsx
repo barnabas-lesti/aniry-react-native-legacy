@@ -2,20 +2,32 @@ import React, { useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppButtonGroup, AppDialog, AppNumberInput } from 'app/components';
-import { appTheme } from 'app/theme';
-import { IngredientProxy } from '../models';
+import { appTheme } from '../theme';
+import { AppItem, AppItemProxy } from '../models';
+import { AppButtonGroup } from './AppButtonGroup';
+import { AppDialog } from './AppDialog';
+import { AppNumberInput } from './AppNumberInput';
 
-interface IngredientProxyEditorDialogProps {
+interface AppItemProxyEditorDialogProps<T extends AppItem> {
   /**
-   * Ingredient proxy to edit.
+   * Item proxy to edit.
    */
-  ingredientProxy: IngredientProxy;
+  itemProxy: AppItemProxy<T>;
+
+  /**
+   * Primary color to use.
+   */
+  primaryColor: string;
+
+  /**
+   * Text to display.
+   */
+  text: string;
 
   /**
    * Confirmation event handler.
    */
-  onSave: (ingredientProxy: IngredientProxy) => void;
+  onSave: (itemProxy: AppItemProxy<T>) => void;
 
   /**
    * Cancellation event handler.
@@ -25,24 +37,26 @@ interface IngredientProxyEditorDialogProps {
   /**
    * On delete event handler.
    */
-  onDelete: (ingredientProxy: IngredientProxy) => void;
+  onDelete: (itemProxy: AppItemProxy<T>) => void;
 }
 
 /**
- * Ingredient proxy editor dialog.
+ * Item proxy editor dialog.
  */
-export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogProps) {
-  const { ingredientProxy, onSave, onDiscard, onDelete } = props;
+export function AppItemProxyEditorDialog<T extends AppItem>(props: AppItemProxyEditorDialogProps<T>) {
+  const { itemProxy, primaryColor, text, onSave, onDiscard, onDelete } = props;
 
   const { t } = useTranslation();
-  const [servingValue, setServingValue] = useState(ingredientProxy?.serving.value || 0);
+  const [servingValue, setServingValue] = useState(itemProxy.serving.value || 0);
 
   function onBeforeSave() {
-    ingredientProxy && onSave(new IngredientProxy({ ...ingredientProxy, servingValue }));
+    onSave(
+      new AppItemProxy<T>({ item: itemProxy.item, serving: { unit: itemProxy.serving.unit, value: servingValue } })
+    );
   }
 
   function onBeforeDelete() {
-    ingredientProxy && onDelete(ingredientProxy);
+    onDelete(itemProxy);
   }
 
   return (
@@ -53,13 +67,13 @@ export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogPr
           {
             label: t('app.labels.discard'),
             type: 'secondary',
-            textColor: appTheme.colors.ingredientPrimary,
+            textColor: primaryColor,
             compact: true,
             onPress: onDiscard,
           },
           {
             label: t('app.labels.save'),
-            backgroundColor: appTheme.colors.ingredientPrimary,
+            backgroundColor: primaryColor,
             compact: true,
             onPress: onBeforeSave,
           },
@@ -72,11 +86,11 @@ export function IngredientProxyEditorDialog(props: IngredientProxyEditorDialogPr
         ]}
       />
 
-      <Text style={styles.hint}>{t('ingredient.ingredientProxyEditorDialog.hint')}</Text>
+      {text && <Text style={styles.text}>{text}</Text>}
 
       <AppNumberInput
         label={t('app.labels.serving')}
-        postfix={t(`app.units.${ingredientProxy?.ingredient.serving.unit}`)}
+        postfix={t(`app.units.${itemProxy.serving.unit}`)}
         value={servingValue}
         onChangeValue={setServingValue}
       />
@@ -88,7 +102,7 @@ const styles = StyleSheet.create({
   buttonGroup: {
     marginBottom: appTheme.gaps.medium,
   },
-  hint: {
+  text: {
     marginBottom: appTheme.gaps.medium,
   },
 });

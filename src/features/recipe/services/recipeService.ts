@@ -1,5 +1,6 @@
 import { appCollectionService } from 'app/services';
-import { Ingredient, IngredientProxy } from 'features/ingredient/models';
+import { AppItemProxy } from 'app/models';
+import { Ingredient } from 'features/ingredient/models';
 import { Recipe } from '../models';
 
 const COLLECTION_NAME = 'recipes';
@@ -74,7 +75,10 @@ class RecipeService {
         if (this.isIngredientInRecipe(ingredient, recipe)) {
           const ingredientProxies = recipe.ingredientProxies.map((ingredientProxy) =>
             ingredientProxy.id === ingredient.id
-              ? new IngredientProxy({ ingredient, servingValue: ingredientProxy.serving.value })
+              ? new AppItemProxy<Ingredient>({
+                  item: ingredient,
+                  serving: { unit: ingredient.serving.unit, value: ingredientProxy.serving.value },
+                })
               : ingredientProxy
           );
           await this.saveOne(new Recipe({ ...recipe, ingredientProxies }));

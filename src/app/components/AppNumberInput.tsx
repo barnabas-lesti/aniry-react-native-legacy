@@ -37,7 +37,7 @@ interface AppNumberInputProps {
   /**
    * Value change handler.
    */
-  onChangeValue: Dispatch<SetStateAction<number>>;
+  onChangeValue: Dispatch<SetStateAction<number>> | ((value: number) => void);
 }
 
 /**

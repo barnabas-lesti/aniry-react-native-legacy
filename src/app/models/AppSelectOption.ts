@@ -1,4 +1,5 @@
 export interface AppSelectOption {
   value: string;
-  labelKey: string;
+  label?: string;
+  labelKey?: string;
 }

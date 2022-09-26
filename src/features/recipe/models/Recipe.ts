@@ -1,35 +1,44 @@
-import { AppItem, AppItemNutrients, AppItemServing, appItemServingUnits } from 'app/models';
-import { IngredientProxy } from 'features/ingredient/models';
+import { AppItem, AppItemProxy, AppNutrients, AppServing, AppServingUnit } from 'app/models';
+import { Ingredient } from 'features/ingredient/models';
 
 interface RecipeProps {
   id: string;
   name: string;
-  serving: AppItemServing;
-  ingredientProxies: IngredientProxy[];
+  servings: AppServing[];
+  ingredientProxies: AppItemProxy<Ingredient>[];
 }
 
 export class Recipe implements AppItem {
-  public id: string;
-  public name: string;
-  public serving: AppItemServing;
-  public ingredientProxies: IngredientProxy[];
+  static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'plate';
+  static readonly DEFAULT_SERVING_VALUE: number = 1;
+  static readonly AVAILABLE_SERVING_UNITS: AppServingUnit[] = ['plate', 'piece', 'g', 'ml'];
+
+  id: string;
+  name: string;
+  servings: AppServing[];
+  ingredientProxies: AppItemProxy<Ingredient>[];
 
   constructor(props?: RecipeProps) {
-    const { serving, ingredientProxies } = props || {};
+    const { servings, ingredientProxies } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
-    this.serving = {
-      unit: serving?.unit || 'plate',
-      value: serving?.value || 0,
-    };
+
+    this.servings = servings || [
+      new AppServing({ unit: Recipe.DEFAULT_SERVING_UNIT, value: Recipe.DEFAULT_SERVING_VALUE }),
+    ];
+
     this.ingredientProxies =
       ingredientProxies?.map(
-        ({ ingredient, serving: { value: servingValue } }) => new IngredientProxy({ ingredient, servingValue })
+        ({ item, serving }) => new AppItemProxy<Ingredient>({ item: new Ingredient(item), serving })
       ) || [];
   }
 
-  get nutrients(): AppItemNutrients {
+  get serving() {
+    return this.servings[0];
+  }
+
+  get nutrients(): AppNutrients {
     return Recipe.getNutrientsFromIngredientProxies(this.ingredientProxies);
   }
 
@@ -56,11 +65,7 @@ export class Recipe implements AppItem {
     return value > 0;
   }
 
-  static validateServingUnit(value: string) {
-    return !!appItemServingUnits.filter((unit) => unit === value)[0];
-  }
-
-  static getNutrientsFromIngredientProxies(ingredientProxies: IngredientProxy[]): AppItemNutrients {
+  static getNutrientsFromIngredientProxies(ingredientProxies: AppItemProxy<Ingredient>[]): AppNutrients {
     return ingredientProxies.reduce(
       (nutrients, ingredientProxy) => ({
         calories: nutrients.calories + ingredientProxy.nutrients.calories,
