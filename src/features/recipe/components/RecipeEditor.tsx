@@ -12,16 +12,12 @@ import {
   AppItemList,
   AppScrollView,
   AppNutrientsPieChart,
+  AppItemProxyEditorDialog,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { AppSelectOption, appServingUnitsAvailable } from 'app/models';
+import { AppItemProxy, AppSelectOption, appServingUnitsAvailable } from 'app/models';
 import { appCommonService } from 'app/services';
-import {
-  Ingredient,
-  IngredientProxy,
-  IngredientSelectorDialog,
-  IngredientProxyEditorDialog,
-} from 'features/ingredient';
+import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
 import { Recipe } from '../models';
 import { recipeService } from '../services';
 
@@ -70,7 +66,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
   const [servingValueIsValid, setServingValueIsValid] = useState(Recipe.validateServingValue(recipe.serving.value));
   const [servingUnitIsValid, setServingUnitIsValid] = useState(Recipe.validateServingUnit(recipe.serving.unit));
 
-  const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<IngredientProxy | null>(null);
+  const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<AppItemProxy<Ingredient> | null>(null);
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
   const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
@@ -129,11 +125,11 @@ export function RecipeEditor(props: RecipeEditorProps) {
   }
 
   function onEditIngredientsSave(ingredients: Ingredient[]) {
-    setIngredientProxies(IngredientProxy.mapIngredientsToIngredientProxies(ingredients, ingredientProxies));
+    setIngredientProxies(AppItemProxy.mapItemsToProxies(ingredients, ingredientProxies));
     setIsIngredientSelectorDialogVisible(false);
   }
 
-  function onEditIngredientProxySave(updatedIngredientProxy: IngredientProxy) {
+  function onEditIngredientProxySave(updatedIngredientProxy: AppItemProxy<Ingredient>) {
     setIngredientProxies([
       ...ingredientProxies.map((ingredientProxy) =>
         ingredientProxy.id === updatedIngredientProxy.id ? updatedIngredientProxy : ingredientProxy
@@ -142,7 +138,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setSelectedIngredientProxy(null);
   }
 
-  function onEditIngredientProxyDelete(ingredientProxyToDelete: IngredientProxy) {
+  function onEditIngredientProxyDelete(ingredientProxyToDelete: AppItemProxy<Ingredient>) {
     setIngredientProxies([
       ...ingredientProxies.filter((ingredientProxy) => ingredientProxy.id !== ingredientProxyToDelete.id),
     ]);
@@ -234,15 +230,17 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
       {isIngredientSelectorDialogVisible && (
         <IngredientSelectorDialog
-          selectedIngredients={ingredientProxies.map(({ ingredient }) => ingredient)}
+          selectedIngredients={ingredientProxies.map(({ item }) => item)}
           onDiscard={() => setIsIngredientSelectorDialogVisible(false)}
           onSave={onEditIngredientsSave}
         />
       )}
 
       {selectedIngredientProxy && (
-        <IngredientProxyEditorDialog
-          ingredientProxy={selectedIngredientProxy}
+        <AppItemProxyEditorDialog
+          itemProxy={selectedIngredientProxy}
+          primaryColor={appTheme.colors.ingredientPrimary}
+          text={t('recipe.recipeEditor.buttons.editServingsText')}
           onDiscard={() => setSelectedIngredientProxy(null)}
           onSave={onEditIngredientProxySave}
           onDelete={onEditIngredientProxyDelete}

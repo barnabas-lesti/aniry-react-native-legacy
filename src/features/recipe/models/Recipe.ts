@@ -1,21 +1,21 @@
-import { AppItem, AppNutrients, AppServing, AppServingUnit, appServingUnitsAvailable } from 'app/models';
-import { IngredientProxy } from 'features/ingredient/models';
+import { AppItem, AppItemProxy, AppNutrients, AppServing, AppServingUnit, appServingUnitsAvailable } from 'app/models';
+import { Ingredient } from 'features/ingredient/models';
 
 interface RecipeProps {
   id: string;
   name: string;
   servings: AppServing[];
-  ingredientProxies: IngredientProxy[];
+  ingredientProxies: AppItemProxy<Ingredient>[];
 }
 
 export class Recipe implements AppItem {
   static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'plate';
   static readonly DEFAULT_SERVING_VALUE: number = 1;
 
-  public id: string;
-  public name: string;
-  public servings: AppServing[];
-  public ingredientProxies: IngredientProxy[];
+  id: string;
+  name: string;
+  servings: AppServing[];
+  ingredientProxies: AppItemProxy<Ingredient>[];
 
   constructor(props?: RecipeProps) {
     const { servings, ingredientProxies } = props || {};
@@ -29,7 +29,7 @@ export class Recipe implements AppItem {
 
     this.ingredientProxies =
       ingredientProxies?.map(
-        ({ ingredient, serving: { value: servingValue } }) => new IngredientProxy({ ingredient, servingValue })
+        ({ item, serving }) => new AppItemProxy<Ingredient>({ item: new Ingredient(item), serving })
       ) || [];
   }
 
@@ -68,7 +68,7 @@ export class Recipe implements AppItem {
     return !!appServingUnitsAvailable.filter((unit) => unit === value)[0];
   }
 
-  static getNutrientsFromIngredientProxies(ingredientProxies: IngredientProxy[]): AppNutrients {
+  static getNutrientsFromIngredientProxies(ingredientProxies: AppItemProxy<Ingredient>[]): AppNutrients {
     return ingredientProxies.reduce(
       (nutrients, ingredientProxy) => ({
         calories: nutrients.calories + ingredientProxy.nutrients.calories,
