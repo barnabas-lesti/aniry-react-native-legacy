@@ -1,4 +1,4 @@
-import { AppNutrients, AppServing, AppItem, AppServingUnit } from 'app/models';
+import { AppNutrients, AppServing, AppItem, AppServingUnit, appServingUnits } from 'app/models';
 
 type IngredientProps = {
   id: string;
@@ -11,6 +11,9 @@ export class Ingredient implements AppItem {
   static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'g';
   static readonly DEFAULT_SERVING_VALUE: number = 100;
   static readonly PRIMARY_SERVING_UNITS: AppServingUnit[] = ['g', 'ml'];
+  static readonly SECONDARY_SERVING_UNITS: AppServingUnit[] = [
+    ...appServingUnits.filter((unit) => !this.PRIMARY_SERVING_UNITS.includes(unit)),
+  ];
 
   public id: string;
   public name: string;

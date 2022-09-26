@@ -56,8 +56,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
   const { t } = useTranslation();
 
   const [name, setName] = useState(recipe.name);
-  const [servingValue, setServingValue] = useState(recipe.serving.value);
-  const [servingUnit, setServingUnit] = useState(recipe.serving.unit);
+  const [serving, setServing] = useState(recipe.serving);
   const [ingredientProxies, setIngredientProxies] = useState(recipe.ingredientProxies || []);
 
   const [showValidation, setShowValidation] = useState(false);
@@ -74,8 +73,8 @@ export function RecipeEditor(props: RecipeEditorProps) {
   }, [name]);
 
   useEffect(() => {
-    setServingValueIsValid(Recipe.validateServingValue(servingValue));
-  }, [servingValue]);
+    setServingValueIsValid(Recipe.validateServingValue(serving.value));
+  }, [serving]);
 
   async function onSaveButtonPress() {
     if (validateForm()) {
@@ -84,12 +83,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
         new Recipe({
           id: recipe.id,
           name,
-          servings: [
-            {
-              value: servingValue,
-              unit: servingUnit,
-            },
-          ],
+          servings: [serving],
           ingredientProxies,
         })
       );
@@ -141,8 +135,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
       appCommonService.stopLoading();
 
       setName(refreshedRecipe.name);
-      setServingValue(refreshedRecipe.serving.value);
-      setServingUnit(refreshedRecipe.serving.unit);
+      setServing(refreshedRecipe.serving);
       setIngredientProxies(refreshedRecipe.ingredientProxies || []);
     }
   }
@@ -183,12 +176,10 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
         <AppServingInput
           style={[styles.row]}
-          value={servingValue}
-          unit={servingUnit}
+          serving={serving}
           unitOptions={Recipe.AVAILABLE_SERVING_UNITS}
           isInvalid={showValidation && !servingValueIsValid}
-          onChangeValue={setServingValue}
-          onChangeUnit={setServingUnit}
+          onChangeServing={setServing}
         />
 
         <AppButton

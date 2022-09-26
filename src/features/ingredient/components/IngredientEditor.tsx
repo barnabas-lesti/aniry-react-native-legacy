@@ -9,12 +9,12 @@ import {
   AppButtonGroup,
   AppNutrientsPieChart,
   AppScrollView,
-  AppServingInput,
 } from 'app/components';
 import { appTheme } from 'app/theme';
 import { appCommonService } from 'app/services';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
+import { IngredientServingEditor } from './IngredientServingEditor';
 
 interface IngredientEditorProps {
   /**
@@ -48,14 +48,15 @@ interface IngredientEditorProps {
  */
 export function IngredientEditor(props: IngredientEditorProps) {
   const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
-  const { serving, nutrients } = ingredient;
+  const { nutrients } = ingredient;
   const isNewIngredient = !ingredient.id;
+
+  // console.log(ingredient)
 
   const { t } = useTranslation();
 
   const [name, setName] = useState(ingredient.name);
-  const [servingValue, setServingValue] = useState(serving.value);
-  const [servingUnit, setServingUnit] = useState(serving.unit);
+  const [servings, setServings] = useState(ingredient.servings);
   const [calories, setCalories] = useState(nutrients.calories);
   const [carbs, setCarbs] = useState(nutrients.carbs);
   const [protein, setProtein] = useState(nutrients.protein);
@@ -63,17 +64,12 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   const [showValidation, setShowValidation] = useState(false);
   const [nameIsValid, setNameIsValid] = useState(Ingredient.validateName(name));
-  const [servingValueIsValid, setServingValueIsValid] = useState(Ingredient.validateServingValue(serving.value));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
 
   useEffect(() => {
     setNameIsValid(Ingredient.validateName(name));
   }, [name]);
-
-  useEffect(() => {
-    setServingValueIsValid(Ingredient.validateServingValue(servingValue));
-  }, [servingValue]);
 
   async function onSaveButtonPress() {
     if (validateForm()) {
@@ -82,12 +78,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
         new Ingredient({
           id: ingredient.id,
           name,
-          servings: [
-            {
-              value: servingValue,
-              unit: servingUnit,
-            },
-          ],
+          servings,
           nutrients: {
             calories,
             carbs,
@@ -113,13 +104,13 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   function validateForm() {
     !showValidation && setShowValidation(true);
-    return nameIsValid && servingValueIsValid;
+    return nameIsValid && Ingredient.validateServingValue(servings[0].value);
   }
 
   return (
     <View style={[styles.container, style]}>
       <AppButtonGroup
-        style={styles.buttonGroup}
+        style={styles.marginBottomMedium}
         buttons={[
           {
             label: t('app.labels.discard'),
@@ -142,29 +133,25 @@ export function IngredientEditor(props: IngredientEditorProps) {
       />
 
       <AppScrollView>
-        <View style={styles.form}>
-          <AppTextInput
-            label={t('app.labels.name')}
-            style={styles.inputs}
-            value={name}
-            isInvalid={showValidation && !nameIsValid}
-            onChangeValue={setName}
-          />
+        <AppTextInput
+          label={t('app.labels.name')}
+          style={styles.marginBottomMedium}
+          value={name}
+          isInvalid={showValidation && !nameIsValid}
+          onChangeValue={setName}
+        />
 
-          <AppServingInput
-            style={[styles.inputs]}
-            value={servingValue}
-            unit={servingUnit}
-            unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
-            isInvalid={showValidation && !servingValueIsValid}
-            onChangeValue={setServingValue}
-            onChangeUnit={setServingUnit}
-          />
+        <IngredientServingEditor
+          style={styles.marginBottomMedium}
+          servings={[...servings]}
+          onChangeServings={setServings}
+        />
 
+        <View style={styles.marginBottomMedium}>
           <AppNumberInput
             label={t('app.labels.calories')}
             postfix={t('app.units.kcal')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={calories}
             onChangeValue={setCalories}
           />
@@ -172,7 +159,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.carbs')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={carbs}
             onChangeValue={setCarbs}
           />
@@ -180,7 +167,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.protein')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={protein}
             onChangeValue={setProtein}
           />
@@ -188,7 +175,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.fat')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
             value={fat}
             onChangeValue={setFat}
           />
@@ -196,7 +182,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
         <AppNutrientsPieChart
           nutrients={{ calories, carbs, protein, fat }}
-          style={styles.chart}
+          style={styles.marginBottomMedium}
         />
       </AppScrollView>
 
@@ -215,16 +201,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  buttonGroup: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  form: {
+  marginBottomSmall: {
     marginBottom: appTheme.gaps.small,
   },
-  inputs: {
-    marginBottom: appTheme.gaps.small,
-  },
-  chart: {
+  marginBottomMedium: {
     marginBottom: appTheme.gaps.medium,
   },
 });

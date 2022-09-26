@@ -2,26 +2,26 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleProp, ViewStyle, View, StyleSheet } from 'react-native';
 
-import { AppServingUnit } from '../models';
+import { AppServing, AppServingUnit } from '../models';
 import { appTheme } from '../theme';
 import { AppNumberInput } from './AppNumberInput';
 import { AppSelectInput } from './AppSelectInput';
 
 interface AppServingInputProps {
   /**
-   * Serving value.
+   * Serving object.
    */
-  value: number;
-
-  /**
-   * Serving unit.
-   */
-  unit: AppServingUnit;
+  serving: AppServing;
 
   /**
    * Serving unit options.
    */
   unitOptions: Array<AppServingUnit>;
+
+  /**
+   * Label override.
+   */
+  label?: string;
 
   /**
    * Validity flag.
@@ -34,21 +34,16 @@ interface AppServingInputProps {
   style?: StyleProp<ViewStyle>;
 
   /**
-   * On value change handler.
+   * On serving change handler.
    */
-  onChangeValue: (value: number) => void;
-
-  /**
-   * On unit change handler.
-   */
-  onChangeUnit: (unit: AppServingUnit) => void;
+  onChangeServing: (serving: AppServing) => void;
 }
 
 /**
  * App serving input component.
  */
 export function AppServingInput(props: AppServingInputProps) {
-  const { value, unit, unitOptions, isInvalid, style, onChangeValue, onChangeUnit } = props;
+  const { serving, unitOptions, label, isInvalid, style, onChangeServing } = props;
   const { t } = useTranslation();
 
   const options = unitOptions.map((unitOption) => ({
@@ -60,16 +55,16 @@ export function AppServingInput(props: AppServingInputProps) {
     <View style={[styles.container, style]}>
       <AppNumberInput
         style={styles.value}
-        label={t('app.labels.serving')}
-        value={value}
+        label={label || t('app.labels.serving')}
+        value={serving.value}
         isInvalid={isInvalid}
-        onChangeValue={onChangeValue}
+        onChangeValue={(value: number) => onChangeServing({ value, unit: serving.unit })}
       />
       <AppSelectInput
         style={styles.unit}
         options={options}
-        value={unit}
-        onChangeValue={onChangeUnit}
+        value={serving.unit}
+        onChangeValue={(unit: AppServingUnit) => onChangeServing({ value: serving.value, unit })}
       />
     </View>
   );
