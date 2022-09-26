@@ -1,33 +1,41 @@
-import { AppNutrients, AppServing, AppItem, appServingUnitsAvailable } from 'app/models';
+import { AppNutrients, AppServing, AppItem, appServingUnitsAvailable, AppServingUnit } from 'app/models';
 
-interface IngredientProps {
+type IngredientProps = {
   id: string;
   name: string;
-  serving: AppServing;
   nutrients: AppNutrients;
-}
+  servings: AppServing[];
+};
 
 export class Ingredient implements AppItem {
+  static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'g';
+  static readonly DEFAULT_SERVING_VALUE: number = 100;
+
   public id: string;
   public name: string;
-  public serving: AppServing;
   public nutrients: AppNutrients;
+  public servings: AppServing[];
 
   constructor(props?: IngredientProps) {
-    const { serving, nutrients } = props || {};
+    const { servings, nutrients } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
-    this.serving = {
-      unit: serving?.unit || 'g',
-      value: serving?.value || 0,
-    };
+
+    this.servings = servings || [
+      new AppServing({ unit: Ingredient.DEFAULT_SERVING_UNIT, value: Ingredient.DEFAULT_SERVING_VALUE }),
+    ];
+
     this.nutrients = {
       calories: nutrients?.calories || 0,
       carbs: nutrients?.carbs || 0,
       protein: nutrients?.protein || 0,
       fat: nutrients?.fat || 0,
     };
+  }
+
+  get serving() {
+    return this.servings[0];
   }
 
   /**

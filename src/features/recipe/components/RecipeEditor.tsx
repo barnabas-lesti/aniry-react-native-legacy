@@ -99,10 +99,12 @@ export function RecipeEditor(props: RecipeEditorProps) {
         new Recipe({
           id: recipe.id,
           name,
-          serving: {
-            value: servingValue,
-            unit: servingUnit,
-          },
+          servings: [
+            {
+              value: servingValue,
+              unit: servingUnit,
+            },
+          ],
           ingredientProxies,
         })
       );

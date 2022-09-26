@@ -93,10 +93,12 @@ export function IngredientEditor(props: IngredientEditorProps) {
         new Ingredient({
           id: ingredient.id,
           name,
-          serving: {
-            value: servingValue,
-            unit: servingUnit,
-          },
+          servings: [
+            {
+              value: servingValue,
+              unit: servingUnit,
+            },
+          ],
           nutrients: {
             calories,
             carbs,

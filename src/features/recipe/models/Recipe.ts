@@ -1,32 +1,40 @@
-import { AppItem, AppNutrients, AppServing, appServingUnitsAvailable } from 'app/models';
+import { AppItem, AppNutrients, AppServing, AppServingUnit, appServingUnitsAvailable } from 'app/models';
 import { IngredientProxy } from 'features/ingredient/models';
 
 interface RecipeProps {
   id: string;
   name: string;
-  serving: AppServing;
+  servings: AppServing[];
   ingredientProxies: IngredientProxy[];
 }
 
 export class Recipe implements AppItem {
+  static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'plate';
+  static readonly DEFAULT_SERVING_VALUE: number = 1;
+
   public id: string;
   public name: string;
-  public serving: AppServing;
+  public servings: AppServing[];
   public ingredientProxies: IngredientProxy[];
 
   constructor(props?: RecipeProps) {
-    const { serving, ingredientProxies } = props || {};
+    const { servings, ingredientProxies } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
-    this.serving = {
-      unit: serving?.unit || 'plate',
-      value: serving?.value || 0,
-    };
+
+    this.servings = servings || [
+      new AppServing({ unit: Recipe.DEFAULT_SERVING_UNIT, value: Recipe.DEFAULT_SERVING_VALUE }),
+    ];
+
     this.ingredientProxies =
       ingredientProxies?.map(
         ({ ingredient, serving: { value: servingValue } }) => new IngredientProxy({ ingredient, servingValue })
       ) || [];
+  }
+
+  get serving() {
+    return this.servings[0];
   }
 
   get nutrients(): AppNutrients {
