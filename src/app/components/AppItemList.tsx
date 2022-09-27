@@ -15,6 +15,11 @@ interface AppItemListProps<T extends AppItem> {
   items: Array<T>;
 
   /**
+   * Initial search string.
+   */
+  initialSearchString?: string;
+
+  /**
    * Selected items.
    */
   selectedItems?: Array<T>;
@@ -42,7 +47,7 @@ interface AppItemListProps<T extends AppItem> {
   /**
    * Search event handler.
    */
-  onSearch?: (searchString: string) => Promise<void>;
+  onSearch?: (searchString: string) => Promise<any>;
 }
 
 /**
@@ -51,6 +56,7 @@ interface AppItemListProps<T extends AppItem> {
 export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
   const {
     items,
+    initialSearchString = '',
     selectedItems = [],
     isScrollDisabled,
     style,
@@ -60,7 +66,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
   } = props;
 
   const { t } = useTranslation();
-  const [searchString, setSearchString] = useState('');
+  const [searchString, setSearchString] = useState(initialSearchString);
 
   function isItemSelected(item: AppItem) {
     return !!selectedItems.filter(({ id }) => item.id === id).length;

@@ -5,12 +5,12 @@ interface Notification {
   textKey?: string;
 }
 
-interface AppInitialState {
+interface AppState {
   loadingStates: boolean[];
   notification: Notification | null;
 }
 
-const selectAppState = (app: AppInitialState) => app;
+const selectAppState = (app: AppState) => app;
 
 export const appState = {
   ...createSlice({
@@ -19,7 +19,7 @@ export const appState = {
     initialState: {
       loadingStates: [],
       notification: null,
-    } as AppInitialState,
+    } as AppState,
 
     reducers: {
       startLoading: (state) => {
