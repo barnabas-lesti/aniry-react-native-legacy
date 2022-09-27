@@ -30,24 +30,27 @@ const ingredientSlice = createSlice({
 
 const asyncActions = {
   loadIngredients: () => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+    dispatch(appState.actions.startLoading());
+
     const {
       ingredient: { allIngredients },
     } = getState();
-
-    dispatch(appState.actions.startLoading());
     if (!allIngredients) {
       dispatch(ingredientSlice.actions.setAllIngredients(await appCollectionService.getAll<Ingredient>('ingredients')));
     }
+
     dispatch(appState.actions.stopLoading());
   },
 
   createIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+    dispatch(appState.actions.startLoading());
+
     const {
       ingredient: { allIngredients = [] },
     } = getState();
-    dispatch(appState.actions.startLoading());
     const createdIngredient = await appCollectionService.saveOne<Ingredient>('ingredients', ingredient);
     dispatch(ingredientSlice.actions.setAllIngredients([...(allIngredients || []), createdIngredient]));
+
     dispatch(appState.actions.stopLoading());
   },
 };

@@ -21,8 +21,8 @@ export function IngredientCreateScreen(props: IngredientCreateScreenProps) {
     navigation.goBack();
   }
 
-  async function onSave(ingredient: Ingredient) {
-    await dispatch(ingredientState.asyncActions.createIngredient(ingredient));
+  async function onSave(ingredientInstance: Ingredient) {
+    await dispatch(ingredientState.asyncActions.createIngredient(ingredientInstance));
     dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.created' }));
     navigation.push('IngredientHome');
   }

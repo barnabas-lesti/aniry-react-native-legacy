@@ -17,7 +17,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const ingredientStateData = useAppSelector(({ ingredient }) => ingredient);
-  const ingredients = ingredientState.selectors
+  const ingredientInstances = ingredientState.selectors
     .ingredientHomeIngredients(ingredientStateData)
     .map((ingredient) => new Ingredient(ingredient));
 
@@ -47,7 +47,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
       />
 
       <AppItemList
-        items={ingredients}
+        itemInstances={ingredientInstances}
         initialSearchString={ingredientStateData.ingredientHomeSearchString}
         onSearch={onSearch}
         onSelectItem={onSelectItem}

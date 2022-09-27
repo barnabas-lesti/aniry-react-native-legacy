@@ -19,9 +19,9 @@ import { ingredientService } from '../services';
 
 interface IngredientEditorProps {
   /**
-   * The ingredient object.
+   * The ingredientInstance instance.
    */
-  ingredient?: Ingredient;
+  ingredientInstance?: Ingredient;
 
   /**
    * Custom styles.
@@ -36,7 +36,7 @@ interface IngredientEditorProps {
   /**
    * On save event handler.
    */
-  onSave: (ingredient: Ingredient) => Promise<void>;
+  onSave: (ingredientInstance: Ingredient) => Promise<void>;
 
   /**
    * On delete event handler.
@@ -48,14 +48,14 @@ interface IngredientEditorProps {
  * Ingredient editor component.
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient = new Ingredient(), style, onDiscard, onSave, onDelete } = props;
-  const { serving, nutrients } = ingredient;
-  const isNewIngredient = !ingredient.id;
+  const { ingredientInstance = new Ingredient(), style, onDiscard, onSave, onDelete } = props;
+  const { serving, nutrients } = ingredientInstance;
+  const isNewIngredient = !ingredientInstance.id;
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
-  const [name, setName] = useState(ingredient.name);
+  const [name, setName] = useState(ingredientInstance.name);
   const [servingValue, setServingValue] = useState(serving.value);
   const [servingUnit, setServingUnit] = useState(serving.unit);
   const [calories, setCalories] = useState(nutrients.calories);
@@ -81,7 +81,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
     if (validateForm()) {
       await onSave(
         new Ingredient({
-          id: ingredient.id,
+          id: ingredientInstance.id,
           name,
           servings: [
             {
@@ -103,11 +103,11 @@ export function IngredientEditor(props: IngredientEditorProps) {
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
     dispatch(appState.actions.startLoading());
-    await ingredientService.deleteOne(ingredient);
+    await ingredientService.deleteOne(ingredientInstance);
     dispatch(appState.actions.stopLoading());
     dispatch(
       appState.actions.showNotification({
-        textKey: 'ingredient.notifications.deleted',
+        textKey: 'ingredientInstance.notifications.deleted',
       })
     );
     onDelete && onDelete();
@@ -204,7 +204,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
       {!isNewIngredient && isDeleteConfirmationVisible && (
         <AppConfirmationDialog
-          text={t('ingredient.ingredientEditor.deleteConfirmation')}
+          text={t('ingredientInstance.ingredientEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
           onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
