@@ -14,7 +14,7 @@ import {
 import { appTheme } from 'app/theme';
 import { appCommonService } from 'app/services';
 import { useAppDispatch } from 'app/store/hooks';
-import { appStateActions } from 'app/store';
+import { appStateActions } from 'app/state';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 

@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 
 import { AppItemList } from 'app/components';
 import { useAppDispatch } from 'app/store/hooks';
-import { appStateActions } from 'app/store';
+import { appStateActions } from 'app/state';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 

@@ -17,7 +17,7 @@ import { appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
 import { appCommonService } from 'app/services';
 import { useAppDispatch } from 'app/store/hooks';
-import { appStateActions } from 'app/store';
+import { appStateActions } from 'app/state';
 import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
 import { Recipe } from '../models';
 import { recipeService } from '../services';
