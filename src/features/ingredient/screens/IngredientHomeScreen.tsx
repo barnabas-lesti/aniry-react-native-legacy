@@ -25,20 +25,32 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
     dispatch(ingredientState.asyncActions.loadIngredients());
   }, [dispatch]);
 
+  function onNewIngredientPress() {
+    navigation.push('IngredientCreate');
+  }
+
+  function onSelectItem(ingredient: Ingredient) {
+    navigation.push('IngredientEdit', { ingredient });
+  }
+
+  async function onSearch(searchString: string) {
+    await dispatch(ingredientState.actions.setIngredientHomeSearchString(searchString));
+  }
+
   return (
     <AppScreen>
       <AppButton
         style={styles.newIngredientButton}
         backgroundColor={appTheme.colors.ingredientPrimary}
         label={t('ingredient.ingredientHomeScreen.createIngredient')}
-        onPress={() => navigation.push('IngredientCreate')}
+        onPress={onNewIngredientPress}
       />
 
       <AppItemList
         items={ingredients}
         initialSearchString={ingredientStateData.ingredientHomeSearchString}
-        onSelectItem={(ingredient) => navigation.push('IngredientEdit', { ingredient })}
-        onSearch={async (searchString) => dispatch(ingredientState.actions.setIngredientHomeSearchString(searchString))}
+        onSearch={onSearch}
+        onSelectItem={onSelectItem}
       />
     </AppScreen>
   );

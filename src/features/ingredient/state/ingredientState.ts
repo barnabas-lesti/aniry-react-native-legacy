@@ -10,8 +10,6 @@ interface IngredientState {
   ingredientHomeSearchString: string;
 }
 
-const selectIngredientState = (ingredient: IngredientState) => ingredient;
-
 const ingredientSlice = createSlice({
   name: 'ingredient',
 
@@ -47,7 +45,7 @@ const asyncActions = {
 
 const selectors = {
   ingredientHomeIngredients: createSelector(
-    selectIngredientState,
+    (ingredient: IngredientState) => ingredient,
     ({ allIngredients, ingredientHomeSearchString }) =>
       allIngredients?.filter(
         (ingredient) => ingredient.name.toLowerCase().search(ingredientHomeSearchString.toLowerCase()) !== -1
