@@ -1,7 +1,13 @@
-import { createSlice, createSelector } from '@reduxjs/toolkit';
+import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
+
+interface Notification {
+  text?: string;
+  textKey?: string;
+}
 
 interface AppInitialState {
   loadingStates: boolean[];
+  notification: Notification | null;
 }
 
 const selectAppState = (app: AppInitialState) => app;
@@ -12,6 +18,7 @@ export const appState = {
 
     initialState: {
       loadingStates: [],
+      notification: null,
     } as AppInitialState,
 
     reducers: {
@@ -20,6 +27,13 @@ export const appState = {
       },
       stopLoading: (state) => {
         state.loadingStates = [...state.loadingStates.slice(0, -1)];
+      },
+
+      showNotification: (state, action: PayloadAction<Notification>) => {
+        state.notification = action.payload;
+      },
+      clearNotification: (state) => {
+        state.notification = null;
       },
     },
   }),

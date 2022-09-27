@@ -12,7 +12,6 @@ import {
   AppServingInput,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appCommonService } from 'app/services';
 import { useAppDispatch } from 'app/store/hooks';
 import { appState } from 'app/state';
 import { Ingredient } from '../models';
@@ -100,7 +99,11 @@ export function IngredientEditor(props: IngredientEditorProps) {
         })
       );
       dispatch(appState.actions.stopLoading());
-      appCommonService.pushNotificationKey(`ingredient.notifications.${isNewIngredient ? 'created' : 'updated'}`);
+      dispatch(
+        appState.actions.showNotification({
+          textKey: `ingredient.notifications.${isNewIngredient ? 'created' : 'updated'}`,
+        })
+      );
       onAfterSave();
     }
   }
@@ -110,7 +113,11 @@ export function IngredientEditor(props: IngredientEditorProps) {
     dispatch(appState.actions.startLoading());
     await ingredientService.deleteOne(ingredient);
     dispatch(appState.actions.stopLoading());
-    appCommonService.pushNotificationKey('ingredient.notifications.deleted');
+    dispatch(
+      appState.actions.showNotification({
+        textKey: 'ingredient.notifications.deleted',
+      })
+    );
     onAfterDelete && onAfterDelete();
   }
 

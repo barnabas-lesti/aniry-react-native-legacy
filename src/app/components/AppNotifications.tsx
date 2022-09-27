@@ -1,40 +1,29 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Snackbar } from 'react-native-paper';
 
-import { appCommonService } from '../services';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { appState } from '../state';
+
+const NOTIFICATION_DURATION = 3000;
 
 /**
  * Application notification display.
  */
 export function AppNotifications() {
-  const duration = appCommonService.NOTIFICATION_DURATION;
-
   const { t } = useTranslation();
-
-  const [isVisible, setIsVisible] = useState(false);
-  const [notification, setNotification] = useState('');
-  const [notificationKey, setNotificationKey] = useState('');
-
-  appCommonService.onNotification(({ text, textKey }) => {
-    text && setNotification(text);
-    textKey && setNotificationKey(textKey);
-    setIsVisible(true);
-  });
-
-  function onDismiss() {
-    setIsVisible(false);
-  }
+  const dispatch = useAppDispatch();
+  const { notification } = useAppSelector((state) => state.app);
 
   return (
     <Snackbar
       style={styles.snackbar}
-      visible={isVisible}
-      onDismiss={onDismiss}
-      duration={duration}
+      visible={!!notification}
+      onDismiss={() => dispatch(appState.actions.clearNotification())}
+      duration={NOTIFICATION_DURATION}
     >
-      {notification || t(notificationKey)}
+      {notification && notification.textKey && t(notification.textKey)}
     </Snackbar>
   );
 }

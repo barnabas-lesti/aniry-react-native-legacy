@@ -15,7 +15,6 @@ import {
 } from 'app/components';
 import { appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
-import { appCommonService } from 'app/services';
 import { useAppDispatch } from 'app/store/hooks';
 import { appState } from 'app/state';
 import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
@@ -98,7 +97,11 @@ export function RecipeEditor(props: RecipeEditorProps) {
         })
       );
       dispatch(appState.actions.stopLoading());
-      appCommonService.pushNotificationKey(`recipe.notifications.${isNewRecipe ? 'created' : 'updated'}`);
+      dispatch(
+        appState.actions.showNotification({
+          textKey: `recipe.notifications.${isNewRecipe ? 'created' : 'updated'}`,
+        })
+      );
       onAfterSave();
     }
   }
@@ -108,7 +111,11 @@ export function RecipeEditor(props: RecipeEditorProps) {
     dispatch(appState.actions.startLoading());
     await recipeService.deleteOne(recipe);
     dispatch(appState.actions.stopLoading());
-    appCommonService.pushNotificationKey('recipe.notifications.deleted');
+    dispatch(
+      appState.actions.showNotification({
+        textKey: 'recipe.notifications.deleted',
+      })
+    );
     onAfterDelete && onAfterDelete();
   }
 
