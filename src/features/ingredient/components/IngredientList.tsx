@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 
 import { AppItemList } from 'app/components';
-import { appCommonService } from 'app/services';
+import { useAppDispatch } from 'app/store/hooks';
+import { appStateActions } from 'app/store';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 
@@ -29,10 +30,13 @@ interface IngredientListProps {
 export function IngredientList(props: IngredientListProps) {
   const { selectedIngredients = [], style, onSelectIngredient } = props;
 
+  const dispatch = useAppDispatch();
+
   const [ingredients, setIngredients] = useState<Array<Ingredient>>([]);
 
   useEffect(() => {
     fetchIngredients('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function onSearch(searchString: string) {
@@ -40,9 +44,9 @@ export function IngredientList(props: IngredientListProps) {
   }
 
   async function fetchIngredients(searchString: string) {
-    appCommonService.startLoading();
+    dispatch(appStateActions.startLoading());
     setIngredients(await ingredientService.getMany(searchString));
-    appCommonService.stopLoading();
+    dispatch(appStateActions.stopLoading());
   }
 
   return (

@@ -16,6 +16,8 @@ import {
 import { appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
 import { appCommonService } from 'app/services';
+import { useAppDispatch } from 'app/store/hooks';
+import { appStateActions } from 'app/store';
 import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
 import { Recipe } from '../models';
 import { recipeService } from '../services';
@@ -53,7 +55,9 @@ interface RecipeEditorProps {
 export function RecipeEditor(props: RecipeEditorProps) {
   const { recipe = new Recipe(), style, onDiscard, onAfterSave, onAfterDelete } = props;
   const isNewRecipe = !recipe.id;
+
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
@@ -79,7 +83,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      appCommonService.startLoading();
+      dispatch(appStateActions.startLoading());
       await recipeService.saveOne(
         new Recipe({
           id: recipe.id,
@@ -93,7 +97,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
           ingredientProxies,
         })
       );
-      appCommonService.stopLoading();
+      dispatch(appStateActions.stopLoading());
       appCommonService.pushNotificationKey(`recipe.notifications.${isNewRecipe ? 'created' : 'updated'}`);
       onAfterSave();
     }
@@ -101,9 +105,9 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    appCommonService.startLoading();
+    dispatch(appStateActions.startLoading());
     await recipeService.deleteOne(recipe);
-    appCommonService.stopLoading();
+    dispatch(appStateActions.stopLoading());
     appCommonService.pushNotificationKey('recipe.notifications.deleted');
     onAfterDelete && onAfterDelete();
   }
@@ -136,9 +140,9 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function refreshRecipe() {
     if (!isNewRecipe) {
-      appCommonService.startLoading();
+      dispatch(appStateActions.startLoading());
       const refreshedRecipe = (await recipeService.getOneById(recipe.id)) || recipe;
-      appCommonService.stopLoading();
+      dispatch(appStateActions.stopLoading());
 
       setName(refreshedRecipe.name);
       setServingValue(refreshedRecipe.serving.value);

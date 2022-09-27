@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 
-import { appCommonService } from '../services';
+import { useAppSelector } from '../store/hooks';
 import { appTheme } from '../theme';
 
 export function AppProgressBar() {
-  const [isVisible, setIsVisible] = useState(false);
-
-  appCommonService.onLoadingStateChange(setIsVisible);
+  const { isLoading } = useAppSelector((state) => state.app);
 
   return (
     <ProgressBar
-      visible={isVisible}
+      visible={isLoading}
       style={styles.progressPar}
       indeterminate
       color={appTheme.colors.primary}

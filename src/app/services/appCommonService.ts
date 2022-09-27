@@ -8,19 +8,6 @@ interface AppNotification {
 class AppCommonService {
   public readonly NOTIFICATION_DURATION = 3000;
   private readonly notificationSubject = new Subject<AppNotification>();
-  private readonly loaderSubject = new Subject<boolean>();
-
-  startLoading() {
-    this.loaderSubject.next(true);
-  }
-
-  stopLoading() {
-    this.loaderSubject.next(false);
-  }
-
-  onLoadingStateChange(callback: (isLoading: boolean) => void) {
-    this.loaderSubject.subscribe(callback);
-  }
 
   /**
    * Pushes a new notification.
