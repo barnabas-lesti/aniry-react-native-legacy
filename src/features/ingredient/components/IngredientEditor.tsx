@@ -34,21 +34,21 @@ interface IngredientEditorProps {
   onDiscard: () => void;
 
   /**
-   * On after save event handler.
+   * On save event handler.
    */
-  onAfterSave: () => void;
+  onSave: (ingredient: Ingredient) => Promise<void>;
 
   /**
-   * On after delete event handler.
+   * On delete event handler.
    */
-  onAfterDelete?: () => void;
+  onDelete?: () => Promise<void>;
 }
 
 /**
  * Ingredient editor component.
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
+  const { ingredient = new Ingredient(), style, onDiscard, onSave, onDelete } = props;
   const { serving, nutrients } = ingredient;
   const isNewIngredient = !ingredient.id;
 
@@ -79,8 +79,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      dispatch(appState.actions.startLoading());
-      await ingredientService.saveOne(
+      await onSave(
         new Ingredient({
           id: ingredient.id,
           name,
@@ -98,13 +97,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
         })
       );
-      dispatch(appState.actions.stopLoading());
-      dispatch(
-        appState.actions.showNotification({
-          textKey: `ingredient.notifications.${isNewIngredient ? 'created' : 'updated'}`,
-        })
-      );
-      onAfterSave();
     }
   }
 
@@ -118,7 +110,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
         textKey: 'ingredient.notifications.deleted',
       })
     );
-    onAfterDelete && onAfterDelete();
+    onDelete && onDelete();
   }
 
   function validateForm() {

@@ -36,9 +36,18 @@ const asyncActions = {
 
     dispatch(appState.actions.startLoading());
     if (!allIngredients) {
-      const ingredients = await appCollectionService.getAll<Ingredient>('ingredients');
-      dispatch(ingredientSlice.actions.setAllIngredients(Ingredient.sortIngredientsByName(ingredients)));
+      dispatch(ingredientSlice.actions.setAllIngredients(await appCollectionService.getAll<Ingredient>('ingredients')));
     }
+    dispatch(appState.actions.stopLoading());
+  },
+
+  createIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+    const {
+      ingredient: { allIngredients = [] },
+    } = getState();
+    dispatch(appState.actions.startLoading());
+    const createdIngredient = await appCollectionService.saveOne<Ingredient>('ingredients', ingredient);
+    dispatch(ingredientSlice.actions.setAllIngredients([...(allIngredients || []), createdIngredient]));
     dispatch(appState.actions.stopLoading());
   },
 };
@@ -47,9 +56,11 @@ const selectors = {
   ingredientHomeIngredients: createSelector(
     (ingredient: IngredientState) => ingredient,
     ({ allIngredients, ingredientHomeSearchString }) =>
-      allIngredients?.filter(
-        (ingredient) => ingredient.name.toLowerCase().search(ingredientHomeSearchString.toLowerCase()) !== -1
-      ) || []
+      Ingredient.sortIngredientsByName(
+        allIngredients?.filter(
+          (ingredient) => ingredient.name.toLowerCase().search(ingredientHomeSearchString.toLowerCase()) !== -1
+        ) || []
+      )
   ),
 };
 

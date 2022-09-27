@@ -58,16 +58,14 @@ class AppCollectionService {
       const indexOfItem = items.findIndex(({ id }) => id === item.id);
       if (indexOfItem !== -1) {
         items[indexOfItem] = item;
-      } else {
-        items.push(item);
+        await this._storeCollection<T>(collection, items);
+        return item;
       }
-    } else {
-      item.id = uuid();
-      items.push(item);
     }
 
-    await this._storeCollection<T>(collection, items);
-    return item;
+    const newItem = { ...item, id: item.id || uuid() };
+    await this._storeCollection<T>(collection, [...items, newItem]);
+    return newItem;
   }
 
   /**
