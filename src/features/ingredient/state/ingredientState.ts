@@ -29,6 +29,9 @@ const ingredientSlice = createSlice({
 });
 
 const asyncActions = {
+  /**
+   * Loads ingredients from storage.
+   */
   loadIngredients: () => async (dispatch: AppDispatch, getState: () => AppRootState) => {
     dispatch(appState.actions.startLoading());
     const {
@@ -40,6 +43,10 @@ const asyncActions = {
     dispatch(appState.actions.stopLoading());
   },
 
+  /**
+   * Creates a new ingredient in storage.
+   * @param ingredient Ingredient to create.
+   */
   createIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
     dispatch(appState.actions.startLoading());
     const {
@@ -50,6 +57,10 @@ const asyncActions = {
     dispatch(appState.actions.stopLoading());
   },
 
+  /**
+   * Updates an ingredient in storage.
+   * @param ingredient Ingredient to update.
+   */
   updateIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
     dispatch(appState.actions.startLoading());
     await dispatch(appState.asyncActions.sleep(1000));
@@ -68,6 +79,10 @@ const asyncActions = {
     dispatch(appState.actions.stopLoading());
   },
 
+  /**
+   * Removes an ingredient from storage.
+   * @param ingredient Ingredient to remove.
+   */
   deleteIngredient:
     ({ id }: Ingredient) =>
     async (dispatch: AppDispatch, getState: () => AppRootState) => {

@@ -28,7 +28,6 @@ export const en = {
   'app.labels.fat': 'Fat',
 
   'app.appItemList.searchPlaceholder': 'Search',
-  'app.appItemList.noItems': 'No items to display',
 
   'app.appSettingsScreen.title': 'Settings',
   'app.appSettingsScreen.data.title': 'Data',
