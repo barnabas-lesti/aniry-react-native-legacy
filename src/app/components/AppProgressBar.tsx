@@ -3,11 +3,11 @@ import { StyleSheet } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 
 import { useAppSelector } from '../store/hooks';
-import { appStateSelectors } from '../state';
+import { appState } from '../state';
 import { appTheme } from '../theme';
 
 export function AppProgressBar() {
-  const isLoading = appStateSelectors.isLoading(useAppSelector((state) => state.app));
+  const isLoading = appState.selectors.isLoading(useAppSelector((state) => state.app));
 
   return (
     <ProgressBar

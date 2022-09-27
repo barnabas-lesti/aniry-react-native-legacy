@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from 'react-native';
 
 import { AppItemList } from 'app/components';
 import { useAppDispatch } from 'app/store/hooks';
-import { appStateActions } from 'app/state';
+import { appState } from 'app/state';
 import { Recipe } from '../models';
 import { recipeService } from '../services';
 
@@ -44,9 +44,9 @@ export function RecipeList(props: RecipeListProps) {
   }
 
   async function fetchRecipes(searchString: string) {
-    dispatch(appStateActions.startLoading());
+    dispatch(appState.actions.startLoading());
     setRecipes(await recipeService.getMany(searchString));
-    dispatch(appStateActions.stopLoading());
+    dispatch(appState.actions.stopLoading());
   }
 
   return (

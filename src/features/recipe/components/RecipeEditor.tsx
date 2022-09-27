@@ -17,7 +17,7 @@ import { appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
 import { appCommonService } from 'app/services';
 import { useAppDispatch } from 'app/store/hooks';
-import { appStateActions } from 'app/state';
+import { appState } from 'app/state';
 import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
 import { Recipe } from '../models';
 import { recipeService } from '../services';
@@ -83,7 +83,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      dispatch(appStateActions.startLoading());
+      dispatch(appState.actions.startLoading());
       await recipeService.saveOne(
         new Recipe({
           id: recipe.id,
@@ -97,7 +97,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
           ingredientProxies,
         })
       );
-      dispatch(appStateActions.stopLoading());
+      dispatch(appState.actions.stopLoading());
       appCommonService.pushNotificationKey(`recipe.notifications.${isNewRecipe ? 'created' : 'updated'}`);
       onAfterSave();
     }
@@ -105,9 +105,9 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    dispatch(appStateActions.startLoading());
+    dispatch(appState.actions.startLoading());
     await recipeService.deleteOne(recipe);
-    dispatch(appStateActions.stopLoading());
+    dispatch(appState.actions.stopLoading());
     appCommonService.pushNotificationKey('recipe.notifications.deleted');
     onAfterDelete && onAfterDelete();
   }
@@ -140,9 +140,9 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function refreshRecipe() {
     if (!isNewRecipe) {
-      dispatch(appStateActions.startLoading());
+      dispatch(appState.actions.startLoading());
       const refreshedRecipe = (await recipeService.getOneById(recipe.id)) || recipe;
-      dispatch(appStateActions.stopLoading());
+      dispatch(appState.actions.stopLoading());
 
       setName(refreshedRecipe.name);
       setServingValue(refreshedRecipe.serving.value);

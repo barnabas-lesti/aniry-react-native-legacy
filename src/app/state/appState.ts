@@ -4,28 +4,27 @@ interface AppInitialState {
   loadingStates: boolean[];
 }
 
-const appSlice = createSlice({
-  name: 'app',
+const selectAppState = (app: AppInitialState) => app;
 
-  initialState: {
-    loadingStates: [],
-  } as AppInitialState,
+export const appState = {
+  ...createSlice({
+    name: 'app',
 
-  reducers: {
-    startLoading: (state) => {
-      state.loadingStates = [...state.loadingStates, true];
+    initialState: {
+      loadingStates: [],
+    } as AppInitialState,
+
+    reducers: {
+      startLoading: (state) => {
+        state.loadingStates = [...state.loadingStates, true];
+      },
+      stopLoading: (state) => {
+        state.loadingStates = [...state.loadingStates.slice(0, -1)];
+      },
     },
-    stopLoading: (state) => {
-      state.loadingStates = [...state.loadingStates.slice(0, -1)];
-    },
+  }),
+
+  selectors: {
+    isLoading: createSelector(selectAppState, ({ loadingStates }) => !!loadingStates.length),
   },
-});
-
-const selectApp = (app: AppInitialState) => app;
-
-export const appStateSelectors = {
-  isLoading: createSelector(selectApp, ({ loadingStates }) => !!loadingStates.length),
 };
-
-export const appStateActions = appSlice.actions;
-export const appStateReducer = appSlice.reducer;

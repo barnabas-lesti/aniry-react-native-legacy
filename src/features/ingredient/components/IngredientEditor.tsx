@@ -14,7 +14,7 @@ import {
 import { appTheme } from 'app/theme';
 import { appCommonService } from 'app/services';
 import { useAppDispatch } from 'app/store/hooks';
-import { appStateActions } from 'app/state';
+import { appState } from 'app/state';
 import { Ingredient } from '../models';
 import { ingredientService } from '../services';
 
@@ -80,7 +80,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      dispatch(appStateActions.startLoading());
+      dispatch(appState.actions.startLoading());
       await ingredientService.saveOne(
         new Ingredient({
           id: ingredient.id,
@@ -99,7 +99,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
         })
       );
-      dispatch(appStateActions.stopLoading());
+      dispatch(appState.actions.stopLoading());
       appCommonService.pushNotificationKey(`ingredient.notifications.${isNewIngredient ? 'created' : 'updated'}`);
       onAfterSave();
     }
@@ -107,9 +107,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    dispatch(appStateActions.startLoading());
+    dispatch(appState.actions.startLoading());
     await ingredientService.deleteOne(ingredient);
-    dispatch(appStateActions.stopLoading());
+    dispatch(appState.actions.stopLoading());
     appCommonService.pushNotificationKey('ingredient.notifications.deleted');
     onAfterDelete && onAfterDelete();
   }
