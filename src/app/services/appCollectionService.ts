@@ -54,13 +54,11 @@ class AppCollectionService {
   async saveOne<T extends AppCollectionItem>(collection: AppCollection, item: T): Promise<T> {
     const items = await this.getAll<T>(collection);
 
-    if (item.id) {
-      const indexOfItem = items.findIndex(({ id }) => id === item.id);
-      if (indexOfItem !== -1) {
-        items[indexOfItem] = item;
-        await this._storeCollection<T>(collection, items);
-        return item;
-      }
+    if (item.id && items.find(({ id }) => id === item.id)) {
+      await this._storeCollection<T>(collection, [
+        ...items.map((existingItem) => (existingItem.id === item.id ? item : existingItem)),
+      ]);
+      return this.serialize(item);
     }
 
     const newItem = { ...item, id: item.id || uuid() };
@@ -112,6 +110,10 @@ class AppCollectionService {
         );
       })
     );
+  }
+
+  serialize<T>(instance: T): T {
+    return JSON.parse(JSON.stringify(instance));
   }
 
   private async _storeCollection<T extends AppCollectionItem>(

@@ -12,10 +12,7 @@ import {
   AppServingInput,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { useAppDispatch } from 'app/store/hooks';
-import { appState } from 'app/state';
 import { Ingredient } from '../models';
-import { ingredientService } from '../services';
 
 interface IngredientEditorProps {
   /**
@@ -41,7 +38,7 @@ interface IngredientEditorProps {
   /**
    * On delete event handler.
    */
-  onDelete?: () => Promise<void>;
+  onDelete?: (ingredientInstance: Ingredient) => Promise<void>;
 }
 
 /**
@@ -53,7 +50,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const isNewIngredient = !ingredientInstance.id;
 
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
 
   const [name, setName] = useState(ingredientInstance.name);
   const [servingValue, setServingValue] = useState(serving.value);
@@ -102,15 +98,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    dispatch(appState.actions.startLoading());
-    await ingredientService.deleteOne(ingredientInstance);
-    dispatch(appState.actions.stopLoading());
-    dispatch(
-      appState.actions.showNotification({
-        textKey: 'ingredientInstance.notifications.deleted',
-      })
-    );
-    onDelete && onDelete();
+    onDelete && (await onDelete(ingredientInstance));
   }
 
   function validateForm() {
@@ -121,7 +109,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   return (
     <View style={[styles.container, style]}>
       <AppButtonGroup
-        style={styles.buttonGroup}
+        style={styles.marginBottomMedium}
         buttons={[
           {
             label: t('app.labels.discard'),
@@ -144,17 +132,17 @@ export function IngredientEditor(props: IngredientEditorProps) {
       />
 
       <AppScrollView>
-        <View style={styles.form}>
+        <View style={styles.marginBottomMedium}>
           <AppTextInput
             label={t('app.labels.name')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={name}
             isInvalid={showValidation && !nameIsValid}
             onChangeValue={setName}
           />
 
           <AppServingInput
-            style={[styles.inputs]}
+            style={[styles.marginBottomSmall]}
             value={servingValue}
             unit={servingUnit}
             unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
@@ -166,7 +154,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.calories')}
             postfix={t('app.units.kcal')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={calories}
             onChangeValue={setCalories}
           />
@@ -174,7 +162,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.carbs')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={carbs}
             onChangeValue={setCarbs}
           />
@@ -182,7 +170,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.protein')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={protein}
             onChangeValue={setProtein}
           />
@@ -190,7 +178,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.fat')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
             value={fat}
             onChangeValue={setFat}
           />
@@ -198,13 +185,13 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
         <AppNutrientsPieChart
           nutrients={{ calories, carbs, protein, fat }}
-          style={styles.chart}
+          style={styles.marginBottomMedium}
         />
       </AppScrollView>
 
       {!isNewIngredient && isDeleteConfirmationVisible && (
         <AppConfirmationDialog
-          text={t('ingredientInstance.ingredientEditor.deleteConfirmation')}
+          text={t('ingredient.ingredientEditor.deleteConfirmation')}
           onConfirmation={onDeleteConfirmation}
           onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
@@ -217,16 +204,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  buttonGroup: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  form: {
+  marginBottomSmall: {
     marginBottom: appTheme.gaps.small,
   },
-  inputs: {
-    marginBottom: appTheme.gaps.small,
-  },
-  chart: {
+  marginBottomMedium: {
     marginBottom: appTheme.gaps.medium,
   },
 });
