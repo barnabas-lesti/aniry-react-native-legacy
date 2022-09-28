@@ -14,7 +14,6 @@ type AppCollections = {
 
 class AppCollectionService {
   private readonly REQUEST_DELAY = 0;
-  private cache: AppCollections = {};
 
   /**
    * Loads all items from the given collection.
@@ -22,36 +21,32 @@ class AppCollectionService {
    * @returns List of items.
    */
   async getAll<T extends AppCollectionItem>(collection: AppCollection): Promise<T[]> {
-    await this._delayRequest();
-
-    const cachedItems: Array<T> = this.cache[collection];
-    if (cachedItems) return cachedItems;
-
     const jsonString = await AsyncStorage.getItem(collection);
     const items: Array<T> = jsonString != null ? JSON.parse(jsonString) : [];
-    this.cache[collection] = items;
     return items;
   }
 
   /**
-   * Returns a single item or null based on the given ID.
-   * @param collection Name of the collection.
-   * @param id ID of the item.
-   * @returns Item of null.
-   */
-  async getOneById<T extends AppCollectionItem>(collection: AppCollection, id: string): Promise<T | null> {
-    return (await this.getAll<T>(collection)).filter((item) => item.id === id)[0] || null;
-  }
-
-  /**
-   * Saves the given item in the collection.
-   * Creates a new item in the list if item ID is not found.
-   * Updates an existing item if item ID is found.
+   * Creates the given item in the collection.
    * @param collection Name of the collection.
    * @param item Item to save in storage.
    * @returns The stored item.
    */
-  async saveOne<T extends AppCollectionItem>(collection: AppCollection, item: T): Promise<T> {
+  async createOne<T extends AppCollectionItem>(collection: AppCollection, item: T): Promise<T> {
+    const items = await this.getAll<T>(collection);
+    const newItem = { ...item, id: item.id || uuid() };
+    await this._storeCollection<T>(collection, [...items, newItem]);
+    return newItem;
+  }
+
+  /**
+   * Updates the given item in the collection.
+   * Creates a new item in the list if item ID is not found.
+   * @param collection Name of the collection.
+   * @param item Item to save in storage.
+   * @returns The stored item.
+   */
+  async updateOne<T extends AppCollectionItem>(collection: AppCollection, item: T): Promise<T> {
     const items = await this.getAll<T>(collection);
 
     if (item.id && items.find(({ id }) => id === item.id)) {
@@ -61,9 +56,20 @@ class AppCollectionService {
       return item;
     }
 
-    const newItem = { ...item, id: item.id || uuid() };
-    await this._storeCollection<T>(collection, [...items, newItem]);
-    return newItem;
+    return await this.createOne(collection, item);
+  }
+
+  /**
+   * Updates multiple items in the collection.
+   * @param collection Name of the collection.
+   * @param itemsToUpdate Item to update in the collection.
+   */
+  async updateMany<T extends AppCollectionItem>(collection: AppCollection, itemsToUpdate: T[]): Promise<void> {
+    const existingItems = await this.getAll<T>(collection);
+    const updatedItems = existingItems.map(
+      (existingItem) => itemsToUpdate.filter((itemToUpdate) => itemToUpdate.id === existingItem.id)[0] || existingItem
+    );
+    await this._storeCollection(collection, updatedItems);
   }
 
   /**
@@ -112,18 +118,16 @@ class AppCollectionService {
     );
   }
 
+  /**
+   * Stores the given items in the collection.
+   * @param collection Name of the collection.
+   * @param items Items to store.
+   */
   private async _storeCollection<T extends AppCollectionItem>(
     collection: AppCollection,
     items: Array<T>
   ): Promise<void> {
-    await this._delayRequest();
-
-    this.cache[collection] = items;
     await AsyncStorage.setItem(collection, JSON.stringify(items));
-  }
-
-  private async _delayRequest() {
-    return new Promise((resolve) => setTimeout(resolve, this.REQUEST_DELAY));
   }
 }
 
