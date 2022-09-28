@@ -25,7 +25,7 @@ export function RecipeList(props: RecipeListProps) {
   const recipes = recipeState.selectors.searchStringFilteredRecipes(recipeStateData);
 
   useEffect(() => {
-    dispatch(recipeState.asyncActions.loadRecipes());
+    dispatch(recipeState.asyncActions.lazyLoadAllRecipes());
   }, [dispatch]);
 
   async function onSearch(searchString: string) {

@@ -60,4 +60,28 @@ export class Recipe extends AppItemBase implements AppItem {
       }
     );
   }
+
+  static isIngredientInRecipe(recipe: Recipe, ingredient: Ingredient): boolean {
+    return !!recipe.ingredientProxies.filter((ingredientProxy) => ingredientProxy.item.id === ingredient.id).length;
+  }
+
+  static updateIngredientInRecipe(recipe: Recipe, ingredient: Ingredient): Recipe {
+    const recipeInstance = recipe instanceof Recipe ? recipe : new Recipe(recipe);
+    const updatedIngredientProxies = recipeInstance.ingredientProxies.map((ingredientProxy) => {
+      if (ingredientProxy.id === ingredient.id) {
+        return new AppItemProxy<Ingredient>({
+          item: ingredient,
+          serving: { unit: ingredient.serving.unit, value: ingredientProxy.serving.value },
+        });
+      } else {
+        return ingredientProxy;
+      }
+    });
+    return new Recipe({ ...recipeInstance, ingredientProxies: updatedIngredientProxies });
+  }
+
+  static deleteIngredientFromRecipe(recipe: Recipe, ingredient: Ingredient): Recipe {
+    const updatedIngredientProxies = recipe.ingredientProxies.filter(({ item }) => item.id !== ingredient.id);
+    return new Recipe({ ...recipe, ingredientProxies: updatedIngredientProxies });
+  }
 }

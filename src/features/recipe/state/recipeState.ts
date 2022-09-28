@@ -5,7 +5,6 @@ import { appState } from 'app/state';
 import { appCollectionService } from 'app/services';
 import { Ingredient } from 'features/ingredient/models';
 import { Recipe } from '../models';
-import { AppItemProxy } from 'app/models';
 
 interface RecipeState {
   allRecipes: Recipe[] | null;
@@ -34,27 +33,32 @@ const asyncActions = {
   /**
    * Loads recipes from storage.
    */
-  loadRecipes: () => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+  loadAllRecipes: () => async (dispatch: AppDispatch) => {
     dispatch(appState.actions.startLoading());
+    const recipes = await appCollectionService.getAll<Recipe>('recipes');
+    const serializedRecipes = recipes.map((recipe) => Recipe.serialize(recipe));
+    dispatch(recipeSlice.actions.setAllRecipes(serializedRecipes));
+    dispatch(appState.actions.stopLoading());
+  },
+
+  /**
+   * Loads recipes if not already set.
+   */
+  lazyLoadAllRecipes: () => async (dispatch: AppDispatch, getState: () => AppRootState) => {
     const state = getState();
     if (!state.recipe.allRecipes) {
-      const recipes = await appCollectionService.getAll<Recipe>('recipes');
-      const serializedRecipes = recipes.map((recipe) => Recipe.serialize(recipe));
-      dispatch(recipeSlice.actions.setAllRecipes(serializedRecipes));
+      await dispatch(asyncActions.loadAllRecipes());
     }
-    dispatch(appState.actions.stopLoading());
   },
 
   /**
    * Creates a new recipe in storage.
    * @param recipe Recipe to create.
    */
-  createRecipe: (recipe: Recipe) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+  createRecipe: (recipe: Recipe) => async (dispatch: AppDispatch) => {
     dispatch(appState.actions.startLoading());
-    const state = getState();
-    const createdRecipe = await appCollectionService.createOne<Recipe>('recipes', recipe);
-    const updatedRecipes = [...(state.recipe.allRecipes || []), Recipe.serialize(createdRecipe)];
-    dispatch(recipeSlice.actions.setAllRecipes(updatedRecipes));
+    await appCollectionService.createOne<Recipe>('recipes', recipe);
+    await dispatch(asyncActions.loadAllRecipes());
     dispatch(appState.actions.stopLoading());
   },
 
@@ -62,16 +66,10 @@ const asyncActions = {
    * Updates a recipe in storage.
    * @param recipe Recipe to update.
    */
-  updateRecipe: (recipe: Recipe) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+  updateRecipe: (recipe: Recipe) => async (dispatch: AppDispatch) => {
     dispatch(appState.actions.startLoading());
-    const state = getState();
-    const updatedRecipe = await appCollectionService.updateOne<Recipe>('recipes', recipe);
-    const updatedRecipes = [
-      ...(state.recipe.allRecipes || []).map((existingRecipe) =>
-        existingRecipe.id === updatedRecipe.id ? Recipe.serialize(updatedRecipe) : existingRecipe
-      ),
-    ];
-    dispatch(recipeSlice.actions.setAllRecipes(updatedRecipes));
+    await appCollectionService.updateOne<Recipe>('recipes', recipe);
+    await dispatch(asyncActions.loadAllRecipes());
     dispatch(appState.actions.stopLoading());
   },
 
@@ -79,14 +77,10 @@ const asyncActions = {
    * Removes a recipe from storage.
    * @param recipe Recipe to remove.
    */
-  deleteRecipe: (recipe: Recipe) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+  deleteRecipe: (recipe: Recipe) => async (dispatch: AppDispatch) => {
     dispatch(appState.actions.startLoading());
-    const state = getState();
     await appCollectionService.deleteOne<Recipe>('recipes', recipe);
-    const updatedRecipes = [
-      ...(state.recipe.allRecipes || []).filter((existingIngredient) => existingIngredient.id !== recipe.id),
-    ];
-    dispatch(recipeSlice.actions.setAllRecipes(updatedRecipes));
+    await dispatch(asyncActions.loadAllRecipes());
     dispatch(appState.actions.stopLoading());
   },
 
@@ -97,35 +91,18 @@ const asyncActions = {
   updateIngredientInRecipes:
     (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
       dispatch(appState.actions.startLoading());
-      await dispatch(asyncActions.loadRecipes());
+      await dispatch(asyncActions.lazyLoadAllRecipes());
       const state = getState();
 
-      const recipesToUpdate: Recipe[] = [];
-      const updatedRecipes = (state.recipe.allRecipes || [])
-        .map((recipe) => new Recipe(recipe))
-        .map((recipe) => {
-          if (isIngredientInRecipe(ingredient, recipe)) {
-            const updatedIngredientProxies = recipe.ingredientProxies.map((ingredientProxy) => {
-              if (ingredientProxy.id === ingredient.id) {
-                return new AppItemProxy<Ingredient>({
-                  item: ingredient,
-                  serving: { unit: ingredient.serving.unit, value: ingredientProxy.serving.value },
-                });
-              } else {
-                return ingredientProxy;
-              }
-            });
-            const updatedRecipe = new Recipe({ ...recipe, ingredientProxies: updatedIngredientProxies });
-            recipesToUpdate.push(updatedRecipe);
-            return updatedRecipe;
-          } else {
-            return recipe;
-          }
-        })
-        .map((recipe) => Recipe.serialize(recipe));
+      const recipesToUpdate = (state.recipe.allRecipes || [])
+        .map(
+          (recipe) =>
+            Recipe.isIngredientInRecipe(recipe, ingredient) && Recipe.updateIngredientInRecipe(recipe, ingredient)
+        )
+        .filter((recipe) => !!recipe);
 
-      await appCollectionService.updateMany('recipes', recipesToUpdate);
-      dispatch(recipeSlice.actions.setAllRecipes([...updatedRecipes]));
+      await appCollectionService.updateMany('recipes', recipesToUpdate as Recipe[]);
+      await dispatch(asyncActions.loadAllRecipes());
       dispatch(appState.actions.stopLoading());
     },
 
@@ -136,26 +113,18 @@ const asyncActions = {
   deleteIngredientFromRecipes:
     (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
       dispatch(appState.actions.startLoading());
-      await dispatch(asyncActions.loadRecipes());
+      await dispatch(asyncActions.lazyLoadAllRecipes());
       const state = getState();
 
-      const recipesToUpdate: Recipe[] = [];
-      const updatedRecipes = (state.recipe.allRecipes || [])
-        .map((recipe) => new Recipe(recipe))
-        .map((recipe) => {
-          if (isIngredientInRecipe(ingredient, recipe)) {
-            const updatedIngredientProxies = recipe.ingredientProxies.filter(({ id }) => id !== ingredient.id);
-            const updatedRecipe = new Recipe({ ...recipe, ingredientProxies: updatedIngredientProxies });
-            recipesToUpdate.push(updatedRecipe);
-            return updatedRecipe;
-          } else {
-            return recipe;
-          }
-        })
-        .map((recipe) => Recipe.serialize(recipe));
+      const recipesToUpdate = (state.recipe.allRecipes || [])
+        .map(
+          (recipe) =>
+            Recipe.isIngredientInRecipe(recipe, ingredient) && Recipe.deleteIngredientFromRecipe(recipe, ingredient)
+        )
+        .filter((recipe) => !!recipe);
 
-      await appCollectionService.updateMany('recipes', recipesToUpdate);
-      dispatch(recipeSlice.actions.setAllRecipes([...updatedRecipes]));
+      await appCollectionService.updateMany('recipes', recipesToUpdate as Recipe[]);
+      await dispatch(asyncActions.loadAllRecipes());
       dispatch(appState.actions.stopLoading());
     },
 };
@@ -171,10 +140,6 @@ const selectors = {
       )
   ),
 };
-
-function isIngredientInRecipe(ingredient: Ingredient, recipe: Recipe): boolean {
-  return !!recipe.ingredientProxies.filter((ingredientProxy) => ingredientProxy.id === ingredient.id).length;
-}
 
 export const recipeState = {
   ...recipeSlice,

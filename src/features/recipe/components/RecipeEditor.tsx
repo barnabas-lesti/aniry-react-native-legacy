@@ -15,7 +15,7 @@ import {
 } from 'app/components';
 import { appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
-import { useAppDispatch } from 'app/store/hooks';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { appState } from 'app/state';
 import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
 import { Recipe } from '../models';
@@ -52,6 +52,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const appRecipes = useAppSelector((state) => state.recipe.allRecipes);
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
@@ -136,6 +137,14 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setSelectedIngredientProxy(null);
   }
 
+  async function refreshRecipe() {
+    const refreshedRecipe = new Recipe((appRecipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
+    setName(refreshedRecipe.name);
+    setServingValue(refreshedRecipe.serving.value);
+    setServingUnit(refreshedRecipe.serving.unit);
+    setIngredientProxies(refreshedRecipe.ingredientProxies || []);
+  }
+
   return (
     <View style={styles.container}>
       <AppButtonGroup
@@ -161,7 +170,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
         ]}
       />
 
-      <AppScrollView>
+      <AppScrollView onRefresh={refreshRecipe}>
         <AppTextInput
           label={t('app.labels.name')}
           style={styles.row}

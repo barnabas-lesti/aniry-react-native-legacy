@@ -31,29 +31,34 @@ const ingredientSlice = createSlice({
 
 const asyncActions = {
   /**
-   * Loads ingredients from storage.
+   * Loads all ingredients from storage.
    */
-  loadIngredients: () => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+  loadAllIngredients: () => async (dispatch: AppDispatch) => {
     dispatch(appState.actions.startLoading());
+    const ingredients = await appCollectionService.getAll<Ingredient>('ingredients');
+    const serializedIngredients = ingredients.map((ingredient) => Ingredient.serialize(ingredient));
+    dispatch(ingredientSlice.actions.setAllIngredients(serializedIngredients));
+    dispatch(appState.actions.stopLoading());
+  },
+
+  /**
+   * Loads all ingredients from storage if not already set.
+   */
+  lazyLoadAllIngredients: () => async (dispatch: AppDispatch, getState: () => AppRootState) => {
     const state = getState();
     if (!state.ingredient.allIngredients) {
-      const ingredients = await appCollectionService.getAll<Ingredient>('ingredients');
-      const serializedIngredients = ingredients.map((ingredient) => Ingredient.serialize(ingredient));
-      dispatch(ingredientSlice.actions.setAllIngredients(serializedIngredients));
+      await dispatch(asyncActions.loadAllIngredients());
     }
-    dispatch(appState.actions.stopLoading());
   },
 
   /**
    * Creates a new ingredient in storage.
    * @param ingredient Ingredient to create.
    */
-  createIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+  createIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch) => {
     dispatch(appState.actions.startLoading());
-    const state = getState();
-    const createdIngredient = await appCollectionService.createOne('ingredients', ingredient);
-    const updatedIngredients = [...(state.ingredient.allIngredients || []), Ingredient.serialize(createdIngredient)];
-    dispatch(ingredientSlice.actions.setAllIngredients(updatedIngredients));
+    await appCollectionService.createOne('ingredients', ingredient);
+    await dispatch(asyncActions.loadAllIngredients());
     dispatch(appState.actions.stopLoading());
   },
 
@@ -61,20 +66,11 @@ const asyncActions = {
    * Updates an ingredient in storage.
    * @param ingredient Ingredient to update.
    */
-  updateIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+  updateIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch) => {
     dispatch(appState.actions.startLoading());
-    const state = getState();
-
     const updatedIngredient = await appCollectionService.updateOne<Ingredient>('ingredients', ingredient);
     await dispatch(recipeState.asyncActions.updateIngredientInRecipes(updatedIngredient));
-
-    const updatedIngredients = [
-      ...(state.ingredient.allIngredients || []).map((existingIngredient) =>
-        existingIngredient.id === updatedIngredient.id ? Ingredient.serialize(updatedIngredient) : existingIngredient
-      ),
-    ];
-    dispatch(ingredientSlice.actions.setAllIngredients(updatedIngredients));
-
+    await dispatch(asyncActions.loadAllIngredients());
     dispatch(appState.actions.stopLoading());
   },
 
@@ -82,14 +78,11 @@ const asyncActions = {
    * Removes an ingredient from storage.
    * @param ingredient Ingredient to remove.
    */
-  deleteIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
+  deleteIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch) => {
     dispatch(appState.actions.startLoading());
-    const state = getState();
     await appCollectionService.deleteOne<Ingredient>('ingredients', ingredient);
     await dispatch(recipeState.asyncActions.deleteIngredientFromRecipes(ingredient));
-
-    const updatedIngredients = [...(state.ingredient.allIngredients || []).filter(({ id }) => id !== ingredient.id)];
-    dispatch(ingredientSlice.actions.setAllIngredients(updatedIngredients));
+    await dispatch(asyncActions.loadAllIngredients());
     dispatch(appState.actions.stopLoading());
   },
 };

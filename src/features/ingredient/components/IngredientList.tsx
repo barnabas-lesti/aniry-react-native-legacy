@@ -30,7 +30,7 @@ export function IngredientList(props: IngredientListProps) {
   const ingredients = ingredientState.selectors.searchStringFilteredIngredients(ingredientStateData);
 
   useEffect(() => {
-    dispatch(ingredientState.asyncActions.loadIngredients());
+    dispatch(ingredientState.asyncActions.lazyLoadAllIngredients());
   }, [dispatch]);
 
   async function onSearch(searchString: string) {
