@@ -58,7 +58,7 @@ class AppCollectionService {
       await this._storeCollection<T>(collection, [
         ...items.map((existingItem) => (existingItem.id === item.id ? item : existingItem)),
       ]);
-      return this.serialize(item);
+      return item;
     }
 
     const newItem = { ...item, id: item.id || uuid() };
@@ -110,10 +110,6 @@ class AppCollectionService {
         );
       })
     );
-  }
-
-  serialize<T>(instance: T): T {
-    return JSON.parse(JSON.stringify(instance));
   }
 
   private async _storeCollection<T extends AppCollectionItem>(

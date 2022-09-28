@@ -7,7 +7,7 @@ import { Ingredient } from '../models';
 
 interface IngredientState {
   allIngredients: Ingredient[] | null;
-  ingredientHomeSearchString: string;
+  searchString: string;
 }
 
 const ingredientSlice = createSlice({
@@ -15,15 +15,15 @@ const ingredientSlice = createSlice({
 
   initialState: {
     allIngredients: null,
-    ingredientHomeSearchString: '',
+    searchString: '',
   } as IngredientState,
 
   reducers: {
     setAllIngredients: (state, action: PayloadAction<Ingredient[]>) => {
       state.allIngredients = action.payload;
     },
-    setIngredientHomeSearchString: (state, action: PayloadAction<string>) => {
-      state.ingredientHomeSearchString = action.payload;
+    setSearchString: (state, action: PayloadAction<string>) => {
+      state.searchString = action.payload;
     },
   },
 });
@@ -38,7 +38,13 @@ const asyncActions = {
       ingredient: { allIngredients },
     } = getState();
     if (!allIngredients) {
-      dispatch(ingredientSlice.actions.setAllIngredients(await appCollectionService.getAll<Ingredient>('ingredients')));
+      dispatch(
+        ingredientSlice.actions.setAllIngredients(
+          (await appCollectionService.getAll<Ingredient>('ingredients')).map((ingredient) =>
+            Ingredient.serialize(ingredient)
+          )
+        )
+      );
     }
     dispatch(appState.actions.stopLoading());
   },
@@ -53,7 +59,9 @@ const asyncActions = {
       ingredient: { allIngredients },
     } = getState();
     const createdIngredient = await appCollectionService.saveOne<Ingredient>('ingredients', ingredient);
-    dispatch(ingredientSlice.actions.setAllIngredients([...(allIngredients || []), createdIngredient]));
+    dispatch(
+      ingredientSlice.actions.setAllIngredients([...(allIngredients || []), Ingredient.serialize(createdIngredient)])
+    );
     dispatch(appState.actions.stopLoading());
   },
 
@@ -63,7 +71,6 @@ const asyncActions = {
    */
   updateIngredient: (ingredient: Ingredient) => async (dispatch: AppDispatch, getState: () => AppRootState) => {
     dispatch(appState.actions.startLoading());
-    await dispatch(appState.asyncActions.sleep(1000));
     const {
       ingredient: { allIngredients },
     } = getState();
@@ -71,7 +78,7 @@ const asyncActions = {
     dispatch(
       ingredientSlice.actions.setAllIngredients([
         ...(allIngredients || []).map((existingIngredient) =>
-          existingIngredient.id === updatedIngredient.id ? updatedIngredient : existingIngredient
+          existingIngredient.id === updatedIngredient.id ? Ingredient.serialize(updatedIngredient) : existingIngredient
         ),
       ])
     );
@@ -87,7 +94,6 @@ const asyncActions = {
     ({ id }: Ingredient) =>
     async (dispatch: AppDispatch, getState: () => AppRootState) => {
       dispatch(appState.actions.startLoading());
-      await dispatch(appState.asyncActions.sleep(1000));
       const {
         ingredient: { allIngredients },
       } = getState();
@@ -103,13 +109,13 @@ const asyncActions = {
 };
 
 const selectors = {
-  ingredientHomeIngredients: createSelector(
+  searchStringFilteredIngredients: createSelector(
     (ingredient: IngredientState) => ingredient,
-    ({ allIngredients, ingredientHomeSearchString }) =>
-      Ingredient.sortIngredientsByName(
-        allIngredients?.filter(
-          (ingredient) => ingredient.name.toLowerCase().search(ingredientHomeSearchString.toLowerCase()) !== -1
-        ) || []
+    ({ allIngredients, searchString }) =>
+      Ingredient.sortByName(
+        allIngredients
+          ?.filter((ingredient) => ingredient.name.toLowerCase().search(searchString.toLowerCase()) !== -1)
+          .map((ingredient) => new Ingredient(ingredient)) || []
       )
   ),
 };

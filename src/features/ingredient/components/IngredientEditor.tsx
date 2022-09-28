@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,18 +12,16 @@ import {
   AppServingInput,
 } from 'app/components';
 import { appTheme } from 'app/theme';
+import { useAppDispatch } from 'app/store/hooks';
+import { appState } from 'app/state';
 import { Ingredient } from '../models';
+import { ingredientState } from '../state';
 
 interface IngredientEditorProps {
   /**
-   * The ingredientInstance instance.
+   * The ingredient.
    */
-  ingredientInstance?: Ingredient;
-
-  /**
-   * Custom styles.
-   */
-  style?: StyleProp<ViewStyle>;
+  ingredient?: Ingredient;
 
   /**
    * On discard event handler.
@@ -31,27 +29,28 @@ interface IngredientEditorProps {
   onDiscard: () => void;
 
   /**
-   * On save event handler.
+   * On after save event handler.
    */
-  onSave: (ingredientInstance: Ingredient) => Promise<void>;
+  onAfterSave: () => void;
 
   /**
-   * On delete event handler.
+   * On after delete event handler.
    */
-  onDelete?: (ingredientInstance: Ingredient) => Promise<void>;
+  onAfterDelete?: () => void;
 }
 
 /**
  * Ingredient editor component.
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredientInstance = new Ingredient(), style, onDiscard, onSave, onDelete } = props;
-  const { serving, nutrients } = ingredientInstance;
-  const isNewIngredient = !ingredientInstance.id;
+  const { ingredient = new Ingredient(), onDiscard, onAfterSave, onAfterDelete } = props;
+  const { serving, nutrients } = ingredient;
+  const isNewIngredient = !ingredient.id;
 
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
-  const [name, setName] = useState(ingredientInstance.name);
+  const [name, setName] = useState(ingredient.name);
   const [servingValue, setServingValue] = useState(serving.value);
   const [servingUnit, setServingUnit] = useState(serving.unit);
   const [calories, setCalories] = useState(nutrients.calories);
@@ -75,30 +74,42 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      await onSave(
-        new Ingredient({
-          id: ingredientInstance.id,
-          name,
-          servings: [
-            {
-              value: servingValue,
-              unit: servingUnit,
-            },
-          ],
-          nutrients: {
-            calories,
-            carbs,
-            protein,
-            fat,
+      const newIngredient = new Ingredient({
+        id: ingredient.id,
+        name,
+        servings: [
+          {
+            value: servingValue,
+            unit: servingUnit,
           },
-        })
-      );
+        ],
+        nutrients: {
+          calories,
+          carbs,
+          protein,
+          fat,
+        },
+      });
+
+      if (isNewIngredient) {
+        await dispatch(ingredientState.asyncActions.createIngredient(newIngredient));
+        dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.created' }));
+      } else {
+        await dispatch(ingredientState.asyncActions.updateIngredient(newIngredient));
+        dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.updated' }));
+      }
+
+      onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    onDelete && (await onDelete(ingredientInstance));
+
+    await dispatch(ingredientState.asyncActions.deleteIngredient(ingredient));
+    dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.deleted' }));
+
+    onAfterDelete && onAfterDelete();
   }
 
   function validateForm() {
@@ -107,7 +118,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   }
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={styles.container}>
       <AppButtonGroup
         style={styles.marginBottomMedium}
         buttons={[

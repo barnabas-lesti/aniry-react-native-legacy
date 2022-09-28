@@ -48,13 +48,9 @@ export const en = {
 
   'ingredient.ingredientEditScreen.title': 'Edit ingredient',
 
+  'ingredient.ingredientItemList.noItems': 'No ingredients to display',
+
   'ingredient.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
-
-  'ingredient.ingredientSearchableList.placeholder': 'Search for ingredients',
-
-  'ingredient.ingredientList.noItems': 'No ingredients to display',
-
-  'ingredient.ingredientProxyList.noItems': 'No ingredients to display',
 
   'ingredient.notifications.created': 'Ingredient successfully created!',
   'ingredient.notifications.updated': 'Ingredient successfully updated!',
@@ -68,18 +64,15 @@ export const en = {
 
   'recipe.recipeEditScreen.title': 'Edit recipe',
 
-  'recipe.recipeList.noItems': 'No recipes to display',
-
-  'recipe.recipeSearchableList.placeholder': 'Search for recipes',
+  'recipe.recipeItemList.noItems': 'No recipes to display',
 
   'recipe.recipeEditor.deleteConfirmation': 'Are you sure you want to delete the recipe?',
-
-  'recipe.notifications.created': 'Recipe successfully created!',
-  'recipe.notifications.updated': 'Recipe successfully updated!',
-  'recipe.notifications.deleted': 'Recipe successfully deleted!',
-
   'recipe.recipeEditor.buttons.addIngredients': 'Add ingredients',
   'recipe.recipeEditor.buttons.editIngredients': 'Edit ingredients',
   'recipe.recipeEditor.buttons.editServings': 'Edit servings',
   'recipe.recipeEditor.buttons.editServingsText': 'How much is in this recipe?',
+
+  'recipe.notifications.created': 'Recipe successfully created!',
+  'recipe.notifications.updated': 'Recipe successfully updated!',
+  'recipe.notifications.deleted': 'Recipe successfully deleted!',
 };

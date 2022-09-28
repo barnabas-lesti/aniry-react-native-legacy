@@ -12,7 +12,7 @@ interface AppItemListProps<T extends AppItem> {
   /**
    * Items to display.
    */
-  itemInstances: Array<T>;
+  items: Array<T>;
 
   /**
    * Initial search string.
@@ -27,7 +27,7 @@ interface AppItemListProps<T extends AppItem> {
   /**
    * Selected items.
    */
-  selectedItemInstances?: Array<T>;
+  selectedItems?: Array<T>;
 
   /**
    * Is scroll disabled for the table.
@@ -45,9 +45,9 @@ interface AppItemListProps<T extends AppItem> {
   style?: StyleProp<ViewStyle>;
 
   /**
-   * itemInstance select event handler.
+   * On select event handler.
    */
-  onSelect?: (itemInstance: T) => void;
+  onSelect?: (item: T) => void;
 
   /**
    * Search event handler.
@@ -56,14 +56,14 @@ interface AppItemListProps<T extends AppItem> {
 }
 
 /**
- * App itemInstance list component.
+ * App item list component.
  */
 export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
   const {
-    itemInstances,
+    items,
     initialSearchString = '',
     noItemsTextKey,
-    selectedItemInstances = [],
+    selectedItems = [],
     isScrollDisabled,
     style,
     isCaloriesSummaryVisible,
@@ -74,12 +74,12 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
   const { t } = useTranslation();
   const [searchString, setSearchString] = useState(initialSearchString);
 
-  function isItemInstanceSelected(itemInstance: AppItem) {
-    return !!selectedItemInstances.filter(({ id }) => itemInstance.id === id).length;
+  function isItemSelected(item: AppItem) {
+    return !!selectedItems.filter(({ id }) => item.id === id).length;
   }
 
   function calculateTotalCalories(): number {
-    return itemInstances.reduce((total, itemInstance) => total + itemInstance.nutrients.calories, 0);
+    return items.reduce((total, item) => total + item.nutrients.calories, 0);
   }
 
   return (
@@ -94,7 +94,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
         />
       )}
 
-      {!itemInstances.length ? (
+      {!items.length ? (
         <Text style={styles.noItems}>{noItemsTextKey && t(noItemsTextKey)}</Text>
       ) : (
         <DataTable style={styles.table}>
@@ -109,13 +109,13 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
             isDisabled={isScrollDisabled}
             onRefresh={onSearch && (async () => await onSearch(searchString))}
           >
-            {itemInstances.map((itemInstance) => {
-              const { id, name, nutrients, serving } = itemInstance;
+            {items.map((item) => {
+              const { id, name, nutrients, serving } = item;
               return (
                 <DataTable.Row
-                  style={[isItemInstanceSelected(itemInstance) && styles.selectedRow]}
+                  style={[isItemSelected(item) && styles.selectedRow]}
                   key={id}
-                  onPress={() => onSelect && onSelect(itemInstance)}
+                  onPress={() => onSelect && onSelect(item)}
                 >
                   <DataTable.Cell>{name}</DataTable.Cell>
                   <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>

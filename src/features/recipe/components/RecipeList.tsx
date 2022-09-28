@@ -1,61 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
+import React, { useEffect } from 'react';
 
 import { AppItemList } from 'app/components';
-import { useAppDispatch } from 'app/store/hooks';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { appState } from 'app/state';
 import { Recipe } from '../models';
-import { recipeService } from '../services';
+import { recipeState } from '../state';
 
 interface RecipeListProps {
   /**
-   * Selected recipes.
-   */
-  selectedRecipes?: Recipe[];
-
-  /**
-   * Custom styles.
-   */
-  style?: StyleProp<ViewStyle>;
-
-  /**
    * Recipe select event handler.
    */
-  onSelectRecipe?: (recipe: Recipe) => void;
+  onSelect: (recipe: Recipe) => void;
 }
 
 /**
  * Recipe list component.
  */
 export function RecipeList(props: RecipeListProps) {
-  const { selectedRecipes = [], style, onSelectRecipe } = props;
+  const { onSelect } = props;
 
   const dispatch = useAppDispatch();
-
-  const [recipes, setRecipes] = useState<Array<Recipe>>([]);
+  const isLoading = appState.selectors.isLoading(useAppSelector((state) => state.app));
+  const recipeStateData = useAppSelector(({ recipe }) => recipe);
+  const recipes = recipeState.selectors.searchStringFilteredRecipes(recipeStateData);
 
   useEffect(() => {
-    fetchRecipes('');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    dispatch(recipeState.asyncActions.loadRecipes());
+  }, [dispatch]);
 
   async function onSearch(searchString: string) {
-    await fetchRecipes(searchString);
-  }
-
-  async function fetchRecipes(searchString: string) {
-    dispatch(appState.actions.startLoading());
-    setRecipes(await recipeService.getMany(searchString));
-    dispatch(appState.actions.stopLoading());
+    dispatch(recipeState.actions.setSearchString(searchString));
   }
 
   return (
     <AppItemList
-      style={style}
       items={recipes}
-      selectedItems={selectedRecipes}
-      onSelectItem={onSelectRecipe}
+      initialSearchString={recipeStateData.searchString}
+      noItemsTextKey={isLoading ? '' : 'recipe.recipeItemList.noItems'}
       onSearch={onSearch}
+      onSelect={onSelect}
     />
   );
 }

@@ -12,12 +12,12 @@ interface AppItemSelectorDialogProps<T extends AppItem> {
   /**
    * Items to display.
    */
-  itemInstances: Array<T>;
+  items: Array<T>;
 
   /**
-   * Selected item instances.
+   * Selected items.
    */
-  selectedItemInstances: T[];
+  selectedItems: T[];
 
   /**
    * Initial search string.
@@ -32,7 +32,7 @@ interface AppItemSelectorDialogProps<T extends AppItem> {
   /**
    * Confirmation event handler.
    */
-  onSave: (itemInstances: T[]) => void;
+  onSave: (items: T[]) => void;
 
   /**
    * Search event handler.
@@ -49,11 +49,10 @@ interface AppItemSelectorDialogProps<T extends AppItem> {
  * Item selector dialog component.
  */
 export function AppItemSelectorDialog<T extends AppItem>(props: AppItemSelectorDialogProps<T>) {
-  const { itemInstances, initialSearchString, noItemsTextKey, selectedItemInstances, onSave, onSearch, onDiscard } =
-    props;
+  const { items, initialSearchString, noItemsTextKey, selectedItems, onSave, onSearch, onDiscard } = props;
 
   const { t } = useTranslation();
-  const [localSelectedItems, setLocalSelectedItems] = useState(selectedItemInstances);
+  const [localSelectedItems, setLocalSelectedItems] = useState(selectedItems);
 
   function onSelect(item: T) {
     if (isItemInSelectedItems(item)) {
@@ -98,10 +97,10 @@ export function AppItemSelectorDialog<T extends AppItem>(props: AppItemSelectorD
       />
 
       <AppItemList
-        itemInstances={itemInstances}
+        items={items}
         initialSearchString={initialSearchString}
         noItemsTextKey={noItemsTextKey}
-        selectedItemInstances={localSelectedItems}
+        selectedItems={localSelectedItems}
         onSearch={onSearch}
         onSelect={onSelect}
       />

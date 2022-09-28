@@ -1,4 +1,4 @@
-import { AppItem, AppItemProxy, AppNutrients, AppServing, AppServingUnit } from 'app/models';
+import { AppItem, AppItemBase, AppItemProxy, AppNutrients, AppServing, AppServingUnit } from 'app/models';
 import { Ingredient } from 'features/ingredient/models';
 
 interface RecipeProps {
@@ -8,7 +8,7 @@ interface RecipeProps {
   ingredientProxies: AppItemProxy<Ingredient>[];
 }
 
-export class Recipe implements AppItem {
+export class Recipe extends AppItemBase implements AppItem {
   static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'plate';
   static readonly DEFAULT_SERVING_VALUE: number = 1;
   static readonly AVAILABLE_SERVING_UNITS: AppServingUnit[] = ['plate', 'piece', 'g', 'ml'];
@@ -19,6 +19,8 @@ export class Recipe implements AppItem {
   ingredientProxies: AppItemProxy<Ingredient>[];
 
   constructor(props?: RecipeProps) {
+    super();
+
     const { servings, ingredientProxies } = props || {};
 
     this.id = props?.id || '';
@@ -40,29 +42,6 @@ export class Recipe implements AppItem {
 
   get nutrients(): AppNutrients {
     return Recipe.getNutrientsFromIngredientProxies(this.ingredientProxies);
-  }
-
-  /**
-   * Sorts the recipes by their name property.
-   * @param recipes Recipes to sort.
-   * @returns Sorted recipes array.
-   */
-  static sortRecipesByName(recipes: Array<Recipe>) {
-    return [
-      ...recipes.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }),
-    ];
-  }
-
-  static validateName(value: string) {
-    return !!value;
-  }
-
-  static validateServingValue(value: number) {
-    return value > 0;
   }
 
   static getNutrientsFromIngredientProxies(ingredientProxies: AppItemProxy<Ingredient>[]): AppNutrients {

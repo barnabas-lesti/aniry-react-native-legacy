@@ -93,6 +93,6 @@ class RecipeService {
 }
 
 /**
- * Recipe service instance.
+ * Recipe service.
  */
 export const recipeService = new RecipeService();

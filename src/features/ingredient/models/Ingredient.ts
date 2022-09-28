@@ -1,13 +1,13 @@
-import { AppNutrients, AppServing, AppItem, AppServingUnit } from 'app/models';
+import { AppNutrients, AppServing, AppItem, AppServingUnit, AppItemBase } from 'app/models';
 
-type IngredientProps = {
+interface IngredientProps {
   id: string;
   name: string;
   nutrients: AppNutrients;
   servings: AppServing[];
-};
+}
 
-export class Ingredient implements AppItem {
+export class Ingredient extends AppItemBase implements AppItem {
   static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'g';
   static readonly DEFAULT_SERVING_VALUE: number = 100;
   static readonly PRIMARY_SERVING_UNITS: AppServingUnit[] = ['g', 'ml'];
@@ -18,6 +18,8 @@ export class Ingredient implements AppItem {
   public servings: AppServing[];
 
   constructor(props?: IngredientProps) {
+    super();
+
     const { servings, nutrients } = props || {};
 
     this.id = props?.id || '';
@@ -37,28 +39,5 @@ export class Ingredient implements AppItem {
 
   get serving() {
     return this.servings[0];
-  }
-
-  /**
-   * Sorts the ingredients by their name property.
-   * @param ingredients Ingredients to sort.
-   * @returns Sorted ingredients array.
-   */
-  static sortIngredientsByName(ingredients: Ingredient[]) {
-    return [
-      ...ingredients.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }),
-    ];
-  }
-
-  static validateName(value: string) {
-    return !!value;
-  }
-
-  static validateServingValue(value: number) {
-    return value > 0;
   }
 }
