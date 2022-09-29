@@ -43,12 +43,13 @@ export const en = {
   // Ingredient
   'ingredient.ingredientHomeScreen.title': 'Ingredients',
   'ingredient.ingredientHomeScreen.createIngredient': 'Create ingredient',
+  'ingredient.ingredientHomeScreen.noIngredients': 'No ingredients to display',
 
   'ingredient.ingredientCreateScreen.title': 'Create ingredient',
 
   'ingredient.ingredientEditScreen.title': 'Edit ingredient',
 
-  'ingredient.ingredientItemList.noItems': 'No ingredients to display',
+  'ingredient.ingredientSelectorDialog.noIngredients': 'No ingredients to display',
 
   'ingredient.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
 
