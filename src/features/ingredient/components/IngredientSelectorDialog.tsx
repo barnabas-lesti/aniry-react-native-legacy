@@ -93,6 +93,7 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
         items={ingredients}
         initialSearchString={ingredientStateData.ingredientSelectorDialogSearchString}
         noItemsTextKey={isLoading ? '' : 'ingredient.ingredientSelectorDialog.noIngredients'}
+        selectedItems={localSelectedIngredients}
         onSearch={onSearch}
         onSelect={onSelectIngredient}
       />

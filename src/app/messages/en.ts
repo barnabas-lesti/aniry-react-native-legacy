@@ -60,12 +60,11 @@ export const en = {
   // Recipe
   'recipe.recipeHomeScreen.title': 'Recipes',
   'recipe.recipeHomeScreen.createRecipe': 'Create recipe',
+  'recipe.recipeHomeScreen.noRecipes': 'No recipes to display',
 
   'recipe.recipeCreateScreen.title': 'Create recipe',
 
   'recipe.recipeEditScreen.title': 'Edit recipe',
-
-  'recipe.recipeItemList.noItems': 'No recipes to display',
 
   'recipe.recipeEditor.deleteConfirmation': 'Are you sure you want to delete the recipe?',
   'recipe.recipeEditor.buttons.addIngredients': 'Add ingredients',

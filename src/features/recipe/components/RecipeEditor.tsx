@@ -52,7 +52,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const appRecipes = useAppSelector((state) => state.recipe.allRecipes);
+  const appRecipes = useAppSelector((state) => state.recipe.recipes);
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
