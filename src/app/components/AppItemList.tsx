@@ -3,6 +3,8 @@ import { StyleSheet, StyleProp, ViewStyle, View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
+import { useAppSelector } from '../store/hooks';
+import { appState } from '../state';
 import { appTheme } from '../theme';
 import { AppItem } from '../models';
 import { AppSearchBar } from './AppSearchBar';
@@ -78,6 +80,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
   } = props;
 
   const { t } = useTranslation();
+  const isAppLoading = appState.selectors.isAppLoading(useAppSelector((state) => state.app));
   const [searchString, setSearchString] = useState(initialSearchString);
 
   function isItemSelected(item: AppItem) {
@@ -101,7 +104,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
       )}
 
       {!items.length ? (
-        <Text style={styles.noItems}>{noItemsTextKey && t(noItemsTextKey)}</Text>
+        !isAppLoading && <Text style={styles.noItems}>{noItemsTextKey && t(noItemsTextKey)}</Text>
       ) : (
         <DataTable style={styles.table}>
           <DataTable.Header>

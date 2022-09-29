@@ -6,7 +6,6 @@ import { AppStackScreenProps } from 'app/models';
 import { AppButton, AppItemList, AppScreen } from 'app/components';
 import { appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { appState } from 'app/state';
 import { Ingredient, IngredientStackParamList } from '../models';
 import { ingredientState } from '../state';
 
@@ -17,7 +16,6 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   const { t } = useTranslation();
 
   const dispatch = useAppDispatch();
-  const isLoading = appState.selectors.isLoading(useAppSelector((state) => state.app));
   const ingredientStateData = useAppSelector(({ ingredient }) => ingredient);
   const ingredients = ingredientState.selectors.ingredientHomeIngredients(ingredientStateData);
 
@@ -49,7 +47,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
       <AppItemList
         items={ingredients}
         initialSearchString={ingredientStateData.ingredientHomeSearchString}
-        noItemsTextKey={isLoading ? '' : 'ingredient.ingredientHomeScreen.noIngredients'}
+        noItemsTextKey={'ingredient.ingredientHomeScreen.noIngredients'}
         onSearch={onSearch}
         onSelect={onSelect}
         onRefresh={onRefresh}

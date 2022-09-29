@@ -7,11 +7,11 @@ import { appState } from '../state';
 import { appTheme } from '../theme';
 
 export function AppProgressBar() {
-  const isLoading = appState.selectors.isLoading(useAppSelector((state) => state.app));
+  const isAppLoading = appState.selectors.isAppLoading(useAppSelector((state) => state.app));
 
   return (
     <ProgressBar
-      visible={isLoading}
+      visible={isAppLoading}
       style={styles.progressPar}
       indeterminate
       color={appTheme.colors.primary}

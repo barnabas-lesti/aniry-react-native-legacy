@@ -2,6 +2,8 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { StyleProp, TextStyle } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
+import { useAppSelector } from '../store/hooks';
+import { appState } from '../state';
 import { appTheme } from '../theme';
 
 interface AppTextInputProps {
@@ -73,9 +75,12 @@ export function AppTextInput(props: AppTextInputProps) {
     onFocus,
   } = props;
 
+  const isAppLoading = appState.selectors.isAppLoading(useAppSelector((state) => state.app));
+
   return (
     <TextInput
       dense
+      selectTextOnFocus
       mode="outlined"
       style={style}
       label={label}
@@ -84,11 +89,11 @@ export function AppTextInput(props: AppTextInputProps) {
       placeholder={placeholder}
       keyboardType={keyboardType}
       editable={!readonly}
+      disabled={isAppLoading}
       activeOutlineColor={appTheme.colors.primary}
       onChangeText={onChangeValue}
       right={postfix && <TextInput.Affix text={postfix} />}
       onFocus={onFocus}
-      selectTextOnFocus
     />
   );
 }

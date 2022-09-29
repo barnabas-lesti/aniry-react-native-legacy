@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleProp, ViewStyle, View } from 'react-native';
 import { Button } from 'react-native-paper';
 
+import { useAppSelector } from '../store/hooks';
+import { appState } from '../state';
 import { appTheme } from '../theme';
 
 interface AppButtonProps {
@@ -52,6 +54,8 @@ interface AppButtonProps {
 export function AppButton(props: AppButtonProps) {
   const { label, type = 'primary', style, isDisabled, backgroundColor, textColor, compact, onPress } = props;
 
+  const isAppLoading = appState.selectors.isAppLoading(useAppSelector((state) => state.app));
+
   function getBackgroundColor() {
     if (backgroundColor) return backgroundColor;
 
@@ -79,7 +83,7 @@ export function AppButton(props: AppButtonProps) {
         mode={getMode()}
         buttonColor={getBackgroundColor()}
         textColor={getTextColor()}
-        disabled={isDisabled}
+        disabled={isDisabled || isAppLoading}
         compact={compact}
       >
         {label}

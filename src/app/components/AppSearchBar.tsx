@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 import { Searchbar } from 'react-native-paper';
 
+import { useAppSelector } from '../store/hooks';
+import { appState } from '../state';
+
 interface AppSearchBarProps {
   /**
    * Initial value of the input.
@@ -39,6 +42,7 @@ export function AppSearchBar(props: AppSearchBarProps) {
   const { value = '', placeholder, style, onChangeValue, onSearch } = props;
 
   const [localValue, setLocalValue] = useState(value);
+  const isAppLoading = appState.selectors.isAppLoading(useAppSelector((state) => state.app));
 
   function onChangeText(newValue: string) {
     setLocalValue(newValue);
@@ -56,6 +60,7 @@ export function AppSearchBar(props: AppSearchBarProps) {
       style={style}
       value={localValue}
       placeholder={placeholder}
+      loading={isAppLoading}
       onChangeText={onChangeText}
       onIconPress={() => onSearch(value)}
       onBlur={() => onSearch(value)}
