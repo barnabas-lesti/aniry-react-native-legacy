@@ -6,6 +6,7 @@ interface RecipeProps {
   name: string;
   servings: AppServing[];
   ingredientProxies: AppItemProxy<Ingredient>[];
+  description?: string;
 }
 
 export class Recipe extends AppItemBase implements AppItem {
@@ -17,14 +18,16 @@ export class Recipe extends AppItemBase implements AppItem {
   name: string;
   servings: AppServing[];
   ingredientProxies: AppItemProxy<Ingredient>[];
+  description?: string;
 
   constructor(props?: RecipeProps) {
     super();
 
-    const { servings, ingredientProxies } = props || {};
+    const { servings, ingredientProxies, description } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
+    this.description = description;
 
     this.servings = servings || [
       new AppServing({ unit: Recipe.DEFAULT_SERVING_UNIT, value: Recipe.DEFAULT_SERVING_VALUE }),

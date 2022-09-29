@@ -19,6 +19,7 @@ export const en = {
   'app.labels.create': 'Create',
   'app.labels.update': 'Update',
   'app.labels.name': 'Name',
+  'app.labels.description': 'Description',
   'app.labels.total': 'Total',
   'app.labels.serving': 'Serving',
   'app.labels.nutrient': 'Nutrient',

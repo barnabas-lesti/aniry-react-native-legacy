@@ -57,6 +57,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [carbs, setCarbs] = useState(nutrients.carbs);
   const [protein, setProtein] = useState(nutrients.protein);
   const [fat, setFat] = useState(nutrients.fat);
+  const [description, setDescription] = useState(ingredient.description || '');
 
   const [showValidation, setShowValidation] = useState(false);
   const [nameIsValid, setNameIsValid] = useState(Ingredient.validateName(name));
@@ -77,6 +78,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
       const newIngredient = new Ingredient({
         id: ingredient.id,
         name,
+        description,
         servings: [
           {
             value: servingValue,
@@ -143,60 +145,68 @@ export function IngredientEditor(props: IngredientEditorProps) {
       />
 
       <AppScrollView>
-        <View style={styles.marginBottomMedium}>
-          <AppTextInput
-            label={t('app.labels.name')}
-            style={styles.marginBottomSmall}
-            value={name}
-            isInvalid={showValidation && !nameIsValid}
-            onChangeValue={setName}
-          />
+        <AppTextInput
+          label={t('app.labels.name')}
+          style={styles.marginBottomSmall}
+          value={name}
+          isInvalid={showValidation && !nameIsValid}
+          onChangeValue={setName}
+        />
 
-          <AppServingInput
-            style={[styles.marginBottomSmall]}
-            value={servingValue}
-            unit={servingUnit}
-            unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
-            isInvalid={showValidation && !servingValueIsValid}
-            onChangeValue={setServingValue}
-            onChangeUnit={setServingUnit}
-          />
+        <AppServingInput
+          style={styles.marginBottomSmall}
+          value={servingValue}
+          unit={servingUnit}
+          unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
+          isInvalid={showValidation && !servingValueIsValid}
+          onChangeValue={setServingValue}
+          onChangeUnit={setServingUnit}
+        />
 
-          <AppNumberInput
-            label={t('app.labels.calories')}
-            postfix={t('app.units.kcal')}
-            style={styles.marginBottomSmall}
-            value={calories}
-            onChangeValue={setCalories}
-          />
+        <AppNumberInput
+          label={t('app.labels.calories')}
+          postfix={t('app.units.kcal')}
+          style={styles.marginBottomSmall}
+          value={calories}
+          onChangeValue={setCalories}
+        />
 
-          <AppNumberInput
-            label={t('app.labels.carbs')}
-            postfix={t('app.units.g')}
-            style={styles.marginBottomSmall}
-            value={carbs}
-            onChangeValue={setCarbs}
-          />
+        <AppNumberInput
+          label={t('app.labels.carbs')}
+          postfix={t('app.units.g')}
+          style={styles.marginBottomSmall}
+          value={carbs}
+          onChangeValue={setCarbs}
+        />
 
-          <AppNumberInput
-            label={t('app.labels.protein')}
-            postfix={t('app.units.g')}
-            style={styles.marginBottomSmall}
-            value={protein}
-            onChangeValue={setProtein}
-          />
+        <AppNumberInput
+          label={t('app.labels.protein')}
+          postfix={t('app.units.g')}
+          style={styles.marginBottomSmall}
+          value={protein}
+          onChangeValue={setProtein}
+        />
 
-          <AppNumberInput
-            label={t('app.labels.fat')}
-            postfix={t('app.units.g')}
-            value={fat}
-            onChangeValue={setFat}
-          />
-        </View>
+        <AppNumberInput
+          label={t('app.labels.fat')}
+          postfix={t('app.units.g')}
+          value={fat}
+          onChangeValue={setFat}
+        />
 
-        <AppNutrientsPieChart
-          nutrients={{ calories, carbs, protein, fat }}
-          style={styles.marginBottomMedium}
+        {!!(carbs || protein || fat) && (
+          <AppNutrientsPieChart
+            nutrients={{ calories, carbs, protein, fat }}
+            style={[styles.marginTopMedium, styles.marginBottomSmall]}
+          />
+        )}
+
+        <AppTextInput
+          label={t('app.labels.description')}
+          style={[styles.marginTopSmall, styles.marginBottomMedium]}
+          value={description}
+          onChangeValue={setDescription}
+          isMultiline
         />
       </AppScrollView>
 
@@ -220,5 +230,11 @@ const styles = StyleSheet.create({
   },
   marginBottomMedium: {
     marginBottom: appTheme.gaps.medium,
+  },
+  marginTopMedium: {
+    marginTop: appTheme.gaps.medium,
+  },
+  marginTopSmall: {
+    marginTop: appTheme.gaps.small,
   },
 });
