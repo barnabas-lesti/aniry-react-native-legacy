@@ -67,6 +67,10 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
     setLocalSelectedIngredients([...localSelectedIngredients.filter(({ id }) => ingredient.id !== id)]);
   }
 
+  async function onRefresh() {
+    await dispatch(ingredientState.asyncActions.loadIngredients());
+  }
+
   return (
     <AppDialog
       onDismiss={onDiscard}
@@ -96,6 +100,7 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
         selectedItems={localSelectedIngredients}
         onSearch={onSearch}
         onSelect={onSelectIngredient}
+        onRefresh={onRefresh}
       />
     </AppDialog>
   );

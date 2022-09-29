@@ -88,6 +88,7 @@ export function AppTextInput(props: AppTextInputProps) {
       onChangeText={onChangeValue}
       right={postfix && <TextInput.Affix text={postfix} />}
       onFocus={onFocus}
+      selectTextOnFocus
     />
   );
 }

@@ -32,6 +32,10 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
     navigation.push('RecipeEdit', { recipe });
   }
 
+  async function onRefresh() {
+    await dispatch(recipeState.asyncActions.loadRecipes());
+  }
+
   return (
     <AppScreen>
       <AppButton
@@ -47,6 +51,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
         noItemsTextKey={isLoading ? '' : 'recipe.recipeHomeScreen.noRecipes'}
         onSearch={onSearch}
         onSelect={onSelect}
+        onRefresh={onRefresh}
       />
     </AppScreen>
   );

@@ -33,6 +33,10 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
     navigation.push('IngredientEdit', { ingredient });
   }
 
+  async function onRefresh() {
+    await dispatch(ingredientState.asyncActions.loadIngredients());
+  }
+
   return (
     <AppScreen>
       <AppButton
@@ -48,6 +52,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
         noItemsTextKey={isLoading ? '' : 'ingredient.ingredientHomeScreen.noIngredients'}
         onSearch={onSearch}
         onSelect={onSelect}
+        onRefresh={onRefresh}
       />
     </AppScreen>
   );

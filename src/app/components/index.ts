@@ -16,4 +16,3 @@ export * from './AppProgressBar';
 export * from './AppNutrientsPieChart';
 export * from './AppItemProxyEditorDialog';
 export * from './AppServingInput';
-export * from './AppItemSelectorDialog';

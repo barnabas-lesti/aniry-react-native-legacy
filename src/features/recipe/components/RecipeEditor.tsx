@@ -52,7 +52,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const appRecipes = useAppSelector((state) => state.recipe.recipes);
+  const { recipes } = useAppSelector((state) => state.recipe);
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
@@ -137,12 +137,10 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setSelectedIngredientProxy(null);
   }
 
-  async function refreshRecipe() {
-    const refreshedRecipe = new Recipe((appRecipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
-    setName(refreshedRecipe.name);
-    setServingValue(refreshedRecipe.serving.value);
-    setServingUnit(refreshedRecipe.serving.unit);
-    setIngredientProxies(refreshedRecipe.ingredientProxies || []);
+  async function onRefresh() {
+    await dispatch(recipeState.asyncActions.loadRecipes());
+    const refreshedRecipe = new Recipe((recipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
+    setIngredientProxies(refreshedRecipe.ingredientProxies);
   }
 
   return (
@@ -170,7 +168,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
         ]}
       />
 
-      <AppScrollView onRefresh={refreshRecipe}>
+      <AppScrollView onRefresh={onRefresh}>
         <AppTextInput
           label={t('app.labels.name')}
           style={styles.row}

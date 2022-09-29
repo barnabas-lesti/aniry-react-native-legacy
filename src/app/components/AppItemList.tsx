@@ -52,7 +52,12 @@ interface AppItemListProps<T extends AppItem> {
   /**
    * Search event handler.
    */
-  onSearch?: (searchString: string) => Promise<void>;
+  onSearch?: (searchString: string) => void;
+
+  /**
+   * Refresh event handler.
+   */
+  onRefresh?: () => Promise<void>;
 }
 
 /**
@@ -69,6 +74,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
     isCaloriesSummaryVisible,
     onSelect,
     onSearch,
+    onRefresh,
   } = props;
 
   const { t } = useTranslation();
@@ -107,7 +113,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
           <AppScrollView
             style={styles.scrollView}
             isDisabled={isScrollDisabled}
-            onRefresh={onSearch && (async () => await onSearch(searchString))}
+            onRefresh={onRefresh}
           >
             {items.map((item) => {
               const { id, name, nutrients, serving } = item;
