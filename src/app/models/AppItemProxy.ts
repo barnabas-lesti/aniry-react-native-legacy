@@ -1,4 +1,5 @@
 import { AppItem } from './AppItem';
+import { AppItemBase } from './AppItemBase';
 import { AppNutrients } from './AppNutrients';
 import { AppServing } from './AppServing';
 
@@ -7,11 +8,13 @@ interface AppItemProxyProps<T extends AppItem> {
   serving: AppServing;
 }
 
-export class AppItemProxy<T extends AppItem> implements AppItem {
+export class AppItemProxy<T extends AppItem> extends AppItemBase implements AppItem {
   item: T;
   serving: AppServing;
 
   constructor({ item, serving }: AppItemProxyProps<T>) {
+    super();
+
     this.item = item;
     this.serving = serving;
   }
@@ -48,5 +51,9 @@ export class AppItemProxy<T extends AppItem> implements AppItem {
         });
       }),
     ];
+  }
+
+  static mapProxiesToItems<T extends AppItem>(itemProxies: AppItemProxy<T>[]): T[] {
+    return itemProxies.map(({ item }) => item);
   }
 }

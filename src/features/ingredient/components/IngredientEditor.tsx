@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,20 +12,16 @@ import {
   AppServingInput,
 } from 'app/components';
 import { appTheme } from 'app/theme';
-import { appCommonService } from 'app/services';
+import { useAppDispatch } from 'app/store/hooks';
+import { appState } from 'app/state';
 import { Ingredient } from '../models';
-import { ingredientService } from '../services';
+import { ingredientState } from '../state';
 
 interface IngredientEditorProps {
   /**
-   * The ingredient object.
+   * The ingredient.
    */
   ingredient?: Ingredient;
-
-  /**
-   * Custom styles.
-   */
-  style?: StyleProp<ViewStyle>;
 
   /**
    * On discard event handler.
@@ -47,11 +43,12 @@ interface IngredientEditorProps {
  * Ingredient editor component.
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
+  const { ingredient = new Ingredient(), onDiscard, onAfterSave, onAfterDelete } = props;
   const { serving, nutrients } = ingredient;
   const isNewIngredient = !ingredient.id;
 
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const [name, setName] = useState(ingredient.name);
   const [servingValue, setServingValue] = useState(serving.value);
@@ -77,37 +74,41 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      appCommonService.startLoading();
-      await ingredientService.saveOne(
-        new Ingredient({
-          id: ingredient.id,
-          name,
-          servings: [
-            {
-              value: servingValue,
-              unit: servingUnit,
-            },
-          ],
-          nutrients: {
-            calories,
-            carbs,
-            protein,
-            fat,
+      const newIngredient = new Ingredient({
+        id: ingredient.id,
+        name,
+        servings: [
+          {
+            value: servingValue,
+            unit: servingUnit,
           },
-        })
-      );
-      appCommonService.stopLoading();
-      appCommonService.pushNotificationKey(`ingredient.notifications.${isNewIngredient ? 'created' : 'updated'}`);
+        ],
+        nutrients: {
+          calories,
+          carbs,
+          protein,
+          fat,
+        },
+      });
+
+      if (isNewIngredient) {
+        await dispatch(ingredientState.asyncActions.createIngredient(newIngredient));
+        dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.created' }));
+      } else {
+        await dispatch(ingredientState.asyncActions.updateIngredient(newIngredient));
+        dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.updated' }));
+      }
+
       onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    appCommonService.startLoading();
-    await ingredientService.deleteOne(ingredient);
-    appCommonService.stopLoading();
-    appCommonService.pushNotificationKey('ingredient.notifications.deleted');
+
+    await dispatch(ingredientState.asyncActions.deleteIngredient(ingredient));
+    dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.deleted' }));
+
     onAfterDelete && onAfterDelete();
   }
 
@@ -117,9 +118,9 @@ export function IngredientEditor(props: IngredientEditorProps) {
   }
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={styles.container}>
       <AppButtonGroup
-        style={styles.buttonGroup}
+        style={styles.marginBottomMedium}
         buttons={[
           {
             label: t('app.labels.discard'),
@@ -142,17 +143,17 @@ export function IngredientEditor(props: IngredientEditorProps) {
       />
 
       <AppScrollView>
-        <View style={styles.form}>
+        <View style={styles.marginBottomMedium}>
           <AppTextInput
             label={t('app.labels.name')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={name}
             isInvalid={showValidation && !nameIsValid}
             onChangeValue={setName}
           />
 
           <AppServingInput
-            style={[styles.inputs]}
+            style={[styles.marginBottomSmall]}
             value={servingValue}
             unit={servingUnit}
             unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
@@ -164,7 +165,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.calories')}
             postfix={t('app.units.kcal')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={calories}
             onChangeValue={setCalories}
           />
@@ -172,7 +173,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.carbs')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={carbs}
             onChangeValue={setCarbs}
           />
@@ -180,7 +181,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.protein')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
+            style={styles.marginBottomSmall}
             value={protein}
             onChangeValue={setProtein}
           />
@@ -188,7 +189,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           <AppNumberInput
             label={t('app.labels.fat')}
             postfix={t('app.units.g')}
-            style={styles.inputs}
             value={fat}
             onChangeValue={setFat}
           />
@@ -196,7 +196,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
 
         <AppNutrientsPieChart
           nutrients={{ calories, carbs, protein, fat }}
-          style={styles.chart}
+          style={styles.marginBottomMedium}
         />
       </AppScrollView>
 
@@ -215,16 +215,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  buttonGroup: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  form: {
+  marginBottomSmall: {
     marginBottom: appTheme.gaps.small,
   },
-  inputs: {
-    marginBottom: appTheme.gaps.small,
-  },
-  chart: {
+  marginBottomMedium: {
     marginBottom: appTheme.gaps.medium,
   },
 });

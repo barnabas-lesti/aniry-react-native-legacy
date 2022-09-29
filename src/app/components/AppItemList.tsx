@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, StyleProp, ViewStyle, View } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
@@ -13,6 +13,16 @@ interface AppItemListProps<T extends AppItem> {
    * Items to display.
    */
   items: Array<T>;
+
+  /**
+   * Initial search string.
+   */
+  initialSearchString?: string;
+
+  /**
+   * Key of text to display when no items are available.
+   */
+  noItemsTextKey?: string;
 
   /**
    * Selected items.
@@ -35,9 +45,9 @@ interface AppItemListProps<T extends AppItem> {
   style?: StyleProp<ViewStyle>;
 
   /**
-   * Item select event handler.
+   * On select event handler.
    */
-  onSelectItem?: (item: T) => void;
+  onSelect?: (item: T) => void;
 
   /**
    * Search event handler.
@@ -51,16 +61,18 @@ interface AppItemListProps<T extends AppItem> {
 export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
   const {
     items,
+    initialSearchString = '',
+    noItemsTextKey,
     selectedItems = [],
     isScrollDisabled,
     style,
     isCaloriesSummaryVisible,
-    onSelectItem,
+    onSelect,
     onSearch,
   } = props;
 
   const { t } = useTranslation();
-  const [searchString, setSearchString] = useState('');
+  const [searchString, setSearchString] = useState(initialSearchString);
 
   function isItemSelected(item: AppItem) {
     return !!selectedItems.filter(({ id }) => item.id === id).length;
@@ -82,7 +94,9 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
         />
       )}
 
-      {!!items.length && (
+      {!items.length ? (
+        <Text style={styles.noItems}>{noItemsTextKey && t(noItemsTextKey)}</Text>
+      ) : (
         <DataTable style={styles.table}>
           <DataTable.Header>
             <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
@@ -101,7 +115,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
                 <DataTable.Row
                   style={[isItemSelected(item) && styles.selectedRow]}
                   key={id}
-                  onPress={() => onSelectItem && onSelectItem(item)}
+                  onPress={() => onSelect && onSelect(item)}
                 >
                   <DataTable.Cell>{name}</DataTable.Cell>
                   <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
@@ -133,9 +147,6 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     marginBottom: appTheme.gaps.small,
-  },
-  loader: {
-    marginTop: appTheme.gaps.medium,
   },
   noItems: {
     marginTop: appTheme.gaps.medium,

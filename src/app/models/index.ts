@@ -1,4 +1,5 @@
 export * from './AppItem';
+export * from './AppItemBase';
 export * from './AppItemProxy';
 export * from './AppCollectionItem';
 export * from './AppNutrients';

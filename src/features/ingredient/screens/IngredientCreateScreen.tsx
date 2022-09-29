@@ -2,8 +2,8 @@ import React from 'react';
 
 import { AppStackScreenProps } from 'app/models';
 import { AppScreen } from 'app/components';
-import { IngredientStackParamList } from '../models';
 import { IngredientEditor } from '../components';
+import { IngredientStackParamList } from '../models';
 
 type IngredientCreateScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientCreate'>;
 

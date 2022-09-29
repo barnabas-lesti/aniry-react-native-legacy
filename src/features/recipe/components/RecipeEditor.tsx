@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -15,21 +15,17 @@ import {
 } from 'app/components';
 import { appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
-import { appCommonService } from 'app/services';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import { appState } from 'app/state';
 import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
 import { Recipe } from '../models';
-import { recipeService } from '../services';
+import { recipeState } from '../state';
 
 interface RecipeEditorProps {
   /**
    * The recipe object.
    */
   recipe?: Recipe;
-
-  /**
-   * Custom styles.
-   */
-  style?: StyleProp<ViewStyle>;
 
   /**
    * On discard event handler.
@@ -51,9 +47,12 @@ interface RecipeEditorProps {
  * Recipe editor component.
  */
 export function RecipeEditor(props: RecipeEditorProps) {
-  const { recipe = new Recipe(), style, onDiscard, onAfterSave, onAfterDelete } = props;
+  const { recipe = new Recipe(), onDiscard, onAfterSave, onAfterDelete } = props;
   const isNewRecipe = !recipe.id;
+
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const appRecipes = useAppSelector((state) => state.recipe.recipes);
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
@@ -79,32 +78,36 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   async function onSaveButtonPress() {
     if (validateForm()) {
-      appCommonService.startLoading();
-      await recipeService.saveOne(
-        new Recipe({
-          id: recipe.id,
-          name,
-          servings: [
-            {
-              value: servingValue,
-              unit: servingUnit,
-            },
-          ],
-          ingredientProxies,
-        })
-      );
-      appCommonService.stopLoading();
-      appCommonService.pushNotificationKey(`recipe.notifications.${isNewRecipe ? 'created' : 'updated'}`);
+      const newRecipe = new Recipe({
+        id: recipe.id,
+        name,
+        servings: [
+          {
+            value: servingValue,
+            unit: servingUnit,
+          },
+        ],
+        ingredientProxies,
+      });
+
+      if (isNewRecipe) {
+        await dispatch(recipeState.asyncActions.createRecipe(newRecipe));
+        dispatch(appState.actions.showNotification({ textKey: 'recipe.notifications.created' }));
+      } else {
+        await dispatch(recipeState.asyncActions.updateRecipe(newRecipe));
+        dispatch(appState.actions.showNotification({ textKey: 'recipe.notifications.updated' }));
+      }
+
       onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    appCommonService.startLoading();
-    await recipeService.deleteOne(recipe);
-    appCommonService.stopLoading();
-    appCommonService.pushNotificationKey('recipe.notifications.deleted');
+
+    await dispatch(recipeState.asyncActions.deleteRecipe(recipe));
+    dispatch(appState.actions.showNotification({ textKey: 'recipe.notifications.deleted' }));
+
     onAfterDelete && onAfterDelete();
   }
 
@@ -135,20 +138,15 @@ export function RecipeEditor(props: RecipeEditorProps) {
   }
 
   async function refreshRecipe() {
-    if (!isNewRecipe) {
-      appCommonService.startLoading();
-      const refreshedRecipe = (await recipeService.getOneById(recipe.id)) || recipe;
-      appCommonService.stopLoading();
-
-      setName(refreshedRecipe.name);
-      setServingValue(refreshedRecipe.serving.value);
-      setServingUnit(refreshedRecipe.serving.unit);
-      setIngredientProxies(refreshedRecipe.ingredientProxies || []);
-    }
+    const refreshedRecipe = new Recipe((appRecipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
+    setName(refreshedRecipe.name);
+    setServingValue(refreshedRecipe.serving.value);
+    setServingUnit(refreshedRecipe.serving.unit);
+    setIngredientProxies(refreshedRecipe.ingredientProxies || []);
   }
 
   return (
-    <View style={[styles.container, style]}>
+    <View style={styles.container}>
       <AppButtonGroup
         style={styles.buttonGroup}
         buttons={[
@@ -201,7 +199,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
           isCaloriesSummaryVisible
           style={styles.ingredientProxiesList}
           items={ingredientProxies}
-          onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+          onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
         />
 
         <AppNutrientsPieChart
@@ -212,7 +210,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
       {isIngredientSelectorDialogVisible && (
         <IngredientSelectorDialog
-          selectedIngredients={ingredientProxies.map(({ item }) => item)}
+          selectedIngredients={AppItemProxy.mapProxiesToItems(ingredientProxies)}
           onDiscard={() => setIsIngredientSelectorDialogVisible(false)}
           onSave={onEditIngredientsSave}
         />
