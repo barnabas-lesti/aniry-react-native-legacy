@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { AppButtonGroup, AppDialog, AppItemList } from 'app/components';
 import { appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { appState } from 'app/state';
 import { Ingredient } from '../models';
 import { ingredientState } from '../state';
 
@@ -34,7 +33,6 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const isLoading = appState.selectors.isLoading(useAppSelector((state) => state.app));
   const ingredientStateData = useAppSelector(({ ingredient }) => ingredient);
   const ingredients = ingredientState.selectors.ingredientSelectorDialogIngredients(ingredientStateData);
   const [localSelectedIngredients, setLocalSelectedIngredients] = useState(selectedIngredients);
@@ -67,6 +65,10 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
     setLocalSelectedIngredients([...localSelectedIngredients.filter(({ id }) => ingredient.id !== id)]);
   }
 
+  async function onRefresh() {
+    await dispatch(ingredientState.asyncActions.loadIngredients());
+  }
+
   return (
     <AppDialog
       onDismiss={onDiscard}
@@ -92,10 +94,11 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
       <AppItemList
         items={ingredients}
         initialSearchString={ingredientStateData.ingredientSelectorDialogSearchString}
-        noItemsTextKey={isLoading ? '' : 'ingredient.ingredientSelectorDialog.noIngredients'}
+        noItemsTextKey={'ingredient.ingredientSelectorDialog.noIngredients'}
         selectedItems={localSelectedIngredients}
         onSearch={onSearch}
         onSelect={onSelectIngredient}
+        onRefresh={onRefresh}
       />
     </AppDialog>
   );

@@ -52,11 +52,12 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const appRecipes = useAppSelector((state) => state.recipe.recipes);
+  const { recipes } = useAppSelector((state) => state.recipe);
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
   const [servingUnit, setServingUnit] = useState(recipe.serving.unit);
+  const [description, setDescription] = useState(recipe.description || '');
   const [ingredientProxies, setIngredientProxies] = useState(recipe.ingredientProxies || []);
 
   const [showValidation, setShowValidation] = useState(false);
@@ -81,6 +82,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
       const newRecipe = new Recipe({
         id: recipe.id,
         name,
+        description,
         servings: [
           {
             value: servingValue,
@@ -137,18 +139,16 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setSelectedIngredientProxy(null);
   }
 
-  async function refreshRecipe() {
-    const refreshedRecipe = new Recipe((appRecipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
-    setName(refreshedRecipe.name);
-    setServingValue(refreshedRecipe.serving.value);
-    setServingUnit(refreshedRecipe.serving.unit);
-    setIngredientProxies(refreshedRecipe.ingredientProxies || []);
+  async function onRefresh() {
+    await dispatch(recipeState.asyncActions.loadRecipes());
+    const refreshedRecipe = new Recipe((recipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
+    setIngredientProxies(refreshedRecipe.ingredientProxies);
   }
 
   return (
     <View style={styles.container}>
       <AppButtonGroup
-        style={styles.buttonGroup}
+        style={styles.marginBottomMedium}
         buttons={[
           {
             label: t('app.labels.discard'),
@@ -170,17 +170,17 @@ export function RecipeEditor(props: RecipeEditorProps) {
         ]}
       />
 
-      <AppScrollView onRefresh={refreshRecipe}>
+      <AppScrollView onRefresh={onRefresh}>
         <AppTextInput
           label={t('app.labels.name')}
-          style={styles.row}
+          style={styles.marginBottomSmall}
           value={name}
           isInvalid={showValidation && !nameIsValid}
           onChangeValue={setName}
         />
 
         <AppServingInput
-          style={[styles.row]}
+          style={styles.marginBottomMedium}
           value={servingValue}
           unit={servingUnit}
           unitOptions={Recipe.AVAILABLE_SERVING_UNITS}
@@ -195,16 +195,26 @@ export function RecipeEditor(props: RecipeEditorProps) {
           onPress={() => setIsIngredientSelectorDialogVisible(true)}
         />
 
-        <AppItemList
-          isCaloriesSummaryVisible
-          style={styles.ingredientProxiesList}
-          items={ingredientProxies}
-          onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
-        />
+        {!!ingredientProxies.length && (
+          <>
+            <AppItemList
+              isScrollDisabled
+              isCaloriesSummaryVisible
+              style={styles.marginBottomMedium}
+              items={ingredientProxies}
+              onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+            />
 
-        <AppNutrientsPieChart
-          style={styles.chart}
-          nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)}
+            <AppNutrientsPieChart nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)} />
+          </>
+        )}
+
+        <AppTextInput
+          label={t('app.labels.description')}
+          style={[styles.marginTopMedium, styles.marginBottomMedium]}
+          value={description}
+          onChangeValue={setDescription}
+          isMultiline
         />
       </AppScrollView>
 
@@ -242,28 +252,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  row: {
+  marginBottomSmall: {
     marginBottom: appTheme.gaps.small,
   },
-  buttonGroup: {
+  marginBottomMedium: {
     marginBottom: appTheme.gaps.medium,
   },
-  servingContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    marginBottom: appTheme.gaps.medium,
-  },
-  servingValue: {
-    marginRight: appTheme.gaps.small,
-    flexGrow: 1,
-  },
-  servingUnit: {
-    minWidth: 70,
-  },
-  ingredientProxiesList: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  chart: {
-    marginBottom: appTheme.gaps.medium,
+  marginTopMedium: {
+    marginTop: appTheme.gaps.medium,
   },
 });

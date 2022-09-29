@@ -5,6 +5,7 @@ interface IngredientProps {
   name: string;
   nutrients: AppNutrients;
   servings: AppServing[];
+  description?: string;
 }
 
 export class Ingredient extends AppItemBase implements AppItem {
@@ -12,18 +13,20 @@ export class Ingredient extends AppItemBase implements AppItem {
   static readonly DEFAULT_SERVING_VALUE: number = 100;
   static readonly PRIMARY_SERVING_UNITS: AppServingUnit[] = ['g', 'ml'];
 
-  public id: string;
-  public name: string;
-  public nutrients: AppNutrients;
-  public servings: AppServing[];
+  id: string;
+  name: string;
+  nutrients: AppNutrients;
+  servings: AppServing[];
+  description?: string;
 
   constructor(props?: IngredientProps) {
     super();
 
-    const { servings, nutrients } = props || {};
+    const { servings, nutrients, description } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
+    this.description = description;
 
     this.servings = servings || [
       new AppServing({ unit: Ingredient.DEFAULT_SERVING_UNIT, value: Ingredient.DEFAULT_SERVING_VALUE }),

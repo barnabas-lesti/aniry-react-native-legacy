@@ -2,6 +2,8 @@ import React, { Dispatch, SetStateAction } from 'react';
 import { StyleProp, TextStyle } from 'react-native';
 import { TextInput } from 'react-native-paper';
 
+import { useAppSelector } from '../store/hooks';
+import { appState } from '../state';
 import { appTheme } from '../theme';
 
 interface AppTextInputProps {
@@ -46,6 +48,11 @@ interface AppTextInputProps {
   isInvalid?: boolean;
 
   /**
+   * Does the text input support multiple line.
+   */
+  isMultiline?: boolean;
+
+  /**
    * Text change handler.
    */
   onChangeValue: Dispatch<SetStateAction<string>>;
@@ -69,13 +76,17 @@ export function AppTextInput(props: AppTextInputProps) {
     isInvalid,
     readonly,
     style,
+    isMultiline,
     onChangeValue,
     onFocus,
   } = props;
 
+  const isAppLoading = appState.selectors.isAppLoading(useAppSelector((state) => state.app));
+
   return (
     <TextInput
       dense
+      selectTextOnFocus={!isMultiline}
       mode="outlined"
       style={style}
       label={label}
@@ -84,7 +95,9 @@ export function AppTextInput(props: AppTextInputProps) {
       placeholder={placeholder}
       keyboardType={keyboardType}
       editable={!readonly}
+      disabled={isAppLoading}
       activeOutlineColor={appTheme.colors.primary}
+      multiline={isMultiline}
       onChangeText={onChangeValue}
       right={postfix && <TextInput.Affix text={postfix} />}
       onFocus={onFocus}
