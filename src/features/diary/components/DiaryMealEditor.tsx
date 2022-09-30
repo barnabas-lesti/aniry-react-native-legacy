@@ -48,7 +48,7 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
   const isNewMeal = true;
 
   const dispatch = useAppDispatch();
-  const allMealItems = diaryState.selectors.diaryFoodSelectorItems(useAppSelector((app) => app));
+  const allMealItems = diaryState.selectors.diaryAllMealItems(useAppSelector((app) => app));
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
   const [isFoodSelectorDialogVisible, setIsFoodSelectorDialogVisible] = useState(false);
   const [selectedFoodProxy, setSelectedFoodProxy] = useState<AppItemProxy<DiaryMealItem> | null>(null);
@@ -85,8 +85,10 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
 
   async function onRefresh() {
     await dispatch(diaryState.asyncActions.lazyLoadMealItems());
-    const updatedMealItems = allMealItems.filter((mealItem) => !!mealItemProxies.find(({ id }) => id === mealItem.id));
-    setMealItemProxies(AppItemProxy.mapItemsToProxies(updatedMealItems, mealItemProxies));
+    const updatedMealItems = mealItemProxies
+      .map((mealItemProxy) => allMealItems.find(({ id }) => id === mealItemProxy.id))
+      .filter((mealItem) => !!mealItem);
+    setMealItemProxies(AppItemProxy.mapItemsToProxies(updatedMealItems as DiaryMealItem[], mealItemProxies));
   }
 
   return (
