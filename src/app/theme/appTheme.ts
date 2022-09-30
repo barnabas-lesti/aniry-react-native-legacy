@@ -20,7 +20,7 @@ export const appTheme = {
     },
   },
   icons: {
-    diary: 'chart-bar',
+    diary: 'calculator',
     ingredient: 'food-apple',
     recipe: 'food-variant',
     settings: 'cog',

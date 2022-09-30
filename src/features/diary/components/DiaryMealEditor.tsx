@@ -85,9 +85,7 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
 
   async function onRefresh() {
     await dispatch(diaryState.asyncActions.lazyLoadMealItems());
-    const updatedMealItems = mealItemProxies.map(
-      (mealItem) => allMealItems.filter(({ id }) => id === mealItem.id)[0] || mealItem
-    );
+    const updatedMealItems = allMealItems.filter((mealItem) => !!mealItemProxies.find(({ id }) => id === mealItem.id));
     setMealItemProxies(AppItemProxy.mapItemsToProxies(updatedMealItems, mealItemProxies));
   }
 

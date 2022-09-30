@@ -39,14 +39,14 @@ export const en = {
   'app.appSettingsScreen.data.restoreSuccessful': 'Successfully restored your data!',
 
   // Diary
-  'diary.diaryHomeScreen.title': 'Diary',
+  'diary.diaryHomeScreen.title': 'Calculator',
   'diary.diaryHomeScreen.createMeal': 'What did you eat today?',
 
   'diary.diaryMealCreateScreen.title': 'Create meal',
 
   'diary.diaryMealEditor.deleteConfirmation': 'Are you sure you want to delete this meal?',
   'diary.diaryMealEditor.foodTitle': 'Food',
-  'diary.diaryMealEditor.buttons.calculator': 'What did you eat today?',
+  'diary.diaryMealEditor.buttons.calculator': 'What did you eat?',
   'diary.diaryMealEditor.buttons.addFood': 'Add food',
   'diary.diaryMealEditor.buttons.editFood': 'Edit food',
   'diary.diaryMealEditor.buttons.editServing': 'How much did you eat?',

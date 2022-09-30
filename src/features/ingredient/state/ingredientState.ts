@@ -105,7 +105,7 @@ export const ingredientState = {
       dispatch(appState.actions.startLoading());
       await appCollectionService.deleteOne<Ingredient>('ingredients', ingredient);
       await dispatch(recipeState.asyncActions.deleteIngredientFromRecipes(ingredient));
-      dispatch(ingredientState.actions.deleteIngredientFromIngredients(ingredient));
+      dispatch(ingredientState.actions.deleteIngredientFromIngredients(Ingredient.serialize(ingredient)));
       dispatch(appState.actions.stopLoading());
     },
   },
