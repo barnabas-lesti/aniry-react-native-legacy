@@ -214,7 +214,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
                 onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
               />
 
-              <AppNutrientsPieChart nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)} />
+              <AppNutrientsPieChart nutrients={AppItemProxy.getNutrientsFromItemProxies(ingredientProxies)} />
             </>
           )}
         </View>

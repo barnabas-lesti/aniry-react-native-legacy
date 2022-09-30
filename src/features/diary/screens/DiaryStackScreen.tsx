@@ -4,12 +4,18 @@ import { useTranslation } from 'react-i18next';
 
 import { DiaryScreenOptions, DiaryStackParamList } from '../models';
 import { DiaryHomeScreen } from './DiaryHomeScreen';
+import { DiaryMealCreateScreen } from './DiaryMealCreateScreen';
 
 export const screens = [
   {
     name: 'DiaryHome',
     titleKey: 'diary.diaryHomeScreen.title',
     Component: DiaryHomeScreen,
+  },
+  {
+    name: 'DiaryMealCreate',
+    titleKey: 'diary.diaryMealCreateScreen.title',
+    Component: DiaryMealCreateScreen,
   },
 ] as DiaryScreenOptions[];
 

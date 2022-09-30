@@ -44,24 +44,7 @@ export class Recipe extends AppItemBase implements AppItem {
   }
 
   get nutrients(): AppNutrients {
-    return Recipe.getNutrientsFromIngredientProxies(this.ingredientProxies);
-  }
-
-  static getNutrientsFromIngredientProxies(ingredientProxies: AppItemProxy<Ingredient>[]): AppNutrients {
-    return ingredientProxies.reduce(
-      (nutrients, ingredientProxy) => ({
-        calories: nutrients.calories + ingredientProxy.nutrients.calories,
-        carbs: nutrients.carbs + ingredientProxy.nutrients.carbs,
-        protein: nutrients.protein + ingredientProxy.nutrients.protein,
-        fat: nutrients.fat + ingredientProxy.nutrients.fat,
-      }),
-      {
-        calories: 0,
-        carbs: 0,
-        protein: 0,
-        fat: 0,
-      }
-    );
+    return AppItemProxy.getNutrientsFromItemProxies(this.ingredientProxies);
   }
 
   static isIngredientInRecipe(recipe: Recipe, ingredient: Ingredient): boolean {
