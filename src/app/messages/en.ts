@@ -52,6 +52,9 @@ export const en = {
 
   'ingredient.ingredientSelectorDialog.noIngredients': 'No ingredients to display',
 
+  'ingredient.ingredientEditor.primaryDetailsTitle': 'Primary details',
+  'ingredient.ingredientEditor.nutrientsTitle': 'Nutrients',
+  'ingredient.ingredientEditor.additionalDetailsTitle': 'Additional details',
   'ingredient.ingredientEditor.deleteConfirmation': 'Are you sure you want to delete the ingredient?',
 
   'ingredient.notifications.created': 'Ingredient successfully created!',
@@ -67,6 +70,9 @@ export const en = {
 
   'recipe.recipeEditScreen.title': 'Edit recipe',
 
+  'recipe.recipeEditor.primaryDetailsTitle': 'Primary details',
+  'recipe.recipeEditor.ingredientsTitle': 'Ingredients',
+  'recipe.recipeEditor.additionalDetailsTitle': 'Additional details',
   'recipe.recipeEditor.deleteConfirmation': 'Are you sure you want to delete the recipe?',
   'recipe.recipeEditor.buttons.addIngredients': 'Add ingredients',
   'recipe.recipeEditor.buttons.editIngredients': 'Edit ingredients',

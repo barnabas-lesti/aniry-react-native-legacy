@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { appTheme } from '../theme';
+import { appStyles } from '../theme';
 import { AppItem, AppItemProxy } from '../models';
 import { AppButtonGroup } from './AppButtonGroup';
 import { AppDialog } from './AppDialog';
@@ -61,48 +61,44 @@ export function AppItemProxyEditorDialog<T extends AppItem>(props: AppItemProxyE
 
   return (
     <AppDialog onDismiss={onDiscard}>
-      <AppButtonGroup
-        style={styles.buttonGroup}
-        buttons={[
-          {
-            label: t('app.labels.discard'),
-            type: 'secondary',
-            textColor: primaryColor,
-            compact: true,
-            onPress: onDiscard,
-          },
-          {
-            label: t('app.labels.save'),
-            backgroundColor: primaryColor,
-            compact: true,
-            onPress: onBeforeSave,
-          },
-          {
-            label: t('app.labels.remove'),
-            type: 'danger',
-            compact: true,
-            onPress: onBeforeDelete,
-          },
-        ]}
-      />
+      <View style={appStyles.section}>
+        <AppButtonGroup
+          style={appStyles.sectionRow}
+          buttons={[
+            {
+              label: t('app.labels.discard'),
+              type: 'secondary',
+              textColor: primaryColor,
+              compact: true,
+              onPress: onDiscard,
+            },
+            {
+              label: t('app.labels.save'),
+              backgroundColor: primaryColor,
+              compact: true,
+              onPress: onBeforeSave,
+            },
+            {
+              label: t('app.labels.remove'),
+              type: 'danger',
+              compact: true,
+              onPress: onBeforeDelete,
+            },
+          ]}
+        />
+      </View>
 
-      {text && <Text style={styles.text}>{text}</Text>}
+      <View style={appStyles.section}>
+        {text && <Text style={appStyles.sectionRow}>{text}</Text>}
 
-      <AppNumberInput
-        label={t('app.labels.serving')}
-        postfix={t(`app.units.${itemProxy.serving.unit}`)}
-        value={servingValue}
-        onChangeValue={setServingValue}
-      />
+        <AppNumberInput
+          style={appStyles.sectionRow}
+          label={t('app.labels.serving')}
+          postfix={t(`app.units.${itemProxy.serving.unit}`)}
+          value={servingValue}
+          onChangeValue={setServingValue}
+        />
+      </View>
     </AppDialog>
   );
 }
-
-const styles = StyleSheet.create({
-  buttonGroup: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  text: {
-    marginBottom: appTheme.gaps.medium,
-  },
-});

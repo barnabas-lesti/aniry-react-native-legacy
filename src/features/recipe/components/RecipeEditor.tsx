@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -13,7 +13,7 @@ import {
   AppItemProxyEditorDialog,
   AppServingInput,
 } from 'app/components';
-import { appTheme } from 'app/theme';
+import { appStyles, appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { appState } from 'app/state';
@@ -140,82 +140,94 @@ export function RecipeEditor(props: RecipeEditorProps) {
   }
 
   async function onRefresh() {
-    await dispatch(recipeState.asyncActions.loadRecipes());
-    const refreshedRecipe = new Recipe((recipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
-    setIngredientProxies(refreshedRecipe.ingredientProxies);
+    if (!isNewRecipe) {
+      await dispatch(recipeState.asyncActions.loadRecipes());
+      const refreshedRecipe = new Recipe((recipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
+      setIngredientProxies(refreshedRecipe.ingredientProxies);
+    }
   }
 
   return (
-    <View style={styles.container}>
-      <AppButtonGroup
-        style={styles.marginBottomMedium}
-        buttons={[
-          {
-            label: t('app.labels.discard'),
-            type: 'secondary',
-            textColor: appTheme.colors.recipePrimary,
-            onPress: onDiscard,
-          },
-          {
-            label: t(`app.labels.${isNewRecipe ? 'create' : 'update'}`),
-            backgroundColor: appTheme.colors.recipePrimary,
-            onPress: onSaveButtonPress,
-          },
-          {
-            label: t('app.labels.delete'),
-            type: 'danger',
-            isHidden: isNewRecipe,
-            onPress: () => setIsDeleteConfirmationVisible(true),
-          },
-        ]}
-      />
+    <>
+      <View style={appStyles.section}>
+        <AppButtonGroup
+          style={appStyles.sectionRow}
+          buttons={[
+            {
+              label: t('app.labels.discard'),
+              type: 'secondary',
+              textColor: appTheme.colors.recipePrimary,
+              onPress: onDiscard,
+            },
+            {
+              label: t(`app.labels.${isNewRecipe ? 'create' : 'update'}`),
+              backgroundColor: appTheme.colors.recipePrimary,
+              onPress: onSaveButtonPress,
+            },
+            {
+              label: t('app.labels.delete'),
+              type: 'danger',
+              isHidden: isNewRecipe,
+              onPress: () => setIsDeleteConfirmationVisible(true),
+            },
+          ]}
+        />
+      </View>
 
       <AppScrollView onRefresh={onRefresh}>
-        <AppTextInput
-          label={t('app.labels.name')}
-          style={styles.marginBottomSmall}
-          value={name}
-          isInvalid={showValidation && !nameIsValid}
-          onChangeValue={setName}
-        />
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.primaryDetailsTitle')}</Text>
+          <AppTextInput
+            label={t('app.labels.name')}
+            style={appStyles.sectionRow}
+            value={name}
+            isInvalid={showValidation && !nameIsValid}
+            onChangeValue={setName}
+          />
+          <AppServingInput
+            style={appStyles.sectionRow}
+            value={servingValue}
+            unit={servingUnit}
+            unitOptions={Recipe.AVAILABLE_SERVING_UNITS}
+            isInvalid={showValidation && !servingValueIsValid}
+            onChangeValue={setServingValue}
+            onChangeUnit={setServingUnit}
+          />
+        </View>
 
-        <AppServingInput
-          style={styles.marginBottomMedium}
-          value={servingValue}
-          unit={servingUnit}
-          unitOptions={Recipe.AVAILABLE_SERVING_UNITS}
-          isInvalid={showValidation && !servingValueIsValid}
-          onChangeValue={setServingValue}
-          onChangeUnit={setServingUnit}
-        />
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.ingredientsTitle')}</Text>
+          <AppButton
+            style={appStyles.sectionRow}
+            label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
+            backgroundColor={appTheme.colors.ingredientPrimary}
+            onPress={() => setIsIngredientSelectorDialogVisible(true)}
+          />
+          {!!ingredientProxies.length && (
+            <>
+              <AppItemList
+                isScrollDisabled
+                style={appStyles.sectionRow}
+                isCaloriesSummaryVisible
+                items={ingredientProxies}
+                onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+              />
 
-        <AppButton
-          label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
-          backgroundColor={appTheme.colors.ingredientPrimary}
-          onPress={() => setIsIngredientSelectorDialogVisible(true)}
-        />
+              <AppNutrientsPieChart nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)} />
+            </>
+          )}
+        </View>
 
-        {!!ingredientProxies.length && (
-          <>
-            <AppItemList
-              isScrollDisabled
-              isCaloriesSummaryVisible
-              style={styles.marginBottomMedium}
-              items={ingredientProxies}
-              onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
-            />
-
-            <AppNutrientsPieChart nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)} />
-          </>
-        )}
-
-        <AppTextInput
-          label={t('app.labels.description')}
-          style={[styles.marginTopMedium, styles.marginBottomMedium]}
-          value={description}
-          onChangeValue={setDescription}
-          isMultiline
-        />
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.additionalDetailsTitle')}</Text>
+          <AppTextInput
+            style={appStyles.sectionRow}
+            label={t('app.labels.description')}
+            value={description}
+            onChangeValue={setDescription}
+            isMultiline
+          />
+        </View>
       </AppScrollView>
 
       {isIngredientSelectorDialogVisible && (
@@ -244,21 +256,6 @@ export function RecipeEditor(props: RecipeEditorProps) {
           onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
       )}
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  marginBottomSmall: {
-    marginBottom: appTheme.gaps.small,
-  },
-  marginBottomMedium: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  marginTopMedium: {
-    marginTop: appTheme.gaps.medium,
-  },
-});

@@ -156,7 +156,7 @@ export const recipeState = {
       ({ recipes, recipeHomeSearchString }) =>
         Recipe.sortByName(
           recipes
-            ?.filter((recipe) => recipe.name.toLowerCase().search(recipeHomeSearchString.toLowerCase()) !== -1)
+            ?.filter(({ name }) => Recipe.isStringInName(recipeHomeSearchString, name))
             .map((recipe) => new Recipe(recipe)) || []
         )
     ),
