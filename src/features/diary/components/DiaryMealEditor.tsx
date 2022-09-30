@@ -13,8 +13,10 @@ import {
 } from 'app/components';
 import { AppItemProxy } from 'app/models';
 import { appStyles, appTheme } from 'app/theme';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { DiaryMealItem } from '../models';
 import { DiaryFoodSelectorDialog } from './DiaryFoodSelectorDialog';
+import { diaryState } from '../state';
 
 interface DiaryMealEditorProps {
   /**
@@ -45,6 +47,8 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
   // TODO: Add logic
   const isNewMeal = true;
 
+  const dispatch = useAppDispatch();
+  const allMealItems = diaryState.selectors.diaryFoodSelectorItems(useAppSelector((app) => app));
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
   const [isFoodSelectorDialogVisible, setIsFoodSelectorDialogVisible] = useState(false);
   const [selectedFoodProxy, setSelectedFoodProxy] = useState<AppItemProxy<DiaryMealItem> | null>(null);
@@ -77,6 +81,14 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
   function onEditFoodProxyDelete(mealItemProxyToDelete: AppItemProxy<DiaryMealItem>) {
     setMealItemProxies([...mealItemProxies.filter(({ id }) => id !== mealItemProxyToDelete.id)]);
     setSelectedFoodProxy(null);
+  }
+
+  async function onRefresh() {
+    await dispatch(diaryState.asyncActions.lazyLoadMealItems());
+    const updatedMealItems = mealItemProxies.map(
+      (mealItem) => allMealItems.filter(({ id }) => id === mealItem.id)[0] || mealItem
+    );
+    setMealItemProxies(AppItemProxy.mapItemsToProxies(updatedMealItems, mealItemProxies));
   }
 
   return (
@@ -115,20 +127,21 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
         )}
       </View>
 
-      <AppScrollView>
-        <View style={(appStyles.section, appStyles.flex)}>
-          {!isCalculatorMode && (
-            <>
-              <Text style={appStyles.sectionTitle}>{t('diary.diaryMealEditor.mealItemsTitle')}</Text>
-              <AppButton
-                style={appStyles.sectionRow}
-                label={t(`diary.diaryMealEditor.buttons.${mealItemProxies.length ? 'editFood' : 'addFood'}`)}
-                backgroundColor={appTheme.colors.diaryPrimary}
-                onPress={() => setIsFoodSelectorDialogVisible(true)}
-              />
-            </>
-          )}
-          {!!mealItemProxies.length && (
+      {!!mealItemProxies.length && (
+        <AppScrollView onRefresh={onRefresh}>
+          <View style={(appStyles.section, appStyles.flex)}>
+            {!isCalculatorMode && (
+              <>
+                <Text style={appStyles.sectionTitle}>{t('diary.diaryMealEditor.mealItemsTitle')}</Text>
+                <AppButton
+                  style={appStyles.sectionRow}
+                  label={t(`diary.diaryMealEditor.buttons.${mealItemProxies.length ? 'editFood' : 'addFood'}`)}
+                  backgroundColor={appTheme.colors.diaryPrimary}
+                  onPress={() => setIsFoodSelectorDialogVisible(true)}
+                />
+              </>
+            )}
+
             <View style={appStyles.sectionRow}>
               <AppItemList
                 isIconsVisible
@@ -138,12 +151,11 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
                 items={mealItemProxies}
                 onSelect={(mealItemProxy) => setSelectedFoodProxy(mealItemProxy)}
               />
-
               <AppNutrientsPieChart nutrients={AppItemProxy.getNutrientsFromItemProxies(mealItemProxies)} />
             </View>
-          )}
-        </View>
-      </AppScrollView>
+          </View>
+        </AppScrollView>
+      )}
 
       {isFoodSelectorDialogVisible && (
         <DiaryFoodSelectorDialog
