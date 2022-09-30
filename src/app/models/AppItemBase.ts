@@ -28,6 +28,21 @@ export class AppItemBase {
     return value > 0;
   }
 
+  static isStringInName(searchString: string, name: string) {
+    return (
+      AppItemBase.normalizeString(name)
+        .toLowerCase()
+        .indexOf(AppItemBase.normalizeString(searchString).toLowerCase()) !== -1
+    );
+  }
+
+  static normalizeString(value: string): string {
+    return value
+      .toString()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
   serialize<T extends AppItem>(): T {
     return AppItemBase.serialize<T>(this as unknown as T);
   }
