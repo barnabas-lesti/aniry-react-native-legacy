@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
-import { appTheme } from '../theme';
+import { appStyles } from '../theme';
 import { AppDialog } from './AppDialog';
 import { AppButtonGroup } from './AppButtonGroup';
 
@@ -38,26 +38,23 @@ export function AppConfirmationDialog(props: AppConfirmationDialogProps) {
 
   return (
     <AppDialog onDismiss={onCancel}>
-      <Text style={styles.text}>{text || (textKey && t(textKey))}</Text>
-      <AppButtonGroup
-        buttons={[
-          {
-            label: t('app.labels.cancel'),
-            type: 'secondary',
-            onPress: onCancel,
-          },
-          {
-            label: t('app.labels.ok'),
-            onPress: onConfirmation,
-          },
-        ]}
-      />
+      <View style={appStyles.section}>
+        <Text style={appStyles.sectionRow}>{text || (textKey && t(textKey))}</Text>
+        <AppButtonGroup
+          style={appStyles.sectionRow}
+          buttons={[
+            {
+              label: t('app.labels.cancel'),
+              type: 'secondary',
+              onPress: onCancel,
+            },
+            {
+              label: t('app.labels.ok'),
+              onPress: onConfirmation,
+            },
+          ]}
+        />
+      </View>
     </AppDialog>
   );
 }
-
-const styles = StyleSheet.create({
-  text: {
-    marginBottom: appTheme.gaps.medium,
-  },
-});

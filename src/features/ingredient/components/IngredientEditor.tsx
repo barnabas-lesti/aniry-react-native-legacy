@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -11,7 +11,7 @@ import {
   AppScrollView,
   AppServingInput,
 } from 'app/components';
-import { appTheme } from 'app/theme';
+import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch } from 'app/store/hooks';
 import { appState } from 'app/state';
 import { Ingredient } from '../models';
@@ -120,94 +120,101 @@ export function IngredientEditor(props: IngredientEditorProps) {
   }
 
   return (
-    <View style={styles.container}>
-      <AppButtonGroup
-        style={styles.marginBottomMedium}
-        buttons={[
-          {
-            label: t('app.labels.discard'),
-            type: 'secondary',
-            textColor: appTheme.colors.ingredientPrimary,
-            onPress: onDiscard,
-          },
-          {
-            label: t(`app.labels.${isNewIngredient ? 'create' : 'update'}`),
-            backgroundColor: appTheme.colors.ingredientPrimary,
-            onPress: onSaveButtonPress,
-          },
-          {
-            label: t('app.labels.delete'),
-            type: 'danger',
-            isHidden: isNewIngredient,
-            onPress: () => setIsDeleteConfirmationVisible(true),
-          },
-        ]}
-      />
+    <>
+      <View style={appStyles.section}>
+        <AppButtonGroup
+          style={appStyles.sectionRow}
+          buttons={[
+            {
+              label: t('app.labels.discard'),
+              type: 'secondary',
+              textColor: appTheme.colors.ingredientPrimary,
+              onPress: onDiscard,
+            },
+            {
+              label: t(`app.labels.${isNewIngredient ? 'create' : 'update'}`),
+              backgroundColor: appTheme.colors.ingredientPrimary,
+              onPress: onSaveButtonPress,
+            },
+            {
+              label: t('app.labels.delete'),
+              type: 'danger',
+              isHidden: isNewIngredient,
+              onPress: () => setIsDeleteConfirmationVisible(true),
+            },
+          ]}
+        />
+      </View>
 
       <AppScrollView>
-        <AppTextInput
-          label={t('app.labels.name')}
-          style={styles.marginBottomSmall}
-          value={name}
-          isInvalid={showValidation && !nameIsValid}
-          onChangeValue={setName}
-        />
-
-        <AppServingInput
-          style={styles.marginBottomSmall}
-          value={servingValue}
-          unit={servingUnit}
-          unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
-          isInvalid={showValidation && !servingValueIsValid}
-          onChangeValue={setServingValue}
-          onChangeUnit={setServingUnit}
-        />
-
-        <AppNumberInput
-          label={t('app.labels.calories')}
-          postfix={t('app.units.kcal')}
-          style={styles.marginBottomSmall}
-          value={calories}
-          onChangeValue={setCalories}
-        />
-
-        <AppNumberInput
-          label={t('app.labels.carbs')}
-          postfix={t('app.units.g')}
-          style={styles.marginBottomSmall}
-          value={carbs}
-          onChangeValue={setCarbs}
-        />
-
-        <AppNumberInput
-          label={t('app.labels.protein')}
-          postfix={t('app.units.g')}
-          style={styles.marginBottomSmall}
-          value={protein}
-          onChangeValue={setProtein}
-        />
-
-        <AppNumberInput
-          label={t('app.labels.fat')}
-          postfix={t('app.units.g')}
-          value={fat}
-          onChangeValue={setFat}
-        />
-
-        {!!(carbs || protein || fat) && (
-          <AppNutrientsPieChart
-            nutrients={{ calories, carbs, protein, fat }}
-            style={[styles.marginTopMedium, styles.marginBottomSmall]}
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('ingredient.ingredientEditor.primaryDetailsTitle')}</Text>
+          <AppTextInput
+            label={t('app.labels.name')}
+            style={appStyles.sectionRow}
+            value={name}
+            isInvalid={showValidation && !nameIsValid}
+            onChangeValue={setName}
           />
-        )}
+          <AppServingInput
+            style={appStyles.sectionRow}
+            value={servingValue}
+            unit={servingUnit}
+            unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
+            isInvalid={showValidation && !servingValueIsValid}
+            onChangeValue={setServingValue}
+            onChangeUnit={setServingUnit}
+          />
+        </View>
 
-        <AppTextInput
-          label={t('app.labels.description')}
-          style={[styles.marginTopSmall, styles.marginBottomMedium]}
-          value={description}
-          onChangeValue={setDescription}
-          isMultiline
-        />
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('ingredient.ingredientEditor.nutrientsTitle')}</Text>
+          <AppNumberInput
+            label={t('app.labels.calories')}
+            postfix={t('app.units.kcal')}
+            style={appStyles.sectionRow}
+            value={calories}
+            onChangeValue={setCalories}
+          />
+          <AppNumberInput
+            label={t('app.labels.carbs')}
+            postfix={t('app.units.g')}
+            style={appStyles.sectionRow}
+            value={carbs}
+            onChangeValue={setCarbs}
+          />
+          <AppNumberInput
+            label={t('app.labels.protein')}
+            postfix={t('app.units.g')}
+            style={appStyles.sectionRow}
+            value={protein}
+            onChangeValue={setProtein}
+          />
+          <AppNumberInput
+            label={t('app.labels.fat')}
+            postfix={t('app.units.g')}
+            style={appStyles.sectionRow}
+            value={fat}
+            onChangeValue={setFat}
+          />
+          {!!(carbs || protein || fat) && (
+            <AppNutrientsPieChart
+              nutrients={{ calories, carbs, protein, fat }}
+              style={appStyles.sectionRow}
+            />
+          )}
+        </View>
+
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('ingredient.ingredientEditor.additionalDetailsTitle')}</Text>
+          <AppTextInput
+            style={appStyles.sectionRow}
+            label={t('app.labels.description')}
+            value={description}
+            onChangeValue={setDescription}
+            isMultiline
+          />
+        </View>
       </AppScrollView>
 
       {!isNewIngredient && isDeleteConfirmationVisible && (
@@ -217,24 +224,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
       )}
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  marginBottomSmall: {
-    marginBottom: appTheme.gaps.small,
-  },
-  marginBottomMedium: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  marginTopMedium: {
-    marginTop: appTheme.gaps.medium,
-  },
-  marginTopSmall: {
-    marginTop: appTheme.gaps.small,
-  },
-});

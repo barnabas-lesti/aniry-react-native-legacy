@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppStackScreenProps } from 'app/models';
 import { AppButton, AppItemList, AppScreen } from 'app/components';
-import { appTheme } from 'app/theme';
+import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { Recipe, RecipeStackParamList } from '../models';
 import { recipeState } from '../state';
@@ -36,27 +36,26 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
 
   return (
     <AppScreen>
-      <AppButton
-        style={styles.newRecipeButton}
-        backgroundColor={appTheme.colors.recipePrimary}
-        label={t('recipe.recipeHomeScreen.createRecipe')}
-        onPress={() => navigation.push('RecipeCreate')}
-      />
+      <View style={appStyles.section}>
+        <AppButton
+          style={appStyles.sectionRow}
+          backgroundColor={appTheme.colors.recipePrimary}
+          label={t('recipe.recipeHomeScreen.createRecipe')}
+          onPress={() => navigation.push('RecipeCreate')}
+        />
+      </View>
 
-      <AppItemList
-        items={recipes}
-        initialSearchString={recipeStateData.recipeHomeSearchString}
-        noItemsTextKey={'recipe.recipeHomeScreen.noRecipes'}
-        onSearch={onSearch}
-        onSelect={onSelect}
-        onRefresh={onRefresh}
-      />
+      <View style={[appStyles.section, appStyles.flex]}>
+        <AppItemList
+          style={appStyles.sectionRow}
+          items={recipes}
+          initialSearchString={recipeStateData.recipeHomeSearchString}
+          noItemsTextKey={'recipe.recipeHomeScreen.noRecipes'}
+          onSearch={onSearch}
+          onSelect={onSelect}
+          onRefresh={onRefresh}
+        />
+      </View>
     </AppScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  newRecipeButton: {
-    marginBottom: appTheme.gaps.medium,
-  },
-});

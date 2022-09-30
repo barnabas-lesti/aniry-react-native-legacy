@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppStackScreenProps } from 'app/models';
 import { AppButton, AppItemList, AppScreen } from 'app/components';
-import { appTheme } from 'app/theme';
+import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { Ingredient, IngredientStackParamList } from '../models';
 import { ingredientState } from '../state';
@@ -37,27 +37,26 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
 
   return (
     <AppScreen>
-      <AppButton
-        style={styles.newIngredientButton}
-        backgroundColor={appTheme.colors.ingredientPrimary}
-        label={t('ingredient.ingredientHomeScreen.createIngredient')}
-        onPress={() => navigation.push('IngredientCreate')}
-      />
+      <View style={appStyles.section}>
+        <AppButton
+          style={appStyles.sectionRow}
+          backgroundColor={appTheme.colors.ingredientPrimary}
+          label={t('ingredient.ingredientHomeScreen.createIngredient')}
+          onPress={() => navigation.push('IngredientCreate')}
+        />
+      </View>
 
-      <AppItemList
-        items={ingredients}
-        initialSearchString={ingredientStateData.ingredientHomeSearchString}
-        noItemsTextKey={'ingredient.ingredientHomeScreen.noIngredients'}
-        onSearch={onSearch}
-        onSelect={onSelect}
-        onRefresh={onRefresh}
-      />
+      <View style={[appStyles.section, appStyles.flex]}>
+        <AppItemList
+          style={appStyles.sectionRow}
+          items={ingredients}
+          initialSearchString={ingredientStateData.ingredientHomeSearchString}
+          noItemsTextKey={'ingredient.ingredientHomeScreen.noIngredients'}
+          onSearch={onSearch}
+          onSelect={onSelect}
+          onRefresh={onRefresh}
+        />
+      </View>
     </AppScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  newIngredientButton: {
-    marginBottom: appTheme.gaps.medium,
-  },
-});

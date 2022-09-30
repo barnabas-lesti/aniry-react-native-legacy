@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppButtonGroup, AppDialog, AppItemList } from 'app/components';
-import { appTheme } from 'app/theme';
+import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { Ingredient } from '../models';
 import { ingredientState } from '../state';
@@ -71,44 +71,40 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
 
   return (
     <AppDialog
+      large
       onDismiss={onDiscard}
-      contentStyle={styles.dialogContent}
     >
-      <AppButtonGroup
-        style={styles.buttonGroup}
-        buttons={[
-          {
-            label: t('app.labels.discard'),
-            type: 'secondary',
-            textColor: appTheme.colors.ingredientPrimary,
-            onPress: onDiscard,
-          },
-          {
-            label: t('app.labels.save'),
-            backgroundColor: appTheme.colors.ingredientPrimary,
-            onPress: () => onSave(localSelectedIngredients),
-          },
-        ]}
-      />
+      <View style={appStyles.section}>
+        <AppButtonGroup
+          style={appStyles.sectionRow}
+          buttons={[
+            {
+              label: t('app.labels.discard'),
+              type: 'secondary',
+              textColor: appTheme.colors.ingredientPrimary,
+              onPress: onDiscard,
+            },
+            {
+              label: t('app.labels.save'),
+              backgroundColor: appTheme.colors.ingredientPrimary,
+              onPress: () => onSave(localSelectedIngredients),
+            },
+          ]}
+        />
+      </View>
 
-      <AppItemList
-        items={ingredients}
-        initialSearchString={ingredientStateData.ingredientSelectorDialogSearchString}
-        noItemsTextKey={'ingredient.ingredientSelectorDialog.noIngredients'}
-        selectedItems={localSelectedIngredients}
-        onSearch={onSearch}
-        onSelect={onSelectIngredient}
-        onRefresh={onRefresh}
-      />
+      <View style={[appStyles.section, appStyles.flex]}>
+        <AppItemList
+          style={appStyles.sectionRow}
+          items={ingredients}
+          initialSearchString={ingredientStateData.ingredientSelectorDialogSearchString}
+          noItemsTextKey={'ingredient.ingredientSelectorDialog.noIngredients'}
+          selectedItems={localSelectedIngredients}
+          onSearch={onSearch}
+          onSelect={onSelectIngredient}
+          onRefresh={onRefresh}
+        />
+      </View>
     </AppDialog>
   );
 }
-
-const styles = StyleSheet.create({
-  buttonGroup: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  dialogContent: {
-    height: '95%',
-  },
-});
