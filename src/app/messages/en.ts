@@ -38,8 +38,8 @@ export const en = {
   'app.appSettingsScreen.data.restoreConfirmation': 'Are you sure you want to overwrite all your data?',
   'app.appSettingsScreen.data.restoreSuccessful': 'Successfully restored your data!',
 
-  // Home
-  'home.homeScreen.title': 'Home',
+  // Diary
+  'diary.diaryHomeScreen.title': 'Diary',
 
   // Ingredient
   'ingredient.ingredientHomeScreen.title': 'Ingredients',

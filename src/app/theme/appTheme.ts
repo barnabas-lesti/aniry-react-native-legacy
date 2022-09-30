@@ -7,6 +7,7 @@ export const appTheme = {
   version: 3,
   colors: {
     ...MD3LightTheme.colors,
+    diaryPrimary: '#284d8a',
     ingredientPrimary: '#568f4c',
     recipePrimary: '#614c23',
     settingsPrimary: '#2596be',
@@ -19,7 +20,7 @@ export const appTheme = {
     },
   },
   icons: {
-    home: 'home',
+    diary: 'chart-bar',
     ingredient: 'food-apple',
     recipe: 'food-variant',
     settings: 'cog',

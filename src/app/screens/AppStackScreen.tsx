@@ -3,8 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 
-import { IngredientStackScreen } from 'features/ingredient';
-import { RecipeStackScreen } from 'features/recipe';
+import { DiaryStackScreen } from 'features/diary/screens';
+import { IngredientStackScreen } from 'features/ingredient/screens';
+import { RecipeStackScreen } from 'features/recipe/screens';
 import { appTheme } from '../theme';
 import { AppStackParamList, AppTabBarIconProps, AppScreenOptions } from '../models';
 import { AppIcon } from '../components';
@@ -22,6 +23,14 @@ const tabBarIconFactory =
     );
 
 const screens = [
+  {
+    name: 'Diary',
+    titleKey: 'diary.diaryHomeScreen.title',
+    activeColor: appTheme.colors.diaryPrimary,
+    headerShown: false,
+    Component: DiaryStackScreen,
+    tabBarIcon: tabBarIconFactory(appTheme.icons.diary),
+  },
   {
     name: 'Ingredient',
     titleKey: 'ingredient.ingredientHomeScreen.title',
