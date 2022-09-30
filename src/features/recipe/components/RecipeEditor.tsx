@@ -1,40 +1,31 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
+import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
   AppTextInput,
-  AppNumberInput,
-  AppSelectInput,
   AppConfirmationDialog,
   AppButtonGroup,
   AppButton,
   AppItemList,
   AppScrollView,
   AppNutrientsPieChart,
+  AppItemProxyEditorDialog,
+  AppServingInput,
 } from 'app/components';
-import { appTheme } from 'app/theme';
-import { appServingUnitOptions } from 'app/models';
-import { appCommonService } from 'app/services';
-import {
-  Ingredient,
-  IngredientProxy,
-  IngredientSelectorDialog,
-  IngredientProxyEditorDialog,
-} from 'features/ingredient';
+import { appStyles, appTheme } from 'app/theme';
+import { AppItemProxy } from 'app/models';
+import { useAppDispatch, useAppSelector } from 'app/store/hooks';
+import { appState } from 'app/state';
+import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
 import { Recipe } from '../models';
-import { recipeService } from '../services';
+import { recipeState } from '../state';
 
 interface RecipeEditorProps {
   /**
    * The recipe object.
    */
   recipe?: Recipe;
-
-  /**
-   * Custom styles.
-   */
-  style?: StyleProp<ViewStyle>;
 
   /**
    * On discard event handler.
@@ -56,21 +47,24 @@ interface RecipeEditorProps {
  * Recipe editor component.
  */
 export function RecipeEditor(props: RecipeEditorProps) {
-  const { recipe = new Recipe(), style, onDiscard, onAfterSave, onAfterDelete } = props;
+  const { recipe = new Recipe(), onDiscard, onAfterSave, onAfterDelete } = props;
   const isNewRecipe = !recipe.id;
+
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+  const { recipes } = useAppSelector((state) => state.recipe);
 
   const [name, setName] = useState(recipe.name);
   const [servingValue, setServingValue] = useState(recipe.serving.value);
   const [servingUnit, setServingUnit] = useState(recipe.serving.unit);
+  const [description, setDescription] = useState(recipe.description || '');
   const [ingredientProxies, setIngredientProxies] = useState(recipe.ingredientProxies || []);
 
   const [showValidation, setShowValidation] = useState(false);
   const [nameIsValid, setNameIsValid] = useState(Recipe.validateName(name));
   const [servingValueIsValid, setServingValueIsValid] = useState(Recipe.validateServingValue(recipe.serving.value));
-  const [servingUnitIsValid, setServingUnitIsValid] = useState(Recipe.validateServingUnit(recipe.serving.unit));
 
-  const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<IngredientProxy | null>(null);
+  const [selectedIngredientProxy, setSelectedIngredientProxy] = useState<AppItemProxy<Ingredient> | null>(null);
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
   const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
@@ -83,50 +77,53 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setServingValueIsValid(Recipe.validateServingValue(servingValue));
   }, [servingValue]);
 
-  useEffect(() => {
-    setServingUnitIsValid(Recipe.validateServingUnit(servingUnit));
-  }, [servingUnit]);
-
   async function onSaveButtonPress() {
     if (validateForm()) {
-      appCommonService.startLoading();
-      await recipeService.saveOne(
-        new Recipe({
-          id: recipe.id,
-          name,
-          serving: {
+      const newRecipe = new Recipe({
+        id: recipe.id,
+        name,
+        description,
+        servings: [
+          {
             value: servingValue,
             unit: servingUnit,
           },
-          ingredientProxies,
-        })
-      );
-      appCommonService.stopLoading();
-      appCommonService.pushNotificationKey(`recipe.notifications.${isNewRecipe ? 'created' : 'updated'}`);
+        ],
+        ingredientProxies,
+      });
+
+      if (isNewRecipe) {
+        await dispatch(recipeState.asyncActions.createRecipe(newRecipe));
+        dispatch(appState.actions.showNotification({ textKey: 'recipe.notifications.created' }));
+      } else {
+        await dispatch(recipeState.asyncActions.updateRecipe(newRecipe));
+        dispatch(appState.actions.showNotification({ textKey: 'recipe.notifications.updated' }));
+      }
+
       onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    appCommonService.startLoading();
-    await recipeService.deleteOne(recipe);
-    appCommonService.stopLoading();
-    appCommonService.pushNotificationKey('recipe.notifications.deleted');
+
+    await dispatch(recipeState.asyncActions.deleteRecipe(recipe));
+    dispatch(appState.actions.showNotification({ textKey: 'recipe.notifications.deleted' }));
+
     onAfterDelete && onAfterDelete();
   }
 
   function validateForm() {
     !showValidation && setShowValidation(true);
-    return nameIsValid && servingValueIsValid && servingUnitIsValid;
+    return nameIsValid && servingValueIsValid;
   }
 
   function onEditIngredientsSave(ingredients: Ingredient[]) {
-    setIngredientProxies(IngredientProxy.mapIngredientsToIngredientProxies(ingredients, ingredientProxies));
+    setIngredientProxies(AppItemProxy.mapItemsToProxies(ingredients, ingredientProxies));
     setIsIngredientSelectorDialogVisible(false);
   }
 
-  function onEditIngredientProxySave(updatedIngredientProxy: IngredientProxy) {
+  function onEditIngredientProxySave(updatedIngredientProxy: AppItemProxy<Ingredient>) {
     setIngredientProxies([
       ...ingredientProxies.map((ingredientProxy) =>
         ingredientProxy.id === updatedIngredientProxy.id ? updatedIngredientProxy : ingredientProxy
@@ -135,107 +132,117 @@ export function RecipeEditor(props: RecipeEditorProps) {
     setSelectedIngredientProxy(null);
   }
 
-  function onEditIngredientProxyDelete(ingredientProxyToDelete: IngredientProxy) {
+  function onEditIngredientProxyDelete(ingredientProxyToDelete: AppItemProxy<Ingredient>) {
     setIngredientProxies([
       ...ingredientProxies.filter((ingredientProxy) => ingredientProxy.id !== ingredientProxyToDelete.id),
     ]);
     setSelectedIngredientProxy(null);
   }
 
-  async function refreshRecipe() {
+  async function onRefresh() {
     if (!isNewRecipe) {
-      appCommonService.startLoading();
-      const refreshedRecipe = (await recipeService.getOneById(recipe.id)) || recipe;
-      appCommonService.stopLoading();
-
-      setName(refreshedRecipe.name);
-      setServingValue(refreshedRecipe.serving.value);
-      setServingUnit(refreshedRecipe.serving.unit);
-      setIngredientProxies(refreshedRecipe.ingredientProxies || []);
+      await dispatch(recipeState.asyncActions.loadRecipes());
+      const refreshedRecipe = new Recipe((recipes || []).filter((recipeInStore) => recipeInStore.id === recipe.id)[0]);
+      setIngredientProxies(refreshedRecipe.ingredientProxies);
     }
   }
 
   return (
-    <View style={[styles.container, style]}>
-      <AppButtonGroup
-        style={styles.buttonGroup}
-        buttons={[
-          {
-            label: t('app.labels.discard'),
-            type: 'secondary',
-            textColor: appTheme.colors.recipePrimary,
-            onPress: onDiscard,
-          },
-          {
-            label: t(`app.labels.${isNewRecipe ? 'create' : 'update'}`),
-            backgroundColor: appTheme.colors.recipePrimary,
-            onPress: onSaveButtonPress,
-          },
-          {
-            label: t('app.labels.delete'),
-            type: 'danger',
-            isHidden: isNewRecipe,
-            onPress: () => setIsDeleteConfirmationVisible(true),
-          },
-        ]}
-      />
-
-      <AppScrollView onRefresh={refreshRecipe}>
-        <AppTextInput
-          label={t('app.labels.name')}
-          style={styles.row}
-          value={name}
-          isInvalid={showValidation && !nameIsValid}
-          onChangeValue={setName}
+    <>
+      <View style={appStyles.section}>
+        <AppButtonGroup
+          style={appStyles.sectionRow}
+          buttons={[
+            {
+              label: t('app.labels.discard'),
+              type: 'secondary',
+              textColor: appTheme.colors.recipePrimary,
+              onPress: onDiscard,
+            },
+            {
+              label: t(`app.labels.${isNewRecipe ? 'create' : 'update'}`),
+              backgroundColor: appTheme.colors.recipePrimary,
+              onPress: onSaveButtonPress,
+            },
+            {
+              label: t('app.labels.delete'),
+              type: 'danger',
+              isHidden: isNewRecipe,
+              onPress: () => setIsDeleteConfirmationVisible(true),
+            },
+          ]}
         />
+      </View>
 
-        <View style={[styles.row, styles.servingContainer]}>
-          <AppNumberInput
-            style={styles.servingValue}
-            label={t('app.labels.serving')}
+      <AppScrollView onRefresh={onRefresh}>
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.primaryDetailsTitle')}</Text>
+          <AppTextInput
+            label={t('app.labels.name')}
+            style={appStyles.sectionRow}
+            value={name}
+            isInvalid={showValidation && !nameIsValid}
+            onChangeValue={setName}
+          />
+          <AppServingInput
+            style={appStyles.sectionRow}
             value={servingValue}
+            unit={servingUnit}
+            unitOptions={Recipe.AVAILABLE_SERVING_UNITS}
             isInvalid={showValidation && !servingValueIsValid}
             onChangeValue={setServingValue}
-          />
-          <AppSelectInput
-            style={styles.servingUnit}
-            options={appServingUnitOptions}
-            value={servingUnit}
-            isInvalid={showValidation && !servingUnitIsValid}
-            onChangeValue={setServingUnit}
+            onChangeUnit={setServingUnit}
           />
         </View>
 
-        <AppButton
-          label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
-          backgroundColor={appTheme.colors.ingredientPrimary}
-          onPress={() => setIsIngredientSelectorDialogVisible(true)}
-        />
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.ingredientsTitle')}</Text>
+          <AppButton
+            style={appStyles.sectionRow}
+            label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
+            backgroundColor={appTheme.colors.ingredientPrimary}
+            onPress={() => setIsIngredientSelectorDialogVisible(true)}
+          />
+          {!!ingredientProxies.length && (
+            <>
+              <AppItemList
+                isScrollDisabled
+                style={appStyles.sectionRow}
+                isCaloriesSummaryVisible
+                items={ingredientProxies}
+                onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+              />
 
-        <AppItemList
-          isCaloriesSummaryVisible
-          style={styles.ingredientProxiesList}
-          items={ingredientProxies}
-          onSelectItem={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
-        />
+              <AppNutrientsPieChart nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)} />
+            </>
+          )}
+        </View>
 
-        <AppNutrientsPieChart
-          style={styles.chart}
-          nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)}
-        />
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.additionalDetailsTitle')}</Text>
+          <AppTextInput
+            style={appStyles.sectionRow}
+            label={t('app.labels.description')}
+            value={description}
+            onChangeValue={setDescription}
+            isMultiline
+          />
+        </View>
       </AppScrollView>
 
       {isIngredientSelectorDialogVisible && (
         <IngredientSelectorDialog
-          selectedIngredients={ingredientProxies.map(({ ingredient }) => ingredient)}
+          selectedIngredients={AppItemProxy.mapProxiesToItems(ingredientProxies)}
           onDiscard={() => setIsIngredientSelectorDialogVisible(false)}
           onSave={onEditIngredientsSave}
         />
       )}
 
       {selectedIngredientProxy && (
-        <IngredientProxyEditorDialog
-          ingredientProxy={selectedIngredientProxy}
+        <AppItemProxyEditorDialog
+          itemProxy={selectedIngredientProxy}
+          primaryColor={appTheme.colors.ingredientPrimary}
+          text={t('recipe.recipeEditor.buttons.editServingsText')}
           onDiscard={() => setSelectedIngredientProxy(null)}
           onSave={onEditIngredientProxySave}
           onDelete={onEditIngredientProxyDelete}
@@ -249,36 +256,6 @@ export function RecipeEditor(props: RecipeEditorProps) {
           onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
       )}
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  row: {
-    marginBottom: appTheme.gaps.small,
-  },
-  buttonGroup: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  servingContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    marginBottom: appTheme.gaps.medium,
-  },
-  servingValue: {
-    marginRight: appTheme.gaps.small,
-    flexGrow: 1,
-  },
-  servingUnit: {
-    minWidth: 70,
-  },
-  ingredientProxiesList: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  chart: {
-    marginBottom: appTheme.gaps.medium,
-  },
-});

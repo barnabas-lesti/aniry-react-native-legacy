@@ -1,32 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
+import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
   AppTextInput,
   AppNumberInput,
-  AppSelectInput,
   AppConfirmationDialog,
   AppButtonGroup,
   AppNutrientsPieChart,
   AppScrollView,
+  AppServingInput,
 } from 'app/components';
-import { appTheme } from 'app/theme';
-import { appServingUnitOptions } from 'app/models';
-import { appCommonService } from 'app/services';
+import { appStyles, appTheme } from 'app/theme';
+import { useAppDispatch } from 'app/store/hooks';
+import { appState } from 'app/state';
 import { Ingredient } from '../models';
-import { ingredientService } from '../services';
+import { ingredientState } from '../state';
 
 interface IngredientEditorProps {
   /**
-   * The ingredient object.
+   * The ingredient.
    */
   ingredient?: Ingredient;
-
-  /**
-   * Custom styles.
-   */
-  style?: StyleProp<ViewStyle>;
 
   /**
    * On discard event handler.
@@ -48,11 +43,12 @@ interface IngredientEditorProps {
  * Ingredient editor component.
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient = new Ingredient(), style, onDiscard, onAfterSave, onAfterDelete } = props;
+  const { ingredient = new Ingredient(), onDiscard, onAfterSave, onAfterDelete } = props;
   const { serving, nutrients } = ingredient;
   const isNewIngredient = !ingredient.id;
 
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
 
   const [name, setName] = useState(ingredient.name);
   const [servingValue, setServingValue] = useState(serving.value);
@@ -61,11 +57,11 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [carbs, setCarbs] = useState(nutrients.carbs);
   const [protein, setProtein] = useState(nutrients.protein);
   const [fat, setFat] = useState(nutrients.fat);
+  const [description, setDescription] = useState(ingredient.description || '');
 
   const [showValidation, setShowValidation] = useState(false);
   const [nameIsValid, setNameIsValid] = useState(Ingredient.validateName(name));
   const [servingValueIsValid, setServingValueIsValid] = useState(Ingredient.validateServingValue(serving.value));
-  const [servingUnitIsValid, setServingUnitIsValid] = useState(Ingredient.validateServingUnit(serving.unit));
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
 
@@ -77,138 +73,148 @@ export function IngredientEditor(props: IngredientEditorProps) {
     setServingValueIsValid(Ingredient.validateServingValue(servingValue));
   }, [servingValue]);
 
-  useEffect(() => {
-    setServingUnitIsValid(Ingredient.validateServingUnit(servingUnit));
-  }, [servingUnit]);
-
   async function onSaveButtonPress() {
     if (validateForm()) {
-      appCommonService.startLoading();
-      await ingredientService.saveOne(
-        new Ingredient({
-          id: ingredient.id,
-          name,
-          serving: {
+      const newIngredient = new Ingredient({
+        id: ingredient.id,
+        name,
+        description,
+        servings: [
+          {
             value: servingValue,
             unit: servingUnit,
           },
-          nutrients: {
-            calories,
-            carbs,
-            protein,
-            fat,
-          },
-        })
-      );
-      appCommonService.stopLoading();
-      appCommonService.pushNotificationKey(`ingredient.notifications.${isNewIngredient ? 'created' : 'updated'}`);
+        ],
+        nutrients: {
+          calories,
+          carbs,
+          protein,
+          fat,
+        },
+      });
+
+      if (isNewIngredient) {
+        await dispatch(ingredientState.asyncActions.createIngredient(newIngredient));
+        dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.created' }));
+      } else {
+        await dispatch(ingredientState.asyncActions.updateIngredient(newIngredient));
+        dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.updated' }));
+      }
+
       onAfterSave();
     }
   }
 
   async function onDeleteConfirmation() {
     setIsDeleteConfirmationVisible(false);
-    appCommonService.startLoading();
-    await ingredientService.deleteOne(ingredient);
-    appCommonService.stopLoading();
-    appCommonService.pushNotificationKey('ingredient.notifications.deleted');
+
+    await dispatch(ingredientState.asyncActions.deleteIngredient(ingredient));
+    dispatch(appState.actions.showNotification({ textKey: 'ingredient.notifications.deleted' }));
+
     onAfterDelete && onAfterDelete();
   }
 
   function validateForm() {
     !showValidation && setShowValidation(true);
-    return nameIsValid && servingValueIsValid && servingUnitIsValid;
+    return nameIsValid && servingValueIsValid;
   }
 
   return (
-    <View style={[styles.container, style]}>
-      <AppButtonGroup
-        style={styles.buttonGroup}
-        buttons={[
-          {
-            label: t('app.labels.discard'),
-            type: 'secondary',
-            textColor: appTheme.colors.ingredientPrimary,
-            onPress: onDiscard,
-          },
-          {
-            label: t(`app.labels.${isNewIngredient ? 'create' : 'update'}`),
-            backgroundColor: appTheme.colors.ingredientPrimary,
-            onPress: onSaveButtonPress,
-          },
-          {
-            label: t('app.labels.delete'),
-            type: 'danger',
-            isHidden: isNewIngredient,
-            onPress: () => setIsDeleteConfirmationVisible(true),
-          },
-        ]}
-      />
+    <>
+      <View style={appStyles.section}>
+        <AppButtonGroup
+          style={appStyles.sectionRow}
+          buttons={[
+            {
+              label: t('app.labels.discard'),
+              type: 'secondary',
+              textColor: appTheme.colors.ingredientPrimary,
+              onPress: onDiscard,
+            },
+            {
+              label: t(`app.labels.${isNewIngredient ? 'create' : 'update'}`),
+              backgroundColor: appTheme.colors.ingredientPrimary,
+              onPress: onSaveButtonPress,
+            },
+            {
+              label: t('app.labels.delete'),
+              type: 'danger',
+              isHidden: isNewIngredient,
+              onPress: () => setIsDeleteConfirmationVisible(true),
+            },
+          ]}
+        />
+      </View>
 
       <AppScrollView>
-        <View style={styles.form}>
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('ingredient.ingredientEditor.primaryDetailsTitle')}</Text>
           <AppTextInput
             label={t('app.labels.name')}
-            style={styles.inputs}
+            style={appStyles.sectionRow}
             value={name}
             isInvalid={showValidation && !nameIsValid}
             onChangeValue={setName}
           />
-
-          <View style={[styles.inputs, styles.servingContainer]}>
-            <AppNumberInput
-              style={styles.servingValue}
-              label={t('app.labels.serving')}
-              value={servingValue}
-              isInvalid={showValidation && !servingValueIsValid}
-              onChangeValue={setServingValue}
-            />
-            <AppSelectInput
-              style={styles.servingUnit}
-              options={appServingUnitOptions}
-              value={servingUnit}
-              isInvalid={showValidation && !servingUnitIsValid}
-              onChangeValue={setServingUnit}
-            />
-          </View>
-
-          <AppNumberInput
-            label={t('app.labels.calories')}
-            postfix={t('app.units.kcal')}
-            style={styles.inputs}
-            value={calories}
-            onChangeValue={setCalories}
-          />
-
-          <AppNumberInput
-            label={t('app.labels.carbs')}
-            postfix={t('app.units.g')}
-            style={styles.inputs}
-            value={carbs}
-            onChangeValue={setCarbs}
-          />
-
-          <AppNumberInput
-            label={t('app.labels.protein')}
-            postfix={t('app.units.g')}
-            style={styles.inputs}
-            value={protein}
-            onChangeValue={setProtein}
-          />
-
-          <AppNumberInput
-            label={t('app.labels.fat')}
-            postfix={t('app.units.g')}
-            style={styles.inputs}
-            value={fat}
-            onChangeValue={setFat}
+          <AppServingInput
+            style={appStyles.sectionRow}
+            value={servingValue}
+            unit={servingUnit}
+            unitOptions={Ingredient.PRIMARY_SERVING_UNITS}
+            isInvalid={showValidation && !servingValueIsValid}
+            onChangeValue={setServingValue}
+            onChangeUnit={setServingUnit}
           />
         </View>
 
-        <AppNutrientsPieChart
-          nutrients={{ calories, carbs, protein, fat }}
-          style={styles.chart}
-        />
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('ingredient.ingredientEditor.nutrientsTitle')}</Text>
+          <AppNumberInput
+            label={t('app.labels.calories')}
+            postfix={t('app.units.kcal')}
+            style={appStyles.sectionRow}
+            value={calories}
+            onChangeValue={setCalories}
+          />
+          <AppNumberInput
+            label={t('app.labels.carbs')}
+            postfix={t('app.units.g')}
+            style={appStyles.sectionRow}
+            value={carbs}
+            onChangeValue={setCarbs}
+          />
+          <AppNumberInput
+            label={t('app.labels.protein')}
+            postfix={t('app.units.g')}
+            style={appStyles.sectionRow}
+            value={protein}
+            onChangeValue={setProtein}
+          />
+          <AppNumberInput
+            label={t('app.labels.fat')}
+            postfix={t('app.units.g')}
+            style={appStyles.sectionRow}
+            value={fat}
+            onChangeValue={setFat}
+          />
+          {!!(carbs || protein || fat) && (
+            <AppNutrientsPieChart
+              nutrients={{ calories, carbs, protein, fat }}
+              style={appStyles.sectionRow}
+            />
+          )}
+        </View>
+
+        <View style={appStyles.section}>
+          <Text style={appStyles.sectionTitle}>{t('ingredient.ingredientEditor.additionalDetailsTitle')}</Text>
+          <AppTextInput
+            style={appStyles.sectionRow}
+            label={t('app.labels.description')}
+            value={description}
+            onChangeValue={setDescription}
+            isMultiline
+          />
+        </View>
       </AppScrollView>
 
       {!isNewIngredient && isDeleteConfirmationVisible && (
@@ -218,35 +224,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
       )}
-    </View>
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  buttonGroup: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  form: {
-    marginBottom: appTheme.gaps.small,
-  },
-  inputs: {
-    marginBottom: appTheme.gaps.small,
-  },
-  chart: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  servingContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
-  servingValue: {
-    marginRight: appTheme.gaps.small,
-    flexGrow: 1,
-  },
-  servingUnit: {
-    minWidth: 70,
-  },
-});

@@ -22,3 +22,5 @@ npm run lint
 - https://www.okler.net/previews/porto-admin/4.0.0/forms-basic.html
 - https://github.com/react-native-async-storage/async-storage
 - https://callstack.github.io/react-native-paper/index.html
+- https://redux-toolkit.js.org
+- https://github.com/reduxjs/reselect

@@ -1,10 +1,13 @@
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
+import { Provider as StoreProvider } from 'react-redux';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { AppNotifications } from './components';
 import { AppStackScreen } from './screens';
 import { appLocalizationService } from './services';
 import { appTheme } from './theme';
+import { appStore } from './store';
 
 appLocalizationService.createInstance();
 
@@ -13,9 +16,13 @@ appLocalizationService.createInstance();
  */
 export function App() {
   return (
-    <PaperProvider theme={appTheme}>
-      <AppStackScreen />
-      <AppNotifications />
-    </PaperProvider>
+    <StoreProvider store={appStore}>
+      <SafeAreaProvider>
+        <PaperProvider theme={appTheme}>
+          <AppStackScreen />
+          <AppNotifications />
+        </PaperProvider>
+      </SafeAreaProvider>
+    </StoreProvider>
   );
 }

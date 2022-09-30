@@ -1,27 +1,37 @@
-import { AppItemNutrients, AppItemServing, AppItem, appItemServingUnits } from 'app/models';
+import { AppNutrients, AppServing, AppItem, AppServingUnit, AppItemBase } from 'app/models';
 
 interface IngredientProps {
   id: string;
   name: string;
-  serving: AppItemServing;
-  nutrients: AppItemNutrients;
+  nutrients: AppNutrients;
+  servings: AppServing[];
+  description?: string;
 }
 
-export class Ingredient implements AppItem {
-  public id: string;
-  public name: string;
-  public serving: AppItemServing;
-  public nutrients: AppItemNutrients;
+export class Ingredient extends AppItemBase implements AppItem {
+  static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'g';
+  static readonly DEFAULT_SERVING_VALUE: number = 100;
+  static readonly PRIMARY_SERVING_UNITS: AppServingUnit[] = ['g', 'ml'];
+
+  id: string;
+  name: string;
+  nutrients: AppNutrients;
+  servings: AppServing[];
+  description?: string;
 
   constructor(props?: IngredientProps) {
-    const { serving, nutrients } = props || {};
+    super();
+
+    const { servings, nutrients, description } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
-    this.serving = {
-      unit: serving?.unit || 'g',
-      value: serving?.value || 0,
-    };
+    this.description = description;
+
+    this.servings = servings || [
+      new AppServing({ unit: Ingredient.DEFAULT_SERVING_UNIT, value: Ingredient.DEFAULT_SERVING_VALUE }),
+    ];
+
     this.nutrients = {
       calories: nutrients?.calories || 0,
       carbs: nutrients?.carbs || 0,
@@ -30,30 +40,7 @@ export class Ingredient implements AppItem {
     };
   }
 
-  /**
-   * Sorts the ingredients by their name property.
-   * @param ingredients Ingredients to sort.
-   * @returns Sorted ingredients array.
-   */
-  static sortIngredientsByName(ingredients: Ingredient[]) {
-    return [
-      ...ingredients.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }),
-    ];
-  }
-
-  static validateName(value: string) {
-    return !!value;
-  }
-
-  static validateServingValue(value: number) {
-    return value > 0;
-  }
-
-  static validateServingUnit(value: string) {
-    return !!appItemServingUnits.filter((unit) => unit === value)[0];
+  get serving() {
+    return this.servings[0];
   }
 }

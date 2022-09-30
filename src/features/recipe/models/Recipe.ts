@@ -1,66 +1,53 @@
-import { AppItem, AppItemNutrients, AppItemServing, appItemServingUnits } from 'app/models';
-import { IngredientProxy } from 'features/ingredient/models';
+import { AppItem, AppItemBase, AppItemProxy, AppNutrients, AppServing, AppServingUnit } from 'app/models';
+import { Ingredient } from 'features/ingredient/models';
 
 interface RecipeProps {
   id: string;
   name: string;
-  serving: AppItemServing;
-  ingredientProxies: IngredientProxy[];
+  servings: AppServing[];
+  ingredientProxies: AppItemProxy<Ingredient>[];
+  description?: string;
 }
 
-export class Recipe implements AppItem {
-  public id: string;
-  public name: string;
-  public serving: AppItemServing;
-  public ingredientProxies: IngredientProxy[];
+export class Recipe extends AppItemBase implements AppItem {
+  static readonly DEFAULT_SERVING_UNIT: AppServingUnit = 'plate';
+  static readonly DEFAULT_SERVING_VALUE: number = 1;
+  static readonly AVAILABLE_SERVING_UNITS: AppServingUnit[] = ['plate', 'piece', 'g', 'ml'];
+
+  id: string;
+  name: string;
+  servings: AppServing[];
+  ingredientProxies: AppItemProxy<Ingredient>[];
+  description?: string;
 
   constructor(props?: RecipeProps) {
-    const { serving, ingredientProxies } = props || {};
+    super();
+
+    const { servings, ingredientProxies, description } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
-    this.serving = {
-      unit: serving?.unit || 'plate',
-      value: serving?.value || 0,
-    };
+    this.description = description;
+
+    this.servings = servings || [
+      new AppServing({ unit: Recipe.DEFAULT_SERVING_UNIT, value: Recipe.DEFAULT_SERVING_VALUE }),
+    ];
+
     this.ingredientProxies =
       ingredientProxies?.map(
-        ({ ingredient, serving: { value: servingValue } }) => new IngredientProxy({ ingredient, servingValue })
+        ({ item, serving }) => new AppItemProxy<Ingredient>({ item: new Ingredient(item), serving })
       ) || [];
   }
 
-  get nutrients(): AppItemNutrients {
+  get serving() {
+    return this.servings[0];
+  }
+
+  get nutrients(): AppNutrients {
     return Recipe.getNutrientsFromIngredientProxies(this.ingredientProxies);
   }
 
-  /**
-   * Sorts the recipes by their name property.
-   * @param recipes Recipes to sort.
-   * @returns Sorted recipes array.
-   */
-  static sortRecipesByName(recipes: Array<Recipe>) {
-    return [
-      ...recipes.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }),
-    ];
-  }
-
-  static validateName(value: string) {
-    return !!value;
-  }
-
-  static validateServingValue(value: number) {
-    return value > 0;
-  }
-
-  static validateServingUnit(value: string) {
-    return !!appItemServingUnits.filter((unit) => unit === value)[0];
-  }
-
-  static getNutrientsFromIngredientProxies(ingredientProxies: IngredientProxy[]): AppItemNutrients {
+  static getNutrientsFromIngredientProxies(ingredientProxies: AppItemProxy<Ingredient>[]): AppNutrients {
     return ingredientProxies.reduce(
       (nutrients, ingredientProxy) => ({
         calories: nutrients.calories + ingredientProxy.nutrients.calories,
@@ -75,5 +62,29 @@ export class Recipe implements AppItem {
         fat: 0,
       }
     );
+  }
+
+  static isIngredientInRecipe(recipe: Recipe, ingredient: Ingredient): boolean {
+    return !!recipe.ingredientProxies.filter((ingredientProxy) => ingredientProxy.item.id === ingredient.id).length;
+  }
+
+  static updateIngredientInRecipe(recipe: Recipe, ingredient: Ingredient): Recipe {
+    const recipeInstance = recipe instanceof Recipe ? recipe : new Recipe(recipe);
+    const updatedIngredientProxies = recipeInstance.ingredientProxies.map((ingredientProxy) => {
+      if (ingredientProxy.id === ingredient.id) {
+        return new AppItemProxy<Ingredient>({
+          item: ingredient,
+          serving: { unit: ingredient.serving.unit, value: ingredientProxy.serving.value },
+        });
+      } else {
+        return ingredientProxy;
+      }
+    });
+    return new Recipe({ ...recipeInstance, ingredientProxies: updatedIngredientProxies });
+  }
+
+  static deleteIngredientFromRecipe(recipe: Recipe, ingredient: Ingredient): Recipe {
+    const updatedIngredientProxies = recipe.ingredientProxies.filter(({ item }) => item.id !== ingredient.id);
+    return new Recipe({ ...recipe, ingredientProxies: updatedIngredientProxies });
   }
 }

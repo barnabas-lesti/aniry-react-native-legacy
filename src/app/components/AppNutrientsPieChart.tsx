@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleProp, StyleSheet, ViewStyle, View, Text, useWindowDimensions } from 'react-native';
 import { VictoryPie } from 'victory-native';
 
-import { AppItemNutrients } from '../models';
+import { AppNutrients } from '../models';
 import { appTheme } from '../theme';
 import { AppIcon } from './AppIcon';
 
@@ -11,7 +11,7 @@ interface AppNutrientsPieChartProps {
   /**
    * Nutrients data to display.
    */
-  nutrients: AppItemNutrients;
+  nutrients: AppNutrients;
 
   /**
    * Custom styles.

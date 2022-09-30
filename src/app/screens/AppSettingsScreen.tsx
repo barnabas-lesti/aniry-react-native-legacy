@@ -5,10 +5,14 @@ import { Text, Divider } from 'react-native-paper';
 
 import { AppButtonGroup, AppScreen, AppConfirmationDialog } from '../components';
 import { appTheme } from '../theme';
-import { appCollectionService, appCommonService, appSettingsService } from '../services';
+import { appCollectionService, appSettingsService } from '../services';
+import { useAppDispatch } from '../store/hooks';
+import { appState } from '../state';
 
 export function AppSettingsScreen() {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
   const [stagedImportData, setStagedImportData] = useState<any | null>(null);
 
   async function onExportButtonPress() {
@@ -27,7 +31,11 @@ export function AppSettingsScreen() {
     if (stagedImportData) {
       await appCollectionService.setCollections(stagedImportData.collections);
       setStagedImportData(null);
-      appCommonService.pushNotificationKey('app.appSettingsScreen.data.restoreSuccessful');
+      dispatch(
+        appState.actions.showNotification({
+          textKey: 'app.appSettingsScreen.data.restoreSuccessful',
+        })
+      );
     }
   }
 

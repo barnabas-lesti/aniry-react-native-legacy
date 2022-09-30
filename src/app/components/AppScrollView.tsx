@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, StyleProp, ViewStyle, ScrollView, View, RefreshControl } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, View, RefreshControl } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 interface AppScrollViewProps {
   /**
@@ -41,7 +42,8 @@ export function AppScrollView(props: AppScrollViewProps) {
       {isDisabled ? (
         <View style={[styles.container, style]}>{children}</View>
       ) : (
-        <ScrollView
+        <KeyboardAwareScrollView
+          extraScrollHeight={-80}
           style={[styles.container, style]}
           refreshControl={
             onRefresh && (
@@ -53,7 +55,7 @@ export function AppScrollView(props: AppScrollViewProps) {
           }
         >
           {children}
-        </ScrollView>
+        </KeyboardAwareScrollView>
       )}
     </>
   );

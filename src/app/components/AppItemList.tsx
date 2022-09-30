@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, StyleProp, ViewStyle, View } from 'react-native';
+import { StyleSheet, StyleProp, ViewStyle, View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DataTable } from 'react-native-paper';
 
+import { useAppSelector } from '../store/hooks';
+import { appState } from '../state';
 import { appTheme } from '../theme';
 import { AppItem } from '../models';
 import { AppSearchBar } from './AppSearchBar';
@@ -13,6 +15,16 @@ interface AppItemListProps<T extends AppItem> {
    * Items to display.
    */
   items: Array<T>;
+
+  /**
+   * Initial search string.
+   */
+  initialSearchString?: string;
+
+  /**
+   * Key of text to display when no items are available.
+   */
+  noItemsTextKey?: string;
 
   /**
    * Selected items.
@@ -35,14 +47,19 @@ interface AppItemListProps<T extends AppItem> {
   style?: StyleProp<ViewStyle>;
 
   /**
-   * Item select event handler.
+   * On select event handler.
    */
-  onSelectItem?: (item: T) => void;
+  onSelect?: (item: T) => void;
 
   /**
    * Search event handler.
    */
-  onSearch?: (searchString: string) => Promise<void>;
+  onSearch?: (searchString: string) => void;
+
+  /**
+   * Refresh event handler.
+   */
+  onRefresh?: () => Promise<void>;
 }
 
 /**
@@ -51,16 +68,20 @@ interface AppItemListProps<T extends AppItem> {
 export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
   const {
     items,
+    initialSearchString = '',
+    noItemsTextKey,
     selectedItems = [],
     isScrollDisabled,
     style,
     isCaloriesSummaryVisible,
-    onSelectItem,
+    onSelect,
     onSearch,
+    onRefresh,
   } = props;
 
   const { t } = useTranslation();
-  const [searchString, setSearchString] = useState('');
+  const isAppLoading = appState.selectors.isAppLoading(useAppSelector((state) => state.app));
+  const [searchString, setSearchString] = useState(initialSearchString);
 
   function isItemSelected(item: AppItem) {
     return !!selectedItems.filter(({ id }) => item.id === id).length;
@@ -82,7 +103,9 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
         />
       )}
 
-      {!!items.length && (
+      {!items.length ? (
+        !isAppLoading && <Text style={styles.noItems}>{noItemsTextKey && t(noItemsTextKey)}</Text>
+      ) : (
         <DataTable style={styles.table}>
           <DataTable.Header>
             <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
@@ -93,7 +116,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
           <AppScrollView
             style={styles.scrollView}
             isDisabled={isScrollDisabled}
-            onRefresh={onSearch && (async () => await onSearch(searchString))}
+            onRefresh={onRefresh}
           >
             {items.map((item) => {
               const { id, name, nutrients, serving } = item;
@@ -101,7 +124,7 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
                 <DataTable.Row
                   style={[isItemSelected(item) && styles.selectedRow]}
                   key={id}
-                  onPress={() => onSelectItem && onSelectItem(item)}
+                  onPress={() => onSelect && onSelect(item)}
                 >
                   <DataTable.Cell>{name}</DataTable.Cell>
                   <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
@@ -133,9 +156,6 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     marginBottom: appTheme.gaps.small,
-  },
-  loader: {
-    marginTop: appTheme.gaps.medium,
   },
   noItems: {
     marginTop: appTheme.gaps.medium,

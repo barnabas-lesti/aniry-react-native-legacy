@@ -1,17 +1,19 @@
 import React from 'react';
-import { StyleProp, ViewStyle } from 'react-native';
-import { Dialog, Portal } from 'react-native-paper';
+import { StyleSheet } from 'react-native';
+import { Modal, Portal } from 'react-native-paper';
+
+import { appStyles, appTheme } from '../theme';
 
 interface AppDialogProps {
   /**
    * Elements to be contained in the dialog popup.
    */
-  children: JSX.Element | Array<JSX.Element>;
+  children: React.ReactNode;
 
   /**
-   * Custom styles.
+   * Display a large dialog.
    */
-  contentStyle?: StyleProp<ViewStyle>;
+  large?: boolean;
 
   /**
    * OnDismiss event handler.
@@ -23,16 +25,28 @@ interface AppDialogProps {
  * Application dialog component.
  */
 export function AppDialog(props: AppDialogProps) {
-  const { contentStyle, children, onDismiss } = props;
+  const { children, large, onDismiss } = props;
 
   return (
     <Portal>
-      <Dialog
+      <Modal
         visible
         onDismiss={onDismiss}
+        contentContainerStyle={[appStyles.container, styles.container, large && styles.largeContent]}
       >
-        <Dialog.Content style={contentStyle}>{children}</Dialog.Content>
-      </Dialog>
+        {children}
+      </Modal>
     </Portal>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    borderRadius: appTheme.roundness * 4,
+    backgroundColor: appTheme.colors.background,
+    margin: appTheme.gaps.medium,
+  },
+  largeContent: {
+    height: '93%',
+  },
+});
