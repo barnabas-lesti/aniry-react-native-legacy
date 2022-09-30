@@ -55,23 +55,31 @@ export const diaryState = {
   },
 
   selectors: {
+    diaryAllMealItems: createSelector(
+      (state: PartialRootState) => ({
+        ingredients: state.ingredient.ingredients,
+        recipes: state.recipe.recipes,
+      }),
+      ({ ingredients, recipes }) => createMealItemList(ingredients || [], recipes || [])
+    ),
     diaryFoodSelectorItems: createSelector(
       (state: PartialRootState) => ({
         ingredients: state.ingredient.ingredients,
         recipes: state.recipe.recipes,
         searchString: state.diary.diaryFoodSelectorSearchString,
       }),
-      ({ ingredients, recipes, searchString }) => {
-        const ingredientInstances =
-          ingredients
-            ?.filter(({ name }) => Ingredient.isStringInName(searchString, name))
-            .map((recipe) => new Ingredient(recipe)) || [];
-        const recipeInstances =
-          recipes
-            ?.filter(({ name }) => Recipe.isStringInName(searchString, name))
-            .map((recipe) => new Recipe(recipe)) || [];
-        return AppItemBase.sortByName([...ingredientInstances, ...recipeInstances]);
-      }
+      ({ ingredients, recipes, searchString }) =>
+        AppItemBase.sortByName(createMealItemList(ingredients || [], recipes || [], searchString))
     ),
   },
 };
+
+function createMealItemList(ingredients: Ingredient[], recipes: Recipe[], searchString?: string) {
+  const ingredientInstances = (
+    searchString ? ingredients.filter(({ name }) => Ingredient.isStringInName(searchString, name)) : ingredients
+  ).map((ingredient) => new Ingredient(ingredient));
+  const recipeInstances = (
+    searchString ? recipes.filter(({ name }) => Recipe.isStringInName(searchString, name)) : recipes
+  ).map((recipe) => new Recipe(recipe));
+  return [...ingredientInstances, ...recipeInstances];
+}
