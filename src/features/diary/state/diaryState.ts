@@ -11,7 +11,11 @@ interface DiaryState {
   diaryFoodSelectorSearchString: string;
 }
 
-type PartialRootState = { ingredient: { ingredients: Ingredient[] }; recipe: { recipes: Recipe[] }; diary: DiaryState };
+type PartialRootState = {
+  ingredient: { ingredients: Ingredient[] | null };
+  recipe: { recipes: Recipe[] | null };
+  diary: DiaryState;
+};
 
 export const diaryState = {
   ...createSlice({

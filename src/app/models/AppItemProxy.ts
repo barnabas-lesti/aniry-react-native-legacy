@@ -27,6 +27,14 @@ export class AppItemProxy<T extends AppItem> extends AppItemBase implements AppI
     return this.item.name;
   }
 
+  get icon() {
+    return this.item.icon;
+  }
+
+  get color() {
+    return this.item.color;
+  }
+
   get nutrients(): AppNutrients {
     const {
       nutrients: { calories, carbs, protein, fat },

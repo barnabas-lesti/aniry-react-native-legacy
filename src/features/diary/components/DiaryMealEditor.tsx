@@ -129,17 +129,18 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
             </>
           )}
           {!!mealItemProxies.length && (
-            <>
+            <View style={appStyles.sectionRow}>
               <AppItemList
+                isIconsVisible
+                isServingHidden
                 isScrollDisabled
                 isCaloriesSummaryVisible
-                style={appStyles.sectionRow}
                 items={mealItemProxies}
                 onSelect={(mealItemProxy) => setSelectedFoodProxy(mealItemProxy)}
               />
 
               <AppNutrientsPieChart nutrients={AppItemProxy.getNutrientsFromItemProxies(mealItemProxies)} />
-            </>
+            </View>
           )}
         </View>
       </AppScrollView>

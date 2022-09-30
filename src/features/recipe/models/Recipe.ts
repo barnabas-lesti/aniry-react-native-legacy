@@ -1,4 +1,5 @@
 import { AppItem, AppItemBase, AppItemProxy, AppNutrients, AppServing, AppServingUnit } from 'app/models';
+import { appTheme } from 'app/theme';
 import { Ingredient } from 'features/ingredient/models';
 
 interface RecipeProps {
@@ -45,6 +46,14 @@ export class Recipe extends AppItemBase implements AppItem {
 
   get nutrients(): AppNutrients {
     return AppItemProxy.getNutrientsFromItemProxies(this.ingredientProxies);
+  }
+
+  get icon() {
+    return appTheme.icons.recipe;
+  }
+
+  get color() {
+    return appTheme.colors.recipePrimary;
   }
 
   static isIngredientInRecipe(recipe: Recipe, ingredient: Ingredient): boolean {

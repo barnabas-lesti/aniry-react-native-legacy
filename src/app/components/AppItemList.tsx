@@ -9,6 +9,7 @@ import { appTheme } from '../theme';
 import { AppItem } from '../models';
 import { AppSearchBar } from './AppSearchBar';
 import { AppScrollView } from './AppScrollView';
+import { AppIcon } from './AppIcon';
 
 interface AppItemListProps<T extends AppItem> {
   /**
@@ -40,6 +41,16 @@ interface AppItemListProps<T extends AppItem> {
    * Display calories summary.
    */
   isCaloriesSummaryVisible?: boolean;
+
+  /**
+   * Display item icons.
+   */
+  isIconsVisible?: boolean;
+
+  /**
+   * Hide serving.
+   */
+  isServingHidden?: boolean;
 
   /**
    * Custom styles.
@@ -74,6 +85,8 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
     isScrollDisabled,
     style,
     isCaloriesSummaryVisible,
+    isIconsVisible,
+    isServingHidden,
     onSelect,
     onSearch,
     onRefresh,
@@ -108,8 +121,8 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
       ) : (
         <DataTable style={styles.table}>
           <DataTable.Header>
-            <DataTable.Title>{t('app.labels.name')}</DataTable.Title>
-            <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>
+            <DataTable.Title style={isIconsVisible && styles.nameWithIcon}>{t('app.labels.name')}</DataTable.Title>
+            {!isServingHidden && <DataTable.Title numeric>{t('app.labels.serving')}</DataTable.Title>}
             <DataTable.Title numeric>{t('app.labels.calories')}</DataTable.Title>
           </DataTable.Header>
 
@@ -119,15 +132,25 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
             onRefresh={onRefresh}
           >
             {items.map((item) => {
-              const { id, name, nutrients, serving } = item;
+              const { id, name, nutrients, serving, icon, color } = item;
               return (
                 <DataTable.Row
                   style={[isItemSelected(item) && styles.selectedRow]}
                   key={id}
                   onPress={() => onSelect && onSelect(item)}
                 >
-                  <DataTable.Cell>{name}</DataTable.Cell>
-                  <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>
+                  <DataTable.Cell style={isIconsVisible && styles.nameWithIcon}>
+                    {isIconsVisible && (
+                      <AppIcon
+                        style={styles.icon}
+                        icon={icon}
+                        color={color}
+                        size={18}
+                      />
+                    )}
+                    {name}
+                  </DataTable.Cell>
+                  {!isServingHidden && <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>}
                   <DataTable.Cell numeric>{`${nutrients.calories.toFixed()} ${t('app.units.kcal')}`}</DataTable.Cell>
                 </DataTable.Row>
               );
@@ -135,7 +158,12 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
 
             {isCaloriesSummaryVisible && (
               <DataTable.Row>
-                <DataTable.Cell textStyle={styles.totalCaloriesText}>{t('app.labels.total')}</DataTable.Cell>
+                <DataTable.Cell
+                  textStyle={styles.totalCaloriesText}
+                  style={isIconsVisible && styles.nameWithIcon}
+                >
+                  {t('app.labels.total')}
+                </DataTable.Cell>
                 <DataTable.Cell>{''}</DataTable.Cell>
                 <DataTable.Cell
                   numeric
@@ -172,5 +200,12 @@ const styles = StyleSheet.create({
   },
   totalCaloriesText: {
     fontWeight: 'bold',
+  },
+  nameWithIcon: {
+    paddingLeft: 20,
+  },
+  icon: {
+    position: 'absolute',
+    transform: [{ translateX: -35 }, { translateY: -24 }],
   },
 });
