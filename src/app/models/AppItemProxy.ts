@@ -27,6 +27,14 @@ export class AppItemProxy<T extends AppItem> extends AppItemBase implements AppI
     return this.item.name;
   }
 
+  get icon() {
+    return this.item.icon;
+  }
+
+  get color() {
+    return this.item.color;
+  }
+
   get nutrients(): AppNutrients {
     const {
       nutrients: { calories, carbs, protein, fat },
@@ -39,6 +47,23 @@ export class AppItemProxy<T extends AppItem> extends AppItemBase implements AppI
       protein: (protein / value) * this.serving.value,
       fat: (fat / value) * this.serving.value,
     };
+  }
+
+  static getNutrientsFromItemProxies<T extends AppItem>(ingredientProxies: AppItemProxy<T>[]): AppNutrients {
+    return ingredientProxies.reduce(
+      (nutrients, ingredientProxy) => ({
+        calories: nutrients.calories + ingredientProxy.nutrients.calories,
+        carbs: nutrients.carbs + ingredientProxy.nutrients.carbs,
+        protein: nutrients.protein + ingredientProxy.nutrients.protein,
+        fat: nutrients.fat + ingredientProxy.nutrients.fat,
+      }),
+      {
+        calories: 0,
+        carbs: 0,
+        protein: 0,
+        fat: 0,
+      }
+    );
   }
 
   static mapItemsToProxies<T extends AppItem>(items: T[], existingProxies: AppItemProxy<T>[] = []): AppItemProxy<T>[] {

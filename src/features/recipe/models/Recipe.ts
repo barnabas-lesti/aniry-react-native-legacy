@@ -1,4 +1,5 @@
 import { AppItem, AppItemBase, AppItemProxy, AppNutrients, AppServing, AppServingUnit } from 'app/models';
+import { appTheme } from 'app/theme';
 import { Ingredient } from 'features/ingredient/models';
 
 interface RecipeProps {
@@ -44,24 +45,15 @@ export class Recipe extends AppItemBase implements AppItem {
   }
 
   get nutrients(): AppNutrients {
-    return Recipe.getNutrientsFromIngredientProxies(this.ingredientProxies);
+    return AppItemProxy.getNutrientsFromItemProxies(this.ingredientProxies);
   }
 
-  static getNutrientsFromIngredientProxies(ingredientProxies: AppItemProxy<Ingredient>[]): AppNutrients {
-    return ingredientProxies.reduce(
-      (nutrients, ingredientProxy) => ({
-        calories: nutrients.calories + ingredientProxy.nutrients.calories,
-        carbs: nutrients.carbs + ingredientProxy.nutrients.carbs,
-        protein: nutrients.protein + ingredientProxy.nutrients.protein,
-        fat: nutrients.fat + ingredientProxy.nutrients.fat,
-      }),
-      {
-        calories: 0,
-        carbs: 0,
-        protein: 0,
-        fat: 0,
-      }
-    );
+  get icon() {
+    return appTheme.icons.recipe;
+  }
+
+  get color() {
+    return appTheme.colors.recipePrimary;
   }
 
   static isIngredientInRecipe(recipe: Recipe, ingredient: Ingredient): boolean {

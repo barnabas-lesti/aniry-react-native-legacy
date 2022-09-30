@@ -26,6 +26,8 @@ export const appStyles = StyleSheet.create({
     marginVertical: quarterGap,
   },
   sectionDescription: {
+    fontSize: 14,
+    lineHeight: 14,
     marginVertical: quarterGap,
   },
   sectionRow: {
