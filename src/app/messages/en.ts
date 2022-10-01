@@ -30,6 +30,8 @@ export const en = {
 
   'app.appItemList.searchPlaceholder': 'Search',
 
+  'app.appItemProxyEditorDialog.nutrientConverterText': 'Or in calories:',
+
   'app.appSettingsScreen.title': 'Settings',
   'app.appSettingsScreen.data.title': 'Data',
   'app.appSettingsScreen.data.description': 'Export and restore your data.',
@@ -89,7 +91,7 @@ export const en = {
   'recipe.recipeEditor.buttons.addIngredients': 'Add ingredients',
   'recipe.recipeEditor.buttons.editIngredients': 'Edit ingredients',
   'recipe.recipeEditor.buttons.editServings': 'Edit servings',
-  'recipe.recipeEditor.buttons.editServingsText': 'How much is in this recipe?',
+  'recipe.recipeEditor.buttons.editServingsText': 'How much is in the recipe?',
 
   'recipe.notifications.created': 'Recipe successfully created!',
   'recipe.notifications.updated': 'Recipe successfully updated!',
