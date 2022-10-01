@@ -150,7 +150,9 @@ export function AppItemList<T extends AppItem>(props: AppItemListProps<T>) {
                     )}
                     {name}
                   </DataTable.Cell>
-                  {!isServingHidden && <DataTable.Cell numeric>{`${serving.value} ${serving.unit}`}</DataTable.Cell>}
+                  {!isServingHidden && (
+                    <DataTable.Cell numeric>{`${serving.value.toFixed()} ${serving.unit}`}</DataTable.Cell>
+                  )}
                   <DataTable.Cell numeric>{`${nutrients.calories.toFixed()} ${t('app.units.kcal')}`}</DataTable.Cell>
                 </DataTable.Row>
               );
