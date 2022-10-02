@@ -1,5 +1,5 @@
 {
-  "name": "aniry-mobile-app",
+  "name": "aniry-calorie-counter",
   "version": "1.0.0",
   "main": "./src/app/main.ts",
   "scripts": {

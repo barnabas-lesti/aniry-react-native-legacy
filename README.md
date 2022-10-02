@@ -1,4 +1,4 @@
-# Aniry Mobile App
+# Aniry Calorie Counter
 
 Aniry calorie counter mobile application.
 
