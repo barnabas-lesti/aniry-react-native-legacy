@@ -1,6 +1,6 @@
-# Daisy Mobile App
+# Aniry Mobile App
 
-Daisy calorie counter mobile application.
+Aniry calorie counter mobile application.
 
 ## Development
 ```sh
