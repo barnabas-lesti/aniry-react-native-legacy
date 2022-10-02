@@ -4,7 +4,7 @@ import * as DocumentPicker from 'expo-document-picker';
 
 import { appCollectionService } from './appCollectionService';
 
-const DATA_EXPORT_FILE_NAME = 'daisy-export.json';
+const DATA_EXPORT_FILE_NAME = 'aniry-export.json';
 
 class AppSettingsService {
   /**
