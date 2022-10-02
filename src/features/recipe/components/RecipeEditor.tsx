@@ -17,7 +17,8 @@ import { appStyles, appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { appState } from 'app/state';
-import { Ingredient, IngredientSelectorDialog } from 'features/ingredient';
+import { Ingredient } from 'features/ingredient/models';
+import { IngredientSelectorDialog } from 'features/ingredient/components';
 import { Recipe } from '../models';
 import { recipeState } from '../state';
 
@@ -213,7 +214,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
                 onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
               />
 
-              <AppNutrientsPieChart nutrients={Recipe.getNutrientsFromIngredientProxies(ingredientProxies)} />
+              <AppNutrientsPieChart nutrients={AppItemProxy.getNutrientsFromItemProxies(ingredientProxies)} />
             </>
           )}
         </View>

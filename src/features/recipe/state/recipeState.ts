@@ -101,7 +101,7 @@ export const recipeState = {
     deleteRecipe: (recipe: Recipe) => async (dispatch: AppDispatch) => {
       dispatch(appState.actions.startLoading());
       await appCollectionService.deleteOne<Recipe>('recipes', recipe);
-      dispatch(recipeState.actions.deleteRecipeFromRecipes(recipe));
+      dispatch(recipeState.actions.deleteRecipeFromRecipes(Recipe.serialize(recipe)));
       dispatch(appState.actions.stopLoading());
     },
 

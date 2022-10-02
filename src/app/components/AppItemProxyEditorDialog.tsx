@@ -45,18 +45,28 @@ interface AppItemProxyEditorDialogProps<T extends AppItem> {
  */
 export function AppItemProxyEditorDialog<T extends AppItem>(props: AppItemProxyEditorDialogProps<T>) {
   const { itemProxy, primaryColor, text, onSave, onDiscard, onDelete } = props;
+  const { serving, nutrients, item } = itemProxy;
 
   const { t } = useTranslation();
-  const [servingValue, setServingValue] = useState(itemProxy.serving.value || 0);
+  const [servingValue, setServingValue] = useState(serving.value || 0);
+  const [calories, setCalories] = useState(nutrients.calories || 0);
 
   function onBeforeSave() {
-    onSave(
-      new AppItemProxy<T>({ item: itemProxy.item, serving: { unit: itemProxy.serving.unit, value: servingValue } })
-    );
+    onSave(new AppItemProxy<T>({ item, serving: { unit: serving.unit, value: servingValue } }));
   }
 
   function onBeforeDelete() {
     onDelete(itemProxy);
+  }
+
+  function onBeforeSetServingValue(newServingValue: number) {
+    setServingValue(newServingValue);
+    setCalories((nutrients.calories / serving.value) * newServingValue);
+  }
+
+  function onBeforeSetCalories(newCalories: number) {
+    setCalories(newCalories);
+    setServingValue(newCalories / (nutrients.calories / serving.value));
   }
 
   return (
@@ -90,13 +100,23 @@ export function AppItemProxyEditorDialog<T extends AppItem>(props: AppItemProxyE
 
       <View style={appStyles.section}>
         {text && <Text style={appStyles.sectionRow}>{text}</Text>}
-
         <AppNumberInput
           style={appStyles.sectionRow}
           label={t('app.labels.serving')}
           postfix={t(`app.units.${itemProxy.serving.unit}`)}
           value={servingValue}
-          onChangeValue={setServingValue}
+          onChangeValue={onBeforeSetServingValue}
+        />
+      </View>
+
+      <View style={appStyles.section}>
+        <Text style={appStyles.sectionRow}>{t('app.appItemProxyEditorDialog.nutrientConverterText')}</Text>
+        <AppNumberInput
+          style={appStyles.sectionRow}
+          label={t('app.labels.calories')}
+          postfix={t('app.units.kcal')}
+          value={calories}
+          onChangeValue={onBeforeSetCalories}
         />
       </View>
     </AppDialog>

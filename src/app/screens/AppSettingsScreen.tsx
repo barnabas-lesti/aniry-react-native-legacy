@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Text, Divider } from 'react-native-paper';
 
 import { AppButtonGroup, AppScreen, AppConfirmationDialog } from '../components';
-import { appTheme } from '../theme';
+import { appStyles, appTheme } from '../theme';
 import { appCollectionService, appSettingsService } from '../services';
 import { useAppDispatch } from '../store/hooks';
 import { appState } from '../state';
@@ -41,10 +41,11 @@ export function AppSettingsScreen() {
 
   return (
     <AppScreen>
-      <View style={styles.row}>
-        <Text style={styles.title}>{t('app.appSettingsScreen.data.title')}</Text>
-        <Text style={styles.description}>{t('app.appSettingsScreen.data.description')}</Text>
+      <View style={appStyles.section}>
+        <Text style={appStyles.sectionTitle}>{t('app.appSettingsScreen.data.title')}</Text>
+        <Text style={appStyles.sectionDescription}>{t('app.appSettingsScreen.data.description')}</Text>
         <AppButtonGroup
+          style={appStyles.sectionRow}
           buttons={[
             {
               label: t('app.appSettingsScreen.data.export'),
@@ -71,18 +72,3 @@ export function AppSettingsScreen() {
     </AppScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    marginBottom: appTheme.gaps.medium,
-  },
-  title: {
-    ...appTheme.styles.title,
-    marginBottom: appTheme.gaps.small,
-  },
-  description: {
-    fontSize: 14,
-    lineHeight: 14,
-    marginBottom: appTheme.gaps.small,
-  },
-});

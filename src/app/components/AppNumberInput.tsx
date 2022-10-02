@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { StyleProp, TextStyle } from 'react-native';
 
 import { AppTextInput } from './AppTextInput';
@@ -47,6 +47,10 @@ export function AppNumberInput(props: AppNumberInputProps) {
   const { value, label, postfix, placeholder, isInvalid, style, onChangeValue } = props;
 
   const [stringValue, setStringValue] = useState(value.toString());
+
+  useEffect(() => {
+    setStringValue(value.toString());
+  }, [value]);
 
   function onBeforeChangeValue(newValueCandidate: string) {
     let newValue = newValueCandidate.replace(',', '.').replace(/[^\d.]/g, '');

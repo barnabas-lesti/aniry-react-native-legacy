@@ -1,4 +1,5 @@
 import { AppNutrients, AppServing, AppItem, AppServingUnit, AppItemBase } from 'app/models';
+import { appTheme } from 'app/theme';
 
 interface IngredientProps {
   id: string;
@@ -42,5 +43,13 @@ export class Ingredient extends AppItemBase implements AppItem {
 
   get serving() {
     return this.servings[0];
+  }
+
+  get icon() {
+    return appTheme.icons.ingredient;
+  }
+
+  get color() {
+    return appTheme.colors.ingredientPrimary;
   }
 }
