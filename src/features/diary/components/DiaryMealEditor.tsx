@@ -146,6 +146,7 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
               <Text style={appStyles.sectionTitle}>{t('diary.diaryMealEditor.mealItemsTitle')}</Text>
               <AppList
                 scrollDisabled
+                withCalorieSummary
                 items={mealItemProxies}
                 onSelect={(mealItemProxy) => setSelectedFoodProxy(mealItemProxy)}
               />

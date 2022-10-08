@@ -42,6 +42,11 @@ interface AppListProps<T extends AppItem> {
   withCheckboxes?: boolean;
 
   /**
+   * Display calorie summary.
+   */
+  withCalorieSummary?: boolean;
+
+  /**
    * Custom styles.
    */
   style?: StyleProp<ViewStyle>;
@@ -74,6 +79,7 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
     style,
     scrollDisabled,
     withCheckboxes,
+    withCalorieSummary,
     onSelect,
     onSearch,
     onRefresh,
@@ -85,6 +91,10 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
 
   function isItemSelected(item: AppItem) {
     return !!selectedItems.filter(({ id }) => item.id === id).length;
+  }
+
+  function calculateTotalCalories(): number {
+    return items.reduce((total, item) => total + item.nutrients.calories, 0);
   }
 
   return (
@@ -117,6 +127,15 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
               onPress={onSelect}
             />
           ))}
+
+          {withCalorieSummary && (
+            <View style={styles.totalCalories}>
+              <Text style={styles.totalCaloriesText}>{t('app.labels.totalCalories')}:</Text>
+              <Text style={styles.totalCaloriesText}>
+                {calculateTotalCalories().toFixed()} {t('app.units.kcal')}
+              </Text>
+            </View>
+          )}
         </AppScrollView>
       )}
     </View>
@@ -136,5 +155,15 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
+  },
+  totalCalories: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: appTheme.gaps.small,
+  },
+  totalCaloriesText: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

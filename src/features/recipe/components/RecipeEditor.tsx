@@ -208,6 +208,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
             <>
               <AppList
                 scrollDisabled
+                withCalorieSummary
                 style={appStyles.sectionRow}
                 items={ingredientProxies}
                 onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
