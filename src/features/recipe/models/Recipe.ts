@@ -44,6 +44,10 @@ export class Recipe extends AppItemBase implements AppItem {
     return this.servings[0];
   }
 
+  get calories() {
+    return AppItemProxy.getCaloriesFromItemProxies(this.ingredientProxies);
+  }
+
   get nutrients(): AppNutrients {
     return AppItemProxy.getNutrientsFromItemProxies(this.ingredientProxies);
   }

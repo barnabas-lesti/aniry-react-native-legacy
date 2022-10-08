@@ -4,6 +4,7 @@ import { AppServing } from './AppServing';
 
 export interface AppItem extends AppCollectionItem {
   name: string;
+  calories: number;
   nutrients: AppNutrients;
   serving: AppServing;
   color: string;

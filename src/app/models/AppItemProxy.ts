@@ -35,30 +35,37 @@ export class AppItemProxy<T extends AppItem> extends AppItemBase implements AppI
     return this.item.color;
   }
 
+  get calories(): number {
+    const { calories, servings } = this.item;
+    const { value } = servings?.filter(({ unit }) => unit === this.serving.unit)[0] || this.item.serving;
+    return (calories / value) * this.serving.value;
+  }
+
   get nutrients(): AppNutrients {
     const {
-      nutrients: { calories, carbs, protein, fat },
+      nutrients: { carbs, protein, fat },
       servings,
     } = this.item;
     const { value } = servings?.filter(({ unit }) => unit === this.serving.unit)[0] || this.item.serving;
     return {
-      calories: (calories / value) * this.serving.value,
       carbs: (carbs / value) * this.serving.value,
       protein: (protein / value) * this.serving.value,
       fat: (fat / value) * this.serving.value,
     };
   }
 
-  static getNutrientsFromItemProxies<T extends AppItem>(ingredientProxies: AppItemProxy<T>[]): AppNutrients {
-    return ingredientProxies.reduce(
-      (nutrients, ingredientProxy) => ({
-        calories: nutrients.calories + ingredientProxy.nutrients.calories,
-        carbs: nutrients.carbs + ingredientProxy.nutrients.carbs,
-        protein: nutrients.protein + ingredientProxy.nutrients.protein,
-        fat: nutrients.fat + ingredientProxy.nutrients.fat,
+  static getCaloriesFromItemProxies<T extends AppItem>(itemProxies: AppItemProxy<T>[]): number {
+    return itemProxies.reduce((calories, itemProxy) => calories + itemProxy.calories, 0);
+  }
+
+  static getNutrientsFromItemProxies<T extends AppItem>(itemProxies: AppItemProxy<T>[]): AppNutrients {
+    return itemProxies.reduce(
+      (nutrients, itemProxy) => ({
+        carbs: nutrients.carbs + itemProxy.nutrients.carbs,
+        protein: nutrients.protein + itemProxy.nutrients.protein,
+        fat: nutrients.fat + itemProxy.nutrients.fat,
       }),
       {
-        calories: 0,
         carbs: 0,
         protein: 0,
         fat: 0,
