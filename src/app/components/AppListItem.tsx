@@ -100,7 +100,7 @@ export function AppListItem<T extends AppItem>(props: AppListItemProps<T>) {
             {item.serving.value.toFixed()} {item.serving.unit}
           </Text>
           <Text style={styles.calories}>
-            {item.nutrients.calories.toFixed()} {t('app.units.kcal')}
+            {item.calories.toFixed()} {t('app.units.kcal')}
           </Text>
         </TouchableOpacity>
       </View>

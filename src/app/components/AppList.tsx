@@ -100,7 +100,7 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
   }
 
   function calculateTotalCalories(): number {
-    return items.reduce((total, item) => total + item.nutrients.calories, 0);
+    return items.reduce((total, item) => total + item.calories, 0);
   }
 
   function sortItemsByName(itemsToSort: T[]): T[] {
