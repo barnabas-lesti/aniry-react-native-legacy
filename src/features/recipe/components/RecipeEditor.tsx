@@ -212,11 +212,19 @@ export function RecipeEditor(props: RecipeEditorProps) {
                 items={ingredientProxies}
                 onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
               />
-
-              <AppNutrientsPieChart nutrients={AppItemProxy.getNutrientsFromItemProxies(ingredientProxies)} />
             </>
           )}
         </View>
+
+        {!!ingredientProxies.length && (
+          <View style={appStyles.section}>
+            <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.nutrientsTitle')}</Text>
+            <AppNutrientsPieChart
+              style={appStyles.sectionRow}
+              nutrients={AppItemProxy.getNutrientsFromItemProxies(ingredientProxies)}
+            />
+          </View>
+        )}
 
         <View style={appStyles.section}>
           <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.additionalDetailsTitle')}</Text>

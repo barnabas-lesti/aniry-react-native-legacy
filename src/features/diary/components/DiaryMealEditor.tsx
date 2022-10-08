@@ -143,14 +143,24 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
             )}
 
             <View style={appStyles.sectionRow}>
+              <Text style={appStyles.sectionTitle}>{t('diary.diaryMealEditor.mealItemsTitle')}</Text>
               <AppList
                 scrollDisabled
                 items={mealItemProxies}
                 onSelect={(mealItemProxy) => setSelectedFoodProxy(mealItemProxy)}
               />
-              <AppNutrientsPieChart nutrients={AppItemProxy.getNutrientsFromItemProxies(mealItemProxies)} />
             </View>
           </View>
+
+          {!!mealItemProxies.length && (
+            <View style={appStyles.section}>
+              <Text style={appStyles.sectionTitle}>{t('diary.diaryMealEditor.nutrientsTitle')}</Text>
+              <AppNutrientsPieChart
+                style={appStyles.sectionRow}
+                nutrients={AppItemProxy.getNutrientsFromItemProxies(mealItemProxies)}
+              />
+            </View>
+          )}
         </AppScrollView>
       )}
 

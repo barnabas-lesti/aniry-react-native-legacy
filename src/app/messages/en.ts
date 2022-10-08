@@ -47,7 +47,8 @@ export const en = {
   'diary.diaryMealCreateScreen.title': 'Create meal',
 
   'diary.diaryMealEditor.deleteConfirmation': 'Are you sure you want to delete this meal?',
-  'diary.diaryMealEditor.foodTitle': 'Food',
+  'diary.diaryMealEditor.mealItemsTitle': 'Items',
+  'diary.diaryMealEditor.nutrientsTitle': 'Nutrients',
   'diary.diaryMealEditor.buttons.calculator': 'What did you eat?',
   'diary.diaryMealEditor.buttons.addFood': 'Add food',
   'diary.diaryMealEditor.buttons.editFood': 'Edit food',
@@ -86,6 +87,7 @@ export const en = {
 
   'recipe.recipeEditor.primaryDetailsTitle': 'Primary details',
   'recipe.recipeEditor.ingredientsTitle': 'Ingredients',
+  'recipe.recipeEditor.nutrientsTitle': 'Nutrients',
   'recipe.recipeEditor.additionalDetailsTitle': 'Additional details',
   'recipe.recipeEditor.deleteConfirmation': 'Are you sure you want to delete the recipe?',
   'recipe.recipeEditor.buttons.addIngredients': 'Add ingredients',
