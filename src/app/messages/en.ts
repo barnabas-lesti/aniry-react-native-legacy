@@ -28,7 +28,7 @@ export const en = {
   'app.labels.protein': 'Protein',
   'app.labels.fat': 'Fat',
 
-  'app.appItemList.searchPlaceholder': 'Search',
+  'app.appList.searchPlaceholder': 'Search',
 
   'app.appItemProxyEditorDialog.nutrientConverterText': 'Or in calories:',
 

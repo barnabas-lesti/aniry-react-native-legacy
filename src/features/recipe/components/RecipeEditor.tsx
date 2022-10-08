@@ -7,7 +7,7 @@ import {
   AppConfirmationDialog,
   AppButtonGroup,
   AppButton,
-  AppItemList,
+  AppList,
   AppScrollView,
   AppNutrientsPieChart,
   AppItemProxyEditorDialog,
@@ -206,10 +206,9 @@ export function RecipeEditor(props: RecipeEditorProps) {
           />
           {!!ingredientProxies.length && (
             <>
-              <AppItemList
-                isScrollDisabled
+              <AppList
+                scrollDisabled
                 style={appStyles.sectionRow}
-                isCaloriesSummaryVisible
                 items={ingredientProxies}
                 onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
               />

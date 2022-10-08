@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppStackScreenProps } from 'app/models';
-import { AppButton, AppItemList, AppScreen } from 'app/components';
+import { AppButton, AppList, AppScreen } from 'app/components';
 import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { Recipe, RecipeStackParamList } from '../models';
@@ -46,7 +46,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
       </View>
 
       <View style={[appStyles.section, appStyles.flex]}>
-        <AppItemList
+        <AppList
           style={appStyles.sectionRow}
           items={recipes}
           initialSearchString={recipeStateData.recipeHomeSearchString}

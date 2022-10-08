@@ -6,7 +6,7 @@ import {
   AppButton,
   AppButtonGroup,
   AppConfirmationDialog,
-  AppItemList,
+  AppList,
   AppItemProxyEditorDialog,
   AppNutrientsPieChart,
   AppScrollView,
@@ -143,11 +143,8 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
             )}
 
             <View style={appStyles.sectionRow}>
-              <AppItemList
-                isIconsVisible
-                isServingHidden
-                isScrollDisabled
-                isCaloriesSummaryVisible
+              <AppList
+                scrollDisabled
                 items={mealItemProxies}
                 onSelect={(mealItemProxy) => setSelectedFoodProxy(mealItemProxy)}
               />

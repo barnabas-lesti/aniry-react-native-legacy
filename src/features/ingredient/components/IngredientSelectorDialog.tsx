@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppButtonGroup, AppDialog, AppItemList } from 'app/components';
+import { AppButtonGroup, AppDialog, AppList } from 'app/components';
 import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { Ingredient } from '../models';
@@ -94,7 +94,8 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
       </View>
 
       <View style={[appStyles.section, appStyles.flex]}>
-        <AppItemList
+        <AppList
+          withCheckboxes
           style={appStyles.sectionRow}
           items={ingredients}
           initialSearchString={ingredientStateData.ingredientSelectorDialogSearchString}

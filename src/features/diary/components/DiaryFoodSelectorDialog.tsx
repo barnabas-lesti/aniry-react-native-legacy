@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppButtonGroup, AppDialog, AppItemList } from 'app/components';
+import { AppButtonGroup, AppDialog, AppList } from 'app/components';
 import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { diaryState } from '../state';
@@ -94,9 +94,8 @@ export function DiaryFoodSelectorDialog(props: DiaryFoodSelectorDialogProps) {
       </View>
 
       <View style={[appStyles.section, appStyles.flex]}>
-        <AppItemList
-          isIconsVisible
-          isServingHidden
+        <AppList
+          withCheckboxes
           style={appStyles.sectionRow}
           items={mealItems}
           initialSearchString={diaryFoodSelectorSearchString}

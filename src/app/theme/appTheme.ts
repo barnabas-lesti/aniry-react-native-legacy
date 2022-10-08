@@ -12,7 +12,7 @@ export const appTheme = {
     recipePrimary: '#614c23',
     settingsPrimary: '#2596be',
     error: '#993025',
-    tableRowSelected: '#dcdcdc',
+    textSecondary: '#575656',
     nutrients: {
       carbs: '#1aa3ff',
       protein: '#ff4d4d',
