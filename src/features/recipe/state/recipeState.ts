@@ -154,11 +154,9 @@ export const recipeState = {
     recipeHomeRecipes: createSelector(
       (recipe: RecipeState) => recipe,
       ({ recipes, recipeHomeSearchString }) =>
-        Recipe.sortByName(
-          recipes
-            ?.filter(({ name }) => Recipe.isStringInName(recipeHomeSearchString, name))
-            .map((recipe) => new Recipe(recipe)) || []
-        )
+        recipes
+          ?.filter(({ name }) => Recipe.isStringInName(recipeHomeSearchString, name))
+          .map((recipe) => new Recipe(recipe)) || []
     ),
   },
 };

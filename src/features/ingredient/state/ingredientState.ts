@@ -127,6 +127,5 @@ export const ingredientState = {
 
 function searchStringFilterIngredients(ingredients: Ingredient[], searchString: string): Ingredient[] {
   const filteredIngredients = (ingredients || []).filter(({ name }) => Ingredient.isStringInName(searchString, name));
-  const ingredientInstances = filteredIngredients.map((ingredient) => new Ingredient(ingredient));
-  return Ingredient.sortByName(ingredientInstances);
+  return filteredIngredients.map((ingredient) => new Ingredient(ingredient));
 }

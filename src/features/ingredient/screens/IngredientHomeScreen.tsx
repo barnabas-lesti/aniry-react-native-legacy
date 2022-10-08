@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppStackScreenProps } from 'app/models';
-import { AppButton, AppItemList, AppScreen } from 'app/components';
+import { AppButton, AppList, AppScreen } from 'app/components';
 import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { Ingredient, IngredientStackParamList } from '../models';
@@ -47,7 +47,8 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
       </View>
 
       <View style={[appStyles.section, appStyles.flex]}>
-        <AppItemList
+        <AppList
+          sortByName
           style={appStyles.sectionRow}
           items={ingredients}
           initialSearchString={ingredientStateData.ingredientHomeSearchString}

@@ -3,7 +3,7 @@ export * from './AppButtonGroup';
 export * from './AppConfirmationDialog';
 export * from './AppDialog';
 export * from './AppIcon';
-export * from './AppItemList';
+export * from './AppList';
 export * from './AppNumberInput';
 export * from './AppScrollView';
 export * from './AppSearchBar';
