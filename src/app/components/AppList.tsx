@@ -47,6 +47,11 @@ interface AppListProps<T extends AppItem> {
   withCalorieSummary?: boolean;
 
   /**
+   * Display items after sorting them by name.
+   */
+  sortByName?: boolean;
+
+  /**
    * Custom styles.
    */
   style?: StyleProp<ViewStyle>;
@@ -80,6 +85,7 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
     scrollDisabled,
     withCheckboxes,
     withCalorieSummary,
+    sortByName,
     onSelect,
     onSearch,
     onRefresh,
@@ -95,6 +101,16 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
 
   function calculateTotalCalories(): number {
     return items.reduce((total, item) => total + item.nutrients.calories, 0);
+  }
+
+  function sortItemsByName(itemsToSort: T[]): T[] {
+    return [
+      ...itemsToSort.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      }),
+    ];
   }
 
   return (
@@ -117,7 +133,7 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
           isDisabled={scrollDisabled}
           onRefresh={onRefresh}
         >
-          {items.map((item) => (
+          {(sortByName ? sortItemsByName(items) : items).map((item) => (
             <AppListItem
               withIcon
               key={item.id}

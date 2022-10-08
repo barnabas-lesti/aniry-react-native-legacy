@@ -47,6 +47,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
 
       <View style={[appStyles.section, appStyles.flex]}>
         <AppList
+          sortByName
           style={appStyles.sectionRow}
           items={recipes}
           initialSearchString={recipeStateData.recipeHomeSearchString}

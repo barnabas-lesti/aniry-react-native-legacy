@@ -1,6 +1,5 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 
-import { AppItemBase } from 'app/models';
 import { AppDispatch } from 'app/store/models';
 import { Ingredient } from 'features/ingredient/models';
 import { ingredientState } from 'features/ingredient/state';
@@ -68,8 +67,7 @@ export const diaryState = {
         recipes: state.recipe.recipes,
         searchString: state.diary.diaryFoodSelectorSearchString,
       }),
-      ({ ingredients, recipes, searchString }) =>
-        AppItemBase.sortByName(createMealItemList(ingredients || [], recipes || [], searchString))
+      ({ ingredients, recipes, searchString }) => createMealItemList(ingredients || [], recipes || [], searchString)
     ),
   },
 };

@@ -48,6 +48,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
 
       <View style={[appStyles.section, appStyles.flex]}>
         <AppList
+          sortByName
           style={appStyles.sectionRow}
           items={ingredients}
           initialSearchString={ingredientStateData.ingredientHomeSearchString}

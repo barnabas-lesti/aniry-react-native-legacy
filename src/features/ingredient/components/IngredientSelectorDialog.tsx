@@ -96,6 +96,7 @@ export function IngredientSelectorDialog(props: IngredientSelectorDialogProps) {
       <View style={[appStyles.section, appStyles.flex]}>
         <AppList
           withCheckboxes
+          sortByName
           style={appStyles.sectionRow}
           items={ingredients}
           initialSearchString={ingredientStateData.ingredientSelectorDialogSearchString}

@@ -5,21 +5,6 @@ export class AppItemBase {
     return JSON.parse(JSON.stringify(itemInstance));
   }
 
-  /**
-   * Sorts the items by their name property.
-   * @param items Items to sort.
-   * @returns Sorted items array.
-   */
-  static sortByName<T extends AppItem>(items: T[]): T[] {
-    return [
-      ...items.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      }),
-    ];
-  }
-
   static validateName(value: string): boolean {
     return !!value;
   }

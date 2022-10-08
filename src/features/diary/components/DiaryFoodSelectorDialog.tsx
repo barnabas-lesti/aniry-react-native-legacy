@@ -96,6 +96,7 @@ export function DiaryFoodSelectorDialog(props: DiaryFoodSelectorDialogProps) {
       <View style={[appStyles.section, appStyles.flex]}>
         <AppList
           withCheckboxes
+          sortByName
           style={appStyles.sectionRow}
           items={mealItems}
           initialSearchString={diaryFoodSelectorSearchString}
