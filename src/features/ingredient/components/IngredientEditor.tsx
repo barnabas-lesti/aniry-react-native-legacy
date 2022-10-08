@@ -53,7 +53,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
   const [name, setName] = useState(ingredient.name);
   const [servingValue, setServingValue] = useState(serving.value);
   const [servingUnit, setServingUnit] = useState(serving.unit);
-  const [calories, setCalories] = useState(nutrients.calories);
+  const [calories, setCalories] = useState(ingredient.calories);
   const [carbs, setCarbs] = useState(nutrients.carbs);
   const [protein, setProtein] = useState(nutrients.protein);
   const [fat, setFat] = useState(nutrients.fat);
@@ -78,6 +78,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
       const newIngredient = new Ingredient({
         id: ingredient.id,
         name,
+        calories,
         description,
         servings: [
           {
@@ -86,7 +87,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
           },
         ],
         nutrients: {
-          calories,
           carbs,
           protein,
           fat,
@@ -199,7 +199,7 @@ export function IngredientEditor(props: IngredientEditorProps) {
           />
           {!!(carbs || protein || fat) && (
             <AppNutrientsPieChart
-              nutrients={{ calories, carbs, protein, fat }}
+              nutrients={{ carbs, protein, fat }}
               style={appStyles.sectionRow}
             />
           )}

@@ -4,6 +4,7 @@ import { appTheme } from 'app/theme';
 interface IngredientProps {
   id: string;
   name: string;
+  calories: number;
   nutrients: AppNutrients;
   servings: AppServing[];
   description?: string;
@@ -16,6 +17,7 @@ export class Ingredient extends AppItemBase implements AppItem {
 
   id: string;
   name: string;
+  calories: number;
   nutrients: AppNutrients;
   servings: AppServing[];
   description?: string;
@@ -23,7 +25,7 @@ export class Ingredient extends AppItemBase implements AppItem {
   constructor(props?: IngredientProps) {
     super();
 
-    const { servings, nutrients, description } = props || {};
+    const { calories, servings, nutrients, description } = props || {};
 
     this.id = props?.id || '';
     this.name = props?.name || '';
@@ -33,8 +35,9 @@ export class Ingredient extends AppItemBase implements AppItem {
       new AppServing({ unit: Ingredient.DEFAULT_SERVING_UNIT, value: Ingredient.DEFAULT_SERVING_VALUE }),
     ];
 
+    this.calories = calories || 0;
+
     this.nutrients = {
-      calories: nutrients?.calories || 0,
       carbs: nutrients?.carbs || 0,
       protein: nutrients?.protein || 0,
       fat: nutrients?.fat || 0,

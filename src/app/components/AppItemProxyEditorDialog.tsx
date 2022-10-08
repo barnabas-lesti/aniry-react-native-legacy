@@ -45,11 +45,11 @@ interface AppItemProxyEditorDialogProps<T extends AppItem> {
  */
 export function AppItemProxyEditorDialog<T extends AppItem>(props: AppItemProxyEditorDialogProps<T>) {
   const { itemProxy, primaryColor, text, onSave, onDiscard, onDelete } = props;
-  const { serving, nutrients, item } = itemProxy;
+  const { serving, item } = itemProxy;
 
   const { t } = useTranslation();
   const [servingValue, setServingValue] = useState(serving.value || 0);
-  const [calories, setCalories] = useState(nutrients.calories || 0);
+  const [calories, setCalories] = useState(itemProxy.calories || 0);
 
   function onBeforeSave() {
     onSave(new AppItemProxy<T>({ item, serving: { unit: serving.unit, value: servingValue } }));
@@ -61,12 +61,12 @@ export function AppItemProxyEditorDialog<T extends AppItem>(props: AppItemProxyE
 
   function onBeforeSetServingValue(newServingValue: number) {
     setServingValue(newServingValue);
-    setCalories((nutrients.calories / serving.value) * newServingValue);
+    setCalories((itemProxy.calories / serving.value) * newServingValue);
   }
 
   function onBeforeSetCalories(newCalories: number) {
     setCalories(newCalories);
-    setServingValue(newCalories / (nutrients.calories / serving.value));
+    setServingValue(newCalories / (itemProxy.calories / serving.value));
   }
 
   return (
