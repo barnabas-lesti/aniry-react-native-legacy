@@ -3,9 +3,8 @@ import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
 import {
-  AppButton,
+  AppListItemOrderEditorDialog,
   AppButtonGroup,
-  AppConfirmationDialog,
   AppList,
   AppItemProxyEditorDialog,
   AppNutrientsPieChart,
@@ -18,55 +17,27 @@ import { DiaryMealItem } from '../models';
 import { DiaryFoodSelectorDialog } from './DiaryFoodSelectorDialog';
 import { diaryState } from '../state';
 
-interface DiaryMealEditorProps {
-  /**
-   * Enable calculator mode.
-   */
-  isCalculatorMode?: boolean;
-
-  /**
-   * On discard event handler.
-   */
-  onDiscard?: () => void;
-
-  /**
-   * On after save event handler.
-   */
-  onAfterSave?: () => void;
-
-  /**
-   * On after delete event handler.
-   */
-  onAfterDelete?: () => void;
-}
+interface DiaryMealEditorProps {}
 
 export function DiaryMealEditor(props: DiaryMealEditorProps) {
-  const { isCalculatorMode, onDiscard, onAfterSave, onAfterDelete } = props;
+  const {} = props;
   const { t } = useTranslation();
-
-  // TODO: Add logic
-  const isNewMeal = true;
 
   const dispatch = useAppDispatch();
   const allMealItems = diaryState.selectors.diaryAllMealItems(useAppSelector((app) => app));
-  const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
+  const [isItemOrderEditorDialogVisible, setIsItemOrderEditorDialogVisible] = useState(false);
   const [isFoodSelectorDialogVisible, setIsFoodSelectorDialogVisible] = useState(false);
   const [selectedFoodProxy, setSelectedFoodProxy] = useState<AppItemProxy<DiaryMealItem> | null>(null);
   const [mealItemProxies, setMealItemProxies] = useState<AppItemProxy<DiaryMealItem>[]>([]);
 
-  function onSaveButtonPress() {
-    // TODO: Add save logic
-    onAfterSave && onAfterSave();
-  }
-
-  function onDeleteConfirmation() {
-    // TODO: Add delete logic
-    onAfterDelete && onAfterDelete();
-  }
-
   function onEditMealItemsSave(mealItems: DiaryMealItem[]) {
     setMealItemProxies(AppItemProxy.mapItemsToProxies(mealItems, mealItemProxies));
     setIsFoodSelectorDialogVisible(false);
+  }
+
+  function onIngredientsOrderEditorSave(mealItems: DiaryMealItem[]) {
+    setMealItemProxies(AppItemProxy.mapItemsToProxies(mealItems, mealItemProxies));
+    setIsItemOrderEditorDialogVisible(false);
   }
 
   function onEditFoodProxySave(updatedMealItemProxy: AppItemProxy<DiaryMealItem>) {
@@ -94,56 +65,29 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
   return (
     <>
       <View style={appStyles.section}>
-        {isCalculatorMode ? (
-          <AppButton
-            style={appStyles.sectionRow}
-            label={t(`diary.diaryMealEditor.buttons.calculator`)}
-            backgroundColor={appTheme.colors.diaryPrimary}
-            onPress={() => setIsFoodSelectorDialogVisible(true)}
-          />
-        ) : (
-          <AppButtonGroup
-            style={appStyles.sectionRow}
-            buttons={[
-              {
-                label: t('app.labels.discard'),
-                type: 'secondary',
-                textColor: appTheme.colors.diaryPrimary,
-                onPress: () => onDiscard && onDiscard(),
-              },
-              {
-                label: t(`app.labels.${isNewMeal ? 'create' : 'update'}`),
-                backgroundColor: appTheme.colors.diaryPrimary,
-                onPress: onSaveButtonPress,
-              },
-              {
-                label: t('app.labels.delete'),
-                type: 'danger',
-                isHidden: isNewMeal,
-                onPress: () => setIsDeleteConfirmationVisible(true),
-              },
-            ]}
-          />
-        )}
+        <Text style={appStyles.sectionTitle}>{t('diary.diaryMealEditor.title')}</Text>
+        <AppButtonGroup
+          style={appStyles.sectionRow}
+          buttons={[
+            {
+              label: t(`diary.diaryMealEditor.buttons.${mealItemProxies.length ? 'editItems' : 'addItems'}`),
+              backgroundColor: appTheme.colors.primary,
+              onPress: () => setIsFoodSelectorDialogVisible(true),
+            },
+            {
+              isDisabled: mealItemProxies.length < 2,
+              label: t('diary.diaryMealEditor.buttons.reorderItems'),
+              backgroundColor: appTheme.colors.primary,
+              onPress: () => setIsItemOrderEditorDialogVisible(true),
+            },
+          ]}
+        />
       </View>
 
       {!!mealItemProxies.length && (
         <AppScrollView onRefresh={onRefresh}>
           <View style={(appStyles.section, appStyles.flex)}>
-            {!isCalculatorMode && (
-              <>
-                <Text style={appStyles.sectionTitle}>{t('diary.diaryMealEditor.mealItemsTitle')}</Text>
-                <AppButton
-                  style={appStyles.sectionRow}
-                  label={t(`diary.diaryMealEditor.buttons.${mealItemProxies.length ? 'editFood' : 'addFood'}`)}
-                  backgroundColor={appTheme.colors.diaryPrimary}
-                  onPress={() => setIsFoodSelectorDialogVisible(true)}
-                />
-              </>
-            )}
-
             <View style={appStyles.sectionRow}>
-              <Text style={appStyles.sectionTitle}>{t('diary.diaryMealEditor.mealItemsTitle')}</Text>
               <AppList
                 scrollDisabled
                 withCalorieSummary
@@ -165,6 +109,15 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
         </AppScrollView>
       )}
 
+      {isItemOrderEditorDialogVisible && (
+        <AppListItemOrderEditorDialog
+          primaryColor={appTheme.colors.primary}
+          items={AppItemProxy.mapProxiesToItems(mealItemProxies)}
+          onDiscard={() => setIsItemOrderEditorDialogVisible(false)}
+          onSave={onIngredientsOrderEditorSave}
+        />
+      )}
+
       {isFoodSelectorDialogVisible && (
         <DiaryFoodSelectorDialog
           selectedMealItems={AppItemProxy.mapProxiesToItems(mealItemProxies)}
@@ -181,14 +134,6 @@ export function DiaryMealEditor(props: DiaryMealEditorProps) {
           onDiscard={() => setSelectedFoodProxy(null)}
           onSave={onEditFoodProxySave}
           onDelete={onEditFoodProxyDelete}
-        />
-      )}
-
-      {!isNewMeal && isDeleteConfirmationVisible && (
-        <AppConfirmationDialog
-          text={t('diary.diaryMealEditor.deleteConfirmation')}
-          onConfirmation={onDeleteConfirmation}
-          onCancel={() => setIsDeleteConfirmationVisible(false)}
         />
       )}
     </>

@@ -47,11 +47,12 @@ export const en = {
   'diary.diaryMealCreateScreen.title': 'Create meal',
 
   'diary.diaryMealEditor.deleteConfirmation': 'Are you sure you want to delete this meal?',
-  'diary.diaryMealEditor.mealItemsTitle': 'Items',
+  'diary.diaryMealEditor.title': 'What did you eat?',
   'diary.diaryMealEditor.nutrientsTitle': 'Nutrients',
   'diary.diaryMealEditor.buttons.calculator': 'What did you eat?',
-  'diary.diaryMealEditor.buttons.addFood': 'Add food',
-  'diary.diaryMealEditor.buttons.editFood': 'Edit food',
+  'diary.diaryMealEditor.buttons.addItems': 'Add',
+  'diary.diaryMealEditor.buttons.editItems': 'Edit',
+  'diary.diaryMealEditor.buttons.reorderItems': 'Reorder',
   'diary.diaryMealEditor.buttons.editServing': 'How much did you eat?',
 
   'diary.diaryFoodSelectorDialog.noIngredients': 'No items to display',
@@ -90,8 +91,9 @@ export const en = {
   'recipe.recipeEditor.nutrientsTitle': 'Nutrients',
   'recipe.recipeEditor.additionalDetailsTitle': 'Additional details',
   'recipe.recipeEditor.deleteConfirmation': 'Are you sure you want to delete the recipe?',
-  'recipe.recipeEditor.buttons.addIngredients': 'Add ingredients',
-  'recipe.recipeEditor.buttons.editIngredients': 'Edit ingredients',
+  'recipe.recipeEditor.buttons.addIngredients': 'Add',
+  'recipe.recipeEditor.buttons.editIngredients': 'Edit',
+  'recipe.recipeEditor.buttons.reorderIngredients': 'Reorder',
   'recipe.recipeEditor.buttons.editServings': 'Edit servings',
   'recipe.recipeEditor.buttons.editServingsText': 'How much is in the recipe?',
 

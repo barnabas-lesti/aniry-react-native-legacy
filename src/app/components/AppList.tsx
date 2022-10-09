@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, StyleProp, ViewStyle, View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import DraggableFlatList, { ScaleDecorator, RenderItemParams } from 'react-native-draggable-flatlist';
 
 import { useAppSelector } from '../store/hooks';
 import { appState } from '../state';
@@ -42,6 +43,11 @@ interface AppListProps<T extends AppItem> {
   withCheckboxes?: boolean;
 
   /**
+   * Makes the list draggable.
+   */
+  draggable?: boolean;
+
+  /**
    * Display calorie summary.
    */
   withCalorieSummary?: boolean;
@@ -70,6 +76,11 @@ interface AppListProps<T extends AppItem> {
    * Refresh event handler.
    */
   onRefresh?: () => Promise<void>;
+
+  /**
+   * After drag finished event handler.
+   */
+  setItems?: (items: T[]) => void;
 }
 
 /**
@@ -83,12 +94,14 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
     selectedItems = [],
     style,
     scrollDisabled,
+    draggable,
     withCheckboxes,
     withCalorieSummary,
     sortByName,
     onSelect,
     onSearch,
     onRefresh,
+    setItems,
   } = props;
 
   const { t } = useTranslation();
@@ -113,6 +126,20 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
     ];
   }
 
+  const renderItem = ({ item, drag }: RenderItemParams<T>) => (
+    <ScaleDecorator activeScale={1}>
+      <AppListItem
+        withIcon
+        key={item.id}
+        item={item}
+        selected={isItemSelected(item)}
+        withCheckbox={withCheckboxes}
+        onPress={onSelect}
+        onLongPress={drag}
+      />
+    </ScaleDecorator>
+  );
+
   return (
     <View style={[styles.container, style]}>
       {onSearch && (
@@ -127,6 +154,13 @@ export function AppList<T extends AppItem>(props: AppListProps<T>) {
 
       {!items.length ? (
         !isAppLoading && <Text style={styles.noItems}>{noItemsTextKey && t(noItemsTextKey)}</Text>
+      ) : draggable ? (
+        <DraggableFlatList
+          data={items}
+          onDragEnd={({ data }) => setItems && setItems(data)}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+        />
       ) : (
         <AppScrollView
           style={styles.scrollView}

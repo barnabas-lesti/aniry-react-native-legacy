@@ -6,12 +6,12 @@ import {
   AppTextInput,
   AppConfirmationDialog,
   AppButtonGroup,
-  AppButton,
   AppList,
   AppScrollView,
   AppNutrientsPieChart,
   AppItemProxyEditorDialog,
   AppServingInput,
+  AppListItemOrderEditorDialog,
 } from 'app/components';
 import { appStyles, appTheme } from 'app/theme';
 import { AppItemProxy } from 'app/models';
@@ -69,6 +69,7 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
   const [isDeleteConfirmationVisible, setIsDeleteConfirmationVisible] = useState(false);
   const [isIngredientSelectorDialogVisible, setIsIngredientSelectorDialogVisible] = useState(false);
+  const [isIngredientOrderEditorDialogVisible, setIsIngredientOrderEditorDialogVisible] = useState(false);
 
   useEffect(() => {
     setNameIsValid(Recipe.validateName(name));
@@ -122,6 +123,11 @@ export function RecipeEditor(props: RecipeEditorProps) {
   function onEditIngredientsSave(ingredients: Ingredient[]) {
     setIngredientProxies(AppItemProxy.mapItemsToProxies(ingredients, ingredientProxies));
     setIsIngredientSelectorDialogVisible(false);
+  }
+
+  function onIngredientsOrderEditorSave(ingredients: Ingredient[]) {
+    setIngredientProxies(AppItemProxy.mapItemsToProxies(ingredients, ingredientProxies));
+    setIsIngredientOrderEditorDialogVisible(false);
   }
 
   function onEditIngredientProxySave(updatedIngredientProxy: AppItemProxy<Ingredient>) {
@@ -198,22 +204,32 @@ export function RecipeEditor(props: RecipeEditorProps) {
 
         <View style={appStyles.section}>
           <Text style={appStyles.sectionTitle}>{t('recipe.recipeEditor.ingredientsTitle')}</Text>
-          <AppButton
+          <AppButtonGroup
             style={appStyles.sectionRow}
-            label={t(`recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`)}
-            backgroundColor={appTheme.colors.ingredientPrimary}
-            onPress={() => setIsIngredientSelectorDialogVisible(true)}
+            buttons={[
+              {
+                label: t(
+                  `recipe.recipeEditor.buttons.${ingredientProxies.length ? 'editIngredients' : 'addIngredients'}`
+                ),
+                backgroundColor: appTheme.colors.ingredientPrimary,
+                onPress: () => setIsIngredientSelectorDialogVisible(true),
+              },
+              {
+                isDisabled: ingredientProxies.length < 2,
+                label: t('recipe.recipeEditor.buttons.reorderIngredients'),
+                backgroundColor: appTheme.colors.ingredientPrimary,
+                onPress: () => setIsIngredientOrderEditorDialogVisible(true),
+              },
+            ]}
           />
           {!!ingredientProxies.length && (
-            <>
-              <AppList
-                scrollDisabled
-                withCalorieSummary
-                style={appStyles.sectionRow}
-                items={ingredientProxies}
-                onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
-              />
-            </>
+            <AppList
+              scrollDisabled
+              withCalorieSummary
+              style={appStyles.sectionRow}
+              items={ingredientProxies}
+              onSelect={(ingredientProxy) => setSelectedIngredientProxy(ingredientProxy)}
+            />
           )}
         </View>
 
@@ -238,6 +254,15 @@ export function RecipeEditor(props: RecipeEditorProps) {
           />
         </View>
       </AppScrollView>
+
+      {isIngredientOrderEditorDialogVisible && (
+        <AppListItemOrderEditorDialog
+          primaryColor={appTheme.colors.ingredientPrimary}
+          items={AppItemProxy.mapProxiesToItems(ingredientProxies)}
+          onDiscard={() => setIsIngredientOrderEditorDialogVisible(false)}
+          onSave={onIngredientsOrderEditorSave}
+        />
+      )}
 
       {isIngredientSelectorDialogVisible && (
         <IngredientSelectorDialog

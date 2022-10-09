@@ -42,13 +42,18 @@ interface AppListItemProps<T extends AppItem> {
    * General press handler.
    */
   onPress?: (item: T) => void;
+
+  /**
+   * Long press event handler.
+   */
+  onLongPress?: (item: T) => void;
 }
 
 /**
  * Application list item component.
  */
 export function AppListItem<T extends AppItem>(props: AppListItemProps<T>) {
-  const { item, selected, withCheckbox, withIcon, onNamePress, onServingPress, onPress } = props;
+  const { item, selected, withCheckbox, withIcon, onNamePress, onServingPress, onPress, onLongPress } = props;
 
   const { t } = useTranslation();
 
@@ -72,6 +77,7 @@ export function AppListItem<T extends AppItem>(props: AppListItemProps<T>) {
         <TouchableOpacity
           style={styles.leftSide}
           onPress={onLocalNamePress}
+          onLongPress={() => onLongPress && onLongPress(item)}
         >
           {withCheckbox && (
             <View style={styles.checkbox}>
@@ -95,6 +101,7 @@ export function AppListItem<T extends AppItem>(props: AppListItemProps<T>) {
         <TouchableOpacity
           style={styles.rightSide}
           onPress={onLocalServingPress}
+          onLongPress={() => onLongPress && onLongPress(item)}
         >
           <Text style={styles.serving}>
             {item.serving.value.toFixed()} {item.serving.unit}
@@ -114,17 +121,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: appTheme.gaps.small,
   },
   leftSide: {
     flexDirection: 'row',
     alignItems: 'center',
     flexShrink: 1,
+    paddingVertical: appTheme.gaps.small,
   },
   rightSide: {
     alignItems: 'flex-end',
     flexGrow: 1,
     paddingLeft: appTheme.gaps.medium,
+    paddingVertical: appTheme.gaps.small,
   },
   checkbox: {
     paddingRight: appTheme.gaps.small,
