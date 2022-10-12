@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { AppStackScreenProps } from 'app/models';
+import { AppStackScreenProps, AppStackParamList } from 'app/models';
 import { AppScreen } from 'app/components';
-import { RecipeStackParamList } from '../models';
 import { RecipeEditor } from '../components';
 
-type RecipeEditScreenProps = AppStackScreenProps<RecipeStackParamList, 'RecipeEdit'>;
+type RecipeEditScreenProps = AppStackScreenProps<AppStackParamList, 'RecipeEdit'>;
 
 /**
  * Recipe editing screen.
@@ -23,8 +22,8 @@ export function RecipeEditScreen(props: RecipeEditScreenProps) {
       <RecipeEditor
         recipe={recipe}
         onDiscard={() => navigation.goBack()}
-        onAfterSave={() => navigation.push('RecipeHome')}
-        onAfterDelete={() => navigation.push('RecipeHome')}
+        onAfterSave={() => navigation.navigate('RecipeHome')}
+        onAfterDelete={() => navigation.navigate('RecipeHome')}
       />
     </AppScreen>
   );

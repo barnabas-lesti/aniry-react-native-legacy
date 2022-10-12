@@ -1,83 +1,53 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTranslation } from 'react-i18next';
 
-import { DiaryStackScreen } from 'features/diary/screens';
-import { IngredientStackScreen } from 'features/ingredient/screens';
-import { RecipeStackScreen } from 'features/recipe/screens';
-import { appTheme } from '../theme';
-import { AppStackParamList, AppTabBarIconProps, AppScreenOptions } from '../models';
-import { AppIcon } from '../components';
-import { AppSettingsScreen } from './AppSettingsScreen';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { appState } from '../state';
+import { AppStackParamList } from '../models';
+import { appScreens } from './appScreens';
+import { AppNavbarBottom, AppNavbarTop, AppNotifications } from '../components';
+import { appScreenGroups } from './appScreenGroups';
 
-const tabBarIconFactory =
-  (icon: string) =>
-  ({ color, size }: AppTabBarIconProps) =>
-    (
-      <AppIcon
-        icon={icon}
-        color={color}
-        size={size}
-      />
-    );
-
-const screens = [
-  {
-    name: 'Diary',
-    titleKey: 'diary.diaryHomeScreen.title',
-    activeColor: appTheme.colors.diaryPrimary,
-    headerShown: false,
-    Component: DiaryStackScreen,
-    tabBarIcon: tabBarIconFactory(appTheme.icons.diary),
-  },
-  {
-    name: 'Ingredient',
-    titleKey: 'ingredient.ingredientHomeScreen.title',
-    activeColor: appTheme.colors.ingredientPrimary,
-    headerShown: false,
-    Component: IngredientStackScreen,
-    tabBarIcon: tabBarIconFactory(appTheme.icons.ingredient),
-  },
-  {
-    name: 'Recipe',
-    titleKey: 'recipe.recipeHomeScreen.title',
-    activeColor: appTheme.colors.recipePrimary,
-    headerShown: false,
-    Component: RecipeStackScreen,
-    tabBarIcon: tabBarIconFactory(appTheme.icons.recipe),
-  },
-  {
-    name: 'Settings',
-    titleKey: 'app.appSettingsScreen.title',
-    activeColor: appTheme.colors.settingsPrimary,
-    Component: AppSettingsScreen,
-    tabBarIcon: tabBarIconFactory(appTheme.icons.settings),
-  },
-] as AppScreenOptions[];
-
-const Tab = createBottomTabNavigator<AppStackParamList>();
+const Stack = createStackNavigator<AppStackParamList>();
 
 export function AppStackScreen() {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
+
+  const activeScreenName = useAppSelector(({ app }) => app.activeScreenName);
+  const [activeTitleKey, setActiveTitleKey] = useState('');
+
+  useEffect(() => {
+    setActiveTitleKey(appScreens.filter((screen) => screen.name === activeScreenName)[0]?.titleKey || '');
+  }, [activeScreenName]);
 
   return (
     <NavigationContainer>
-      <Tab.Navigator>
-        {screens.map(({ name, titleKey, headerShown, activeColor, Component, tabBarIcon }) => (
-          <Tab.Screen
+      <AppNavbarTop title={t(activeTitleKey)} />
+      <Stack.Navigator
+        screenOptions={{ headerShown: false }}
+        screenListeners={({ route }) => ({
+          state: () => {
+            dispatch(appState.actions.setActiveScreenName(route.name));
+          },
+        })}
+      >
+        {appScreens.map(({ name, titleKey, Component }) => (
+          <Stack.Screen
             key={name}
             name={name}
+            options={{ title: t(titleKey) }}
             component={Component}
-            options={{
-              title: titleKey && t(titleKey),
-              tabBarIcon,
-              tabBarActiveTintColor: activeColor || appTheme.colors.primary,
-              headerShown,
-            }}
           />
         ))}
-      </Tab.Navigator>
+      </Stack.Navigator>
+      <AppNavbarBottom
+        groups={appScreenGroups}
+        activeScreenName={activeScreenName}
+      />
+      <AppNotifications />
     </NavigationContainer>
   );
 }

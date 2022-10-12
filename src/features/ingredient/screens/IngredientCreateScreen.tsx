@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { AppStackScreenProps } from 'app/models';
+import { AppStackScreenProps, AppStackParamList } from 'app/models';
 import { AppScreen } from 'app/components';
 import { IngredientEditor } from '../components';
-import { IngredientStackParamList } from '../models';
 
-type IngredientCreateScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientCreate'>;
+type IngredientCreateScreenProps = AppStackScreenProps<AppStackParamList, 'IngredientCreate'>;
 
 /**
  * Ingredient create screen.
@@ -17,7 +16,7 @@ export function IngredientCreateScreen(props: IngredientCreateScreenProps) {
     <AppScreen>
       <IngredientEditor
         onDiscard={() => navigation.goBack()}
-        onAfterSave={() => navigation.push('IngredientHome')}
+        onAfterSave={() => navigation.navigate('IngredientHome')}
       />
     </AppScreen>
   );
