@@ -1,5 +1,4 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import { ProgressBar } from 'react-native-paper';
 
 import { useAppSelector } from '../store/hooks';
@@ -12,15 +11,8 @@ export function AppProgressBar() {
   return (
     <ProgressBar
       visible={isAppLoading}
-      style={styles.progressPar}
       indeterminate
       color={appTheme.colors.primary}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  progressPar: {
-    position: 'absolute',
-  },
-});

@@ -1,13 +1,18 @@
 import { createSlice, createSelector, PayloadAction } from '@reduxjs/toolkit';
 
+import { AppStackParamList } from '../models';
+
 interface Notification {
   text?: string;
   textKey?: string;
 }
 
+type ActiveScreenName = keyof AppStackParamList | null;
+
 interface AppState {
   loadingStates: boolean[];
   notification: Notification | null;
+  activeScreenName: ActiveScreenName;
 }
 
 export const appState = {
@@ -17,6 +22,7 @@ export const appState = {
     initialState: {
       loadingStates: [],
       notification: null,
+      activeScreenName: null,
     } as AppState,
 
     reducers: {
@@ -32,6 +38,10 @@ export const appState = {
       },
       clearNotification: (state) => {
         state.notification = null;
+      },
+
+      setActiveScreenName: (state, action: PayloadAction<ActiveScreenName>) => {
+        state.activeScreenName = action.payload;
       },
     },
   }),

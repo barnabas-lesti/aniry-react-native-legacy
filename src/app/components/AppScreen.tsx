@@ -2,7 +2,6 @@ import React from 'react';
 import { View } from 'react-native';
 
 import { appStyles } from '../theme';
-import { AppProgressBar } from './AppProgressBar';
 import { AppScrollView } from './AppScrollView';
 
 interface AppScreenProps {
@@ -22,7 +21,6 @@ export function AppScreen(props: AppScreenProps) {
 
   return (
     <>
-      <AppProgressBar />
       {isScrollable ? (
         <AppScrollView style={[appStyles.container, appStyles.flex]}>{children}</AppScrollView>
       ) : (

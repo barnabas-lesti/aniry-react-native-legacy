@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppStackScreenProps } from 'app/models';
+import { AppStackScreenProps, AppStackParamList } from 'app/models';
 import { AppButton, AppList, AppScreen } from 'app/components';
 import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { Ingredient, IngredientStackParamList } from '../models';
+import { Ingredient } from '../models';
 import { ingredientState } from '../state';
 
-type IngredientHomeScreenProps = AppStackScreenProps<IngredientStackParamList, 'IngredientHome'>;
+type IngredientHomeScreenProps = AppStackScreenProps<AppStackParamList, 'IngredientHome'>;
 
 export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   const { navigation } = props;
@@ -28,7 +28,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   }
 
   function onSelect(ingredient: Ingredient) {
-    navigation.push('IngredientEdit', { ingredient });
+    navigation.navigate('IngredientEdit', { ingredient });
   }
 
   async function onRefresh() {
@@ -42,7 +42,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
           style={appStyles.sectionRow}
           backgroundColor={appTheme.colors.ingredientPrimary}
           label={t('ingredient.ingredientHomeScreen.createIngredient')}
-          onPress={() => navigation.push('IngredientCreate')}
+          onPress={() => navigation.navigate('IngredientCreate')}
         />
       </View>
 

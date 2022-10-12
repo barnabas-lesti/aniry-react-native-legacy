@@ -32,13 +32,14 @@ export const en = {
 
   'app.appItemProxyEditorDialog.nutrientConverterText': 'Or in calories:',
 
-  'app.appSettingsScreen.title': 'Settings',
-  'app.appSettingsScreen.data.title': 'Data',
-  'app.appSettingsScreen.data.description': 'Export and restore your data.',
-  'app.appSettingsScreen.data.export': 'Export',
-  'app.appSettingsScreen.data.restore': 'Restore',
-  'app.appSettingsScreen.data.restoreConfirmation': 'Are you sure you want to overwrite all your data?',
-  'app.appSettingsScreen.data.restoreSuccessful': 'Successfully restored your data!',
+  // Settings
+  'settings.settingsScreen.title': 'Settings',
+  'settings.settingsScreen.data.title': 'Data',
+  'settings.settingsScreen.data.description': 'Export and restore your data.',
+  'settings.settingsScreen.data.export': 'Export',
+  'settings.settingsScreen.data.restore': 'Restore',
+  'settings.settingsScreen.data.restoreConfirmation': 'Are you sure you want to overwrite all your data?',
+  'settings.settingsScreen.data.restoreSuccessful': 'Successfully restored your data!',
 
   // Diary
   'diary.diaryHomeScreen.title': 'Calculator',

@@ -2,14 +2,14 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { AppStackScreenProps } from 'app/models';
+import { AppStackScreenProps, AppStackParamList } from 'app/models';
 import { AppButton, AppList, AppScreen } from 'app/components';
 import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
-import { Recipe, RecipeStackParamList } from '../models';
+import { Recipe } from '../models';
 import { recipeState } from '../state';
 
-type RecipeHomeScreenProps = AppStackScreenProps<RecipeStackParamList, 'RecipeHome'>;
+type RecipeHomeScreenProps = AppStackScreenProps<AppStackParamList, 'RecipeHome'>;
 
 export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
   const { navigation } = props;
@@ -27,7 +27,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
   }
 
   function onSelect(recipe: Recipe) {
-    navigation.push('RecipeEdit', { recipe });
+    navigation.navigate('RecipeEdit', { recipe });
   }
 
   async function onRefresh() {
@@ -41,7 +41,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
           style={appStyles.sectionRow}
           backgroundColor={appTheme.colors.recipePrimary}
           label={t('recipe.recipeHomeScreen.createRecipe')}
-          onPress={() => navigation.push('RecipeCreate')}
+          onPress={() => navigation.navigate('RecipeCreate')}
         />
       </View>
 

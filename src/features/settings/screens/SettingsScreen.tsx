@@ -3,24 +3,25 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Text, Divider } from 'react-native-paper';
 
-import { AppButtonGroup, AppScreen, AppConfirmationDialog } from '../components';
-import { appStyles, appTheme } from '../theme';
-import { appCollectionService, appSettingsService } from '../services';
-import { useAppDispatch } from '../store/hooks';
-import { appState } from '../state';
+import { AppButtonGroup, AppScreen, AppConfirmationDialog } from 'app/components';
+import { appStyles, appTheme } from 'app/theme';
+import { appCollectionService } from 'app/services';
+import { useAppDispatch } from 'app/store/hooks';
+import { appState } from 'app/state';
+import { settingsService } from '../services';
 
-export function AppSettingsScreen() {
+export function SettingsScreen() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const [stagedImportData, setStagedImportData] = useState<any | null>(null);
 
   async function onExportButtonPress() {
-    await appSettingsService.exportData();
+    await settingsService.exportData();
   }
 
   async function onRestoreButtonPress() {
-    setStagedImportData(await appSettingsService.importData());
+    setStagedImportData(await settingsService.importData());
   }
 
   function onRestoreCancel() {
@@ -33,7 +34,7 @@ export function AppSettingsScreen() {
       setStagedImportData(null);
       dispatch(
         appState.actions.showNotification({
-          textKey: 'app.appSettingsScreen.data.restoreSuccessful',
+          textKey: 'settings.settingsScreen.data.restoreSuccessful',
         })
       );
     }
@@ -42,18 +43,18 @@ export function AppSettingsScreen() {
   return (
     <AppScreen>
       <View style={appStyles.section}>
-        <Text style={appStyles.sectionTitle}>{t('app.appSettingsScreen.data.title')}</Text>
-        <Text style={appStyles.sectionDescription}>{t('app.appSettingsScreen.data.description')}</Text>
+        <Text style={appStyles.sectionTitle}>{t('settings.settingsScreen.data.title')}</Text>
+        <Text style={appStyles.sectionDescription}>{t('settings.settingsScreen.data.description')}</Text>
         <AppButtonGroup
           style={appStyles.sectionRow}
           buttons={[
             {
-              label: t('app.appSettingsScreen.data.export'),
+              label: t('settings.settingsScreen.data.export'),
               backgroundColor: appTheme.colors.settingsPrimary,
               onPress: onExportButtonPress,
             },
             {
-              label: t('app.appSettingsScreen.data.restore'),
+              label: t('settings.settingsScreen.data.restore'),
               type: 'danger',
               onPress: onRestoreButtonPress,
             },
@@ -64,7 +65,7 @@ export function AppSettingsScreen() {
 
       {!!stagedImportData && (
         <AppConfirmationDialog
-          text={t('app.appSettingsScreen.data.restoreConfirmation')}
+          text={t('settings.settingsScreen.data.restoreConfirmation')}
           onConfirmation={onRestoreConfirmation}
           onCancel={onRestoreCancel}
         />

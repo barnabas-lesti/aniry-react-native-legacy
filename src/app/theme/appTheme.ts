@@ -18,6 +18,8 @@ export const appTheme = {
       protein: '#ff4d4d',
       fat: '#ff8c1a',
     },
+    navbarBackground: '#fff',
+    inactive: '#999',
   },
   icons: {
     diary: 'calculator',
