@@ -25,6 +25,12 @@ export function AppNavbarBottom(props: AppNavbarBottomProps) {
     return (activeScreenName || '').toLowerCase().includes(groupName.toLowerCase());
   }
 
+  function onTabPress(targetScreenName: string) {
+    if (activeScreenName !== targetScreenName) {
+      navigation.navigate(targetScreenName as never);
+    }
+  }
+
   return (
     <Appbar
       style={styles.appbar}
@@ -34,7 +40,7 @@ export function AppNavbarBottom(props: AppNavbarBottomProps) {
         <TouchableOpacity
           style={styles.tabWrapper}
           key={group.name}
-          onPress={() => navigation.navigate(group.screens[0].name as never)}
+          onPress={() => onTabPress(group.screens[0].name)}
         >
           <AppIcon
             icon={group.icon}
@@ -55,10 +61,10 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: appTheme.colors.navbarBackground,
-    height: 85,
+    height: appTheme.tabBarHeight,
     flex: 1,
     justifyContent: 'space-around',
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
   tabWrapper: {
     flex: 1,

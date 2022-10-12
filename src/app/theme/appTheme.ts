@@ -40,4 +40,5 @@ export const appTheme = {
       lineHeight: 22,
     } as TextStyle,
   },
+  tabBarHeight: 90,
 };

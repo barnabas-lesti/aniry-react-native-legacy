@@ -1,7 +1,7 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
-import { appStyles } from '../theme';
+import { appStyles, appTheme } from '../theme';
 import { AppScrollView } from './AppScrollView';
 
 interface AppScreenProps {
@@ -22,10 +22,14 @@ export function AppScreen(props: AppScreenProps) {
   return (
     <>
       {isScrollable ? (
-        <AppScrollView style={[appStyles.container, appStyles.flex]}>{children}</AppScrollView>
+        <AppScrollView style={[appStyles.container, appStyles.flex, styles.container]}>{children}</AppScrollView>
       ) : (
-        <View style={[appStyles.container, appStyles.flex]}>{children}</View>
+        <View style={[appStyles.container, appStyles.flex, styles.container]}>{children}</View>
       )}
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { marginBottom: appTheme.tabBarHeight },
+});
