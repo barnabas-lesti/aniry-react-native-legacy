@@ -35,7 +35,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
   }
 
   return (
-    <AppScreen>
+    <AppScreen titleKey="recipe.recipeHomeScreen.title">
       <View style={appStyles.section}>
         <AppButton
           style={appStyles.sectionRow}

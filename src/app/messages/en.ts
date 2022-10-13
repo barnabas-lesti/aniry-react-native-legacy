@@ -32,14 +32,6 @@ export const en = {
 
   'app.appItemProxyEditorDialog.nutrientConverterText': 'Or in calories:',
 
-  'app.appSettingsScreen.title': 'Settings',
-  'app.appSettingsScreen.data.title': 'Data',
-  'app.appSettingsScreen.data.description': 'Export and restore your data.',
-  'app.appSettingsScreen.data.export': 'Export',
-  'app.appSettingsScreen.data.restore': 'Restore',
-  'app.appSettingsScreen.data.restoreConfirmation': 'Are you sure you want to overwrite all your data?',
-  'app.appSettingsScreen.data.restoreSuccessful': 'Successfully restored your data!',
-
   // Diary
   'diary.diaryHomeScreen.title': 'Calculator',
   'diary.diaryHomeScreen.createMeal': 'What did you eat today?',
@@ -100,4 +92,13 @@ export const en = {
   'recipe.notifications.created': 'Recipe successfully created!',
   'recipe.notifications.updated': 'Recipe successfully updated!',
   'recipe.notifications.deleted': 'Recipe successfully deleted!',
+
+  // Settings
+  'settings.settingsHomeScreen.title': 'Settings',
+  'settings.settingsHomeScreen.data.title': 'Data',
+  'settings.settingsHomeScreen.data.description': 'Export and restore your data.',
+  'settings.settingsHomeScreen.data.export': 'Export',
+  'settings.settingsHomeScreen.data.restore': 'Restore',
+  'settings.settingsHomeScreen.data.restoreConfirmation': 'Are you sure you want to overwrite all your data?',
+  'settings.settingsHomeScreen.data.restoreSuccessful': 'Successfully restored your data!',
 };

@@ -2,11 +2,11 @@ import * as Sharing from 'expo-sharing';
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 
-import { appCollectionService } from './appCollectionService';
+import { appCollectionService } from 'app/services';
 
 const DATA_EXPORT_FILE_NAME = 'aniry-export.json';
 
-class AppSettingsService {
+class SettingsService {
   /**
    * Exports all application data to file.
    */
@@ -33,4 +33,4 @@ class AppSettingsService {
   }
 }
 
-export const appSettingsService = new AppSettingsService();
+export const settingsService = new SettingsService();

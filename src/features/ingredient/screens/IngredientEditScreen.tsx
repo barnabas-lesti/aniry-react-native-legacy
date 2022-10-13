@@ -19,12 +19,14 @@ export function IngredientEditScreen(props: IngredientEditScreenProps) {
   } = props;
 
   return (
-    <AppScreen>
+    <AppScreen
+      titleKey="ingredient.ingredientEditScreen.title"
+      goBack={() => navigation.goBack()}
+    >
       <IngredientEditor
         ingredient={ingredient}
-        onDiscard={() => navigation.goBack()}
-        onAfterSave={() => navigation.push('IngredientHome')}
-        onAfterDelete={() => navigation.push('IngredientHome')}
+        onAfterSave={() => navigation.navigate('IngredientHome')}
+        onAfterDelete={() => navigation.navigate('IngredientHome')}
       />
     </AppScreen>
   );

@@ -29,11 +29,6 @@ interface RecipeEditorProps {
   recipe?: Recipe;
 
   /**
-   * On discard event handler.
-   */
-  onDiscard: () => void;
-
-  /**
    * On after save event handler.
    */
   onAfterSave: () => void;
@@ -48,7 +43,7 @@ interface RecipeEditorProps {
  * Recipe editor component.
  */
 export function RecipeEditor(props: RecipeEditorProps) {
-  const { recipe = new Recipe(), onDiscard, onAfterSave, onAfterDelete } = props;
+  const { recipe = new Recipe(), onAfterSave, onAfterDelete } = props;
   const isNewRecipe = !recipe.id;
 
   const { t } = useTranslation();
@@ -160,12 +155,6 @@ export function RecipeEditor(props: RecipeEditorProps) {
         <AppButtonGroup
           style={appStyles.sectionRow}
           buttons={[
-            {
-              label: t('app.labels.discard'),
-              type: 'secondary',
-              textColor: appTheme.colors.recipePrimary,
-              onPress: onDiscard,
-            },
             {
               label: t(`app.labels.${isNewRecipe ? 'create' : 'update'}`),
               backgroundColor: appTheme.colors.recipePrimary,

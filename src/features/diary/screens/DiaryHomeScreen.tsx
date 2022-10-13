@@ -13,9 +13,9 @@ export function DiaryHomeScreen(props: DiaryHomeScreenProps) {
   const {} = props;
 
   return (
-    <AppScreen>
+    <AppScreen titleKey="diary.diaryHomeScreen.title">
       <View style={appStyles.flex}>
-        <DiaryMealEditor isCalculatorMode />
+        <DiaryMealEditor />
       </View>
     </AppScreen>
   );

@@ -24,11 +24,6 @@ interface IngredientEditorProps {
   ingredient?: Ingredient;
 
   /**
-   * On discard event handler.
-   */
-  onDiscard: () => void;
-
-  /**
    * On after save event handler.
    */
   onAfterSave: () => void;
@@ -43,7 +38,7 @@ interface IngredientEditorProps {
  * Ingredient editor component.
  */
 export function IngredientEditor(props: IngredientEditorProps) {
-  const { ingredient = new Ingredient(), onDiscard, onAfterSave, onAfterDelete } = props;
+  const { ingredient = new Ingredient(), onAfterSave, onAfterDelete } = props;
   const { serving, nutrients } = ingredient;
   const isNewIngredient = !ingredient.id;
 
@@ -125,12 +120,6 @@ export function IngredientEditor(props: IngredientEditorProps) {
         <AppButtonGroup
           style={appStyles.sectionRow}
           buttons={[
-            {
-              label: t('app.labels.discard'),
-              type: 'secondary',
-              textColor: appTheme.colors.ingredientPrimary,
-              onPress: onDiscard,
-            },
             {
               label: t(`app.labels.${isNewIngredient ? 'create' : 'update'}`),
               backgroundColor: appTheme.colors.ingredientPrimary,

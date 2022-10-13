@@ -36,7 +36,7 @@ export function IngredientHomeScreen(props: IngredientHomeScreenProps) {
   }
 
   return (
-    <AppScreen>
+    <AppScreen titleKey="ingredient.ingredientHomeScreen.title">
       <View style={appStyles.section}>
         <AppButton
           style={appStyles.sectionRow}

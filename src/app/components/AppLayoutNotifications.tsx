@@ -11,7 +11,7 @@ const NOTIFICATION_DURATION = 3000;
 /**
  * Application notification display.
  */
-export function AppNotifications() {
+export function AppLayoutNotifications() {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { notification } = useAppSelector((state) => state.app);

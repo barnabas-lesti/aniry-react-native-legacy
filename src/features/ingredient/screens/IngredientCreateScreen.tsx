@@ -14,11 +14,11 @@ export function IngredientCreateScreen(props: IngredientCreateScreenProps) {
   const { navigation } = props;
 
   return (
-    <AppScreen>
-      <IngredientEditor
-        onDiscard={() => navigation.goBack()}
-        onAfterSave={() => navigation.push('IngredientHome')}
-      />
+    <AppScreen
+      titleKey="ingredient.ingredientCreateScreen.title"
+      goBack={() => navigation.goBack()}
+    >
+      <IngredientEditor onAfterSave={() => navigation.navigate('IngredientHome')} />
     </AppScreen>
   );
 }

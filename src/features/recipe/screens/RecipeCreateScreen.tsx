@@ -11,11 +11,11 @@ export function RecipeCreateScreen(props: RecipeCreateScreenProps) {
   const { navigation } = props;
 
   return (
-    <AppScreen>
-      <RecipeEditor
-        onDiscard={() => navigation.goBack()}
-        onAfterSave={() => navigation.push('RecipeHome')}
-      />
+    <AppScreen
+      titleKey="recipe.recipeCreateScreen.title"
+      goBack={() => navigation.goBack()}
+    >
+      <RecipeEditor onAfterSave={() => navigation.navigate('RecipeHome')} />
     </AppScreen>
   );
 }
