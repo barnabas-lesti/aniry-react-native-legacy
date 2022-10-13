@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Text, Divider } from 'react-native-paper';
 
-import { AppButtonGroup, AppScreen, AppConfirmationDialog } from '../components';
+import { AppButtonGroup, AppLayoutScreen, AppConfirmationDialog } from '../components';
 import { appStyles, appTheme } from '../theme';
 import { appCollectionService, appSettingsService } from '../services';
 import { useAppDispatch } from '../store/hooks';
@@ -40,7 +40,7 @@ export function AppSettingsScreen() {
   }
 
   return (
-    <AppScreen>
+    <AppLayoutScreen titleKey="settings.settingsScreen.title">
       <View style={appStyles.section}>
         <Text style={appStyles.sectionTitle}>{t('app.appSettingsScreen.data.title')}</Text>
         <Text style={appStyles.sectionDescription}>{t('app.appSettingsScreen.data.description')}</Text>
@@ -69,6 +69,6 @@ export function AppSettingsScreen() {
           onCancel={onRestoreCancel}
         />
       )}
-    </AppScreen>
+    </AppLayoutScreen>
   );
 }

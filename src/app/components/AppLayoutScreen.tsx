@@ -1,11 +1,14 @@
 import React from 'react';
 import { View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { appStyles } from '../theme';
-import { AppProgressBar } from './AppProgressBar';
+import { AppLayoutHeader } from './AppLayoutHeader';
 import { AppScrollView } from './AppScrollView';
 
-interface AppScreenProps {
+interface AppLayoutScreenProps {
+  titleKey: string;
+
   /**
    * Use scroll view or simple view flag.
    */
@@ -14,15 +17,21 @@ interface AppScreenProps {
   /**
    * Elements to be contained in the dialog popup.
    */
-  children: JSX.Element | Array<JSX.Element | boolean>;
+  children: React.ReactNode;
+
+  goBack?: () => void;
 }
 
-export function AppScreen(props: AppScreenProps) {
-  const { isScrollable, children } = props;
+export function AppLayoutScreen(props: AppLayoutScreenProps) {
+  const { titleKey, isScrollable, children, goBack } = props;
+  const { t } = useTranslation();
 
   return (
     <>
-      <AppProgressBar />
+      <AppLayoutHeader
+        title={t(titleKey)}
+        goBack={goBack}
+      />
       {isScrollable ? (
         <AppScrollView style={[appStyles.container, appStyles.flex]}>{children}</AppScrollView>
       ) : (

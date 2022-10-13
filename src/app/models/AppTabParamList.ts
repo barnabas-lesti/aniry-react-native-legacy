@@ -1,7 +1,4 @@
-/**
- * App screen list type.
- */
-export type AppStackParamList = {
+export type AppTabParamList = {
   Diary: undefined;
   Ingredient: undefined;
   Recipe: undefined;

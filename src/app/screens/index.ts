@@ -1,2 +1,2 @@
 export * from './AppSettingsScreen';
-export * from './AppStackScreen';
+export * from './AppTabScreen';

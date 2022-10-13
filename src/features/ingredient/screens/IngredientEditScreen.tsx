@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { AppStackScreenProps } from 'app/models';
-import { AppScreen } from 'app/components';
+import { AppLayoutScreen } from 'app/components';
 import { IngredientStackParamList } from '../models';
 import { IngredientEditor } from '../components';
 
@@ -19,13 +19,15 @@ export function IngredientEditScreen(props: IngredientEditScreenProps) {
   } = props;
 
   return (
-    <AppScreen>
+    <AppLayoutScreen
+      titleKey="ingredient.ingredientEditScreen.title"
+      goBack={() => navigation.goBack()}
+    >
       <IngredientEditor
         ingredient={ingredient}
-        onDiscard={() => navigation.goBack()}
         onAfterSave={() => navigation.push('IngredientHome')}
         onAfterDelete={() => navigation.push('IngredientHome')}
       />
-    </AppScreen>
+    </AppLayoutScreen>
   );
 }

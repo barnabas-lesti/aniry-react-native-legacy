@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { AppStackScreenProps } from 'app/models';
-import { AppButton, AppList, AppScreen } from 'app/components';
+import { AppButton, AppList, AppLayoutScreen } from 'app/components';
 import { appStyles, appTheme } from 'app/theme';
 import { useAppDispatch, useAppSelector } from 'app/store/hooks';
 import { Recipe, RecipeStackParamList } from '../models';
@@ -35,7 +35,7 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
   }
 
   return (
-    <AppScreen>
+    <AppLayoutScreen titleKey="recipe.recipeHomeScreen.title">
       <View style={appStyles.section}>
         <AppButton
           style={appStyles.sectionRow}
@@ -57,6 +57,6 @@ export function RecipeHomeScreen(props: RecipeHomeScreenProps) {
           onRefresh={onRefresh}
         />
       </View>
-    </AppScreen>
+    </AppLayoutScreen>
   );
 }
