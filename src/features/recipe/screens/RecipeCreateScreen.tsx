@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { AppStackScreenProps } from 'app/models';
-import { AppLayoutScreen } from 'app/components';
+import { AppScreen } from 'app/components';
 import { RecipeStackParamList } from '../models';
 import { RecipeEditor } from '../components';
 
@@ -11,11 +11,11 @@ export function RecipeCreateScreen(props: RecipeCreateScreenProps) {
   const { navigation } = props;
 
   return (
-    <AppLayoutScreen
+    <AppScreen
       titleKey="recipe.recipeCreateScreen.title"
       goBack={() => navigation.goBack()}
     >
-      <RecipeEditor onAfterSave={() => navigation.push('RecipeHome')} />
-    </AppLayoutScreen>
+      <RecipeEditor onAfterSave={() => navigation.navigate('RecipeHome')} />
+    </AppScreen>
   );
 }

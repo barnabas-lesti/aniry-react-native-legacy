@@ -6,7 +6,7 @@ import { appStyles } from '../theme';
 import { AppLayoutHeader } from './AppLayoutHeader';
 import { AppScrollView } from './AppScrollView';
 
-interface AppLayoutScreenProps {
+interface AppScreenProps {
   titleKey: string;
 
   /**
@@ -22,7 +22,7 @@ interface AppLayoutScreenProps {
   goBack?: () => void;
 }
 
-export function AppLayoutScreen(props: AppLayoutScreenProps) {
+export function AppScreen(props: AppScreenProps) {
   const { titleKey, isScrollable, children, goBack } = props;
   const { t } = useTranslation();
 

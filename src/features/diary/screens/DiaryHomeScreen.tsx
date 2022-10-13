@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 
 import { AppStackScreenProps } from 'app/models';
-import { AppLayoutScreen } from 'app/components';
+import { AppScreen } from 'app/components';
 import { DiaryStackParamList } from '../models';
 import { appStyles } from 'app/theme';
 import { DiaryMealEditor } from '../components';
@@ -13,10 +13,10 @@ export function DiaryHomeScreen(props: DiaryHomeScreenProps) {
   const {} = props;
 
   return (
-    <AppLayoutScreen titleKey="diary.diaryHomeScreen.title">
+    <AppScreen titleKey="diary.diaryHomeScreen.title">
       <View style={appStyles.flex}>
         <DiaryMealEditor />
       </View>
-    </AppLayoutScreen>
+    </AppScreen>
   );
 }

@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { diaryScreens } from 'features/diary/screens';
 import { ingredientScreens } from 'features/ingredient/screens';
 import { recipeScreens } from 'features/recipe/screens';
+import { settingsScreens } from 'features/settings/screens';
 import { appTheme } from '../theme';
 import { AppTabParamList, AppTabScreenOptions } from '../models';
 import { AppIcon } from '../components';
@@ -13,7 +14,7 @@ import { AppStackScreen } from './AppStackScreen';
 const tabs: AppTabScreenOptions[] = [
   {
     name: 'Diary',
-    color: appTheme.colors.diaryPrimary,
+    color: appTheme.colors.primary,
     icon: appTheme.icons.diary,
     Component: () => <AppStackScreen screens={diaryScreens} />,
   },
@@ -29,14 +30,12 @@ const tabs: AppTabScreenOptions[] = [
     icon: appTheme.icons.recipe,
     Component: () => <AppStackScreen screens={recipeScreens} />,
   },
-
-  // {
-  //   name: 'Settings',
-  //   titleKey: 'app.appSettingsScreen.title',
-  //   activeColor: appTheme.colors.settingsPrimary,
-  //   Component: AppSettingsScreen,
-  //   tabBarIcon: tabBarIconFactory(appTheme.icons.settings),
-  // },
+  {
+    name: 'Settings',
+    color: appTheme.colors.primary,
+    icon: appTheme.icons.settings,
+    Component: () => <AppStackScreen screens={settingsScreens} />,
+  },
 ];
 
 const tabBarIconFactory =

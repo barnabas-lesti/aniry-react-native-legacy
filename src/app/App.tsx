@@ -3,7 +3,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import { Provider as StoreProvider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { AppNotifications } from './components';
+import { AppLayoutNotifications } from './components';
 import { AppTabScreen } from './screens';
 import { appLocalizationService } from './services';
 import { appTheme } from './theme';
@@ -20,7 +20,7 @@ export function App() {
       <SafeAreaProvider>
         <PaperProvider theme={appTheme}>
           <AppTabScreen />
-          <AppNotifications />
+          <AppLayoutNotifications />
         </PaperProvider>
       </SafeAreaProvider>
     </StoreProvider>
